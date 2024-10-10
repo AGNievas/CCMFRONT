@@ -11,7 +11,7 @@
         <v-btn
           v-if="isSessionActive"
           icon="mdi-account-circle"
-          @click="changeView('listadoDeMedicamentos')"
+          @click="changeView('InformacionUsuario')"
           class="navbar-icon"
         ></v-btn>
         <v-btn icon @click="logout" class="navbar-icon">
@@ -49,6 +49,7 @@
 import Home from './Home.vue';
 import ListadoDeMedicamentos from './ListadoDeMedicamentos.vue';
 import CargaDeMedicamentos from './CargaDeMedicamentos.vue';
+import InformacionUsuario from './InformacionUsuario.vue';
 
 export default {
   name: 'src-componentes-navbar',
@@ -56,6 +57,7 @@ export default {
     Home,
     ListadoDeMedicamentos,
     CargaDeMedicamentos,
+    InformacionUsuario
   },
   data() {
     return {
@@ -86,6 +88,8 @@ export default {
           return 'ListadoDeMedicamentos';
         case 'cargaDeMedicamentos':
           return 'CargaDeMedicamentos';
+        case 'InformacionUsuario':
+          return 'InformacionUsuario';
         default:
           return 'Home';
       }

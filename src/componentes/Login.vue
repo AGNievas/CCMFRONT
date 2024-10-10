@@ -50,7 +50,7 @@ export default {
       successMessage: "",
       usuarios: [],
       emailErrors: [],
-      passwordErrors: []
+      passwordErrors: [],
     };
   },
   async mounted() {
@@ -92,14 +92,15 @@ export default {
         return;
       }
 
+      // Almacena la información completa del usuario en localStorage
       localStorage.setItem('session', 'active');
-      localStorage.setItem('user', JSON.stringify({ id: user.id }));
+      localStorage.setItem('user', JSON.stringify(user)); // Almacena el objeto usuario completo
 
       this.success = true;
       this.successMessage = "Inicio de sesión exitoso";
       this.$router.push('/navbar');
-    }
-  }
+    },
+  },
 };
 </script>
 
