@@ -47,14 +47,10 @@ export default {
 </script>
 
 <style scoped>
-/* .v-container {
-  max-width: 450px;
-  margin: 0 auto;
-  padding-top: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
+.app-bar-title {
+  font-weight: bold;
+  color: #0E3746;
+}
 .v-container {
   max-width: 500px;
   margin: 0 auto;

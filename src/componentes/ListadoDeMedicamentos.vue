@@ -2,31 +2,35 @@
   <div class="custom-container">
     <v-card flat>
       <v-card-title class="d-flex align-center pe-2">
-  <v-text-field
-    v-model="search"
-    density="compact"
-    label="Buscar"
-    prepend-inner-icon="mdi-magnify"
-    variant="solo-filled"
-    flat
-    hide-details
-    single-line
-    class="rounded-search-bar"
-  ></v-text-field>
+        <v-text-field
+          v-model="search"
+          density="compact"
+          label="Buscar"
+          prepend-inner-icon="mdi-magnify"
+          variant="solo-filled"
+          flat
+          hide-details
+          single-line
+          class="rounded-search-bar"
+        ></v-text-field>
 
-  <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-  <v-btn @click="openEditDialog" class="mx-2">Editar Medicamento</v-btn>
-  <v-btn @click="openDialog" class="mx-2">Agregar Medicamento</v-btn>
-</v-card-title>
+        <v-btn @click="openDialog" class="mx-2">Agregar Medicamento</v-btn>
+      </v-card-title>
 
-
-      <!-- Tabla con borde completo alrededor del encabezado y filas -->
       <v-data-table
         :search="search"
         :items="items"
         :headers="headers"
         hide-default-header
+        :footer-props="{
+          'items-per-page-text': 'Elementos por página',
+          'page-text': '{0}-{1} de {2}',
+          'next-icon': 'mdi-chevron-right',
+          'prev-icon': 'mdi-chevron-left'
+        }"
+        no-data-text="No hay datos disponibles"
       >
         <template v-slot:thead>
           <thead>
@@ -34,8 +38,8 @@
               <th class="table-header text-start">SKU</th>
               <th class="table-header text-start">DESCRIPCIÓN</th>
               <th class="table-header text-start">TIPO DE MEDICAMENTO</th>
-              <th class="table-header text-start">CANTIDAD DE COMPRIMIDOS</th>
               <th class="table-header text-start">CANTIDAD STOCK</th>
+              <th class="table-header text-start">ACCIONES</th>
             </tr>
           </thead>
         </template>
@@ -45,8 +49,10 @@
             <td class="text-start table-cell">{{ item.sku }}</td>
             <td class="text-start table-cell">{{ item.descripcion }}</td>
             <td class="text-start table-cell">{{ item.tipo_insumo }}</td>
-            <td class="text-start table-cell">{{ item.cantidad_comprimidos }}</td>
             <td class="text-start table-cell">{{ item.stock }}</td>
+            <td class="text-start table-cell">
+              <v-btn small @click="openEditDialog(item)">Editar</v-btn>
+            </td>
           </tr>
         </template>
       </v-data-table>
@@ -63,16 +69,26 @@
           <v-form ref="form">
             <v-text-field v-model="newMed.sku" label="SKU" required></v-text-field>
             <v-text-field v-model="newMed.descripcion" label="Descripción" required></v-text-field>
-            <v-text-field v-model="newMed.tipo_insumo" label="Tipo de Medicamento" required></v-text-field>
-            <v-text-field v-model="newMed.cantidad_comprimidos" label="Cantidad de Comprimidos" required></v-text-field>
-            <v-text-field v-model="newMed.stock" label="Cantidad Stock" required></v-text-field>
 
-            <!-- Mostrar mensaje de error si algún campo está vacío -->
+            <v-select
+              v-model="newMed.tipo_insumo"
+              :items="tipoInsumoOptions"
+              label="Tipo de Medicamento"
+              required
+            ></v-select>
+
+            <v-text-field 
+              v-model.number="newMed.stock" 
+              label="Cantidad Stock" 
+              required 
+              type="number" 
+              min="0"
+            ></v-text-field>
+
             <v-alert v-if="formError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
             </v-alert>
 
-            <!-- Mostrar mensaje de error si el SKU ya existe -->
             <v-alert v-if="skuError" type="error" dismissible>
               El SKU ya existe. Por favor, elige otro.
             </v-alert>
@@ -96,17 +112,27 @@
 
         <v-card-text>
           <v-form ref="editForm">
+            <v-text-field v-model="editMed.sku" label="SKU" required readonly></v-text-field>
+            <v-text-field v-model="editMed.descripcion" label="Descripción" required></v-text-field>
+
             <v-select
-              v-model="editMed.sku"
-              :items="items.map(item => item.sku)"
-              label="Seleccionar SKU"
-              @change="selectMed"
+              v-model="editMed.tipo_insumo"
+              :items="tipoInsumoOptions"
+              label="Tipo de Medicamento"
               required
             ></v-select>
-            <v-text-field v-model="editMed.descripcion" label="Descripción" required></v-text-field>
-            <v-text-field v-model="editMed.tipo_insumo" label="Tipo de Medicamento" required></v-text-field>
-            <v-text-field v-model="editMed.cantidad_comprimidos" label="Cantidad de Comprimidos" required></v-text-field>
-            <v-text-field v-model="editMed.stock" label="Cantidad Stock" required></v-text-field>
+
+            <v-text-field 
+              v-model.number="editMed.stock" 
+              label="Cantidad Stock" 
+              required 
+              type="number" 
+              min="0"
+            ></v-text-field>
+
+            <v-alert v-if="editFormError" type="error" dismissible>
+              Todos los campos son obligatorios. Por favor, completa la información.
+            </v-alert>
           </v-form>
         </v-card-text>
 
@@ -120,8 +146,9 @@
   </div>
 </template>
 
+
+
 <script>
-// Importa el archivo JSON
 import medicamentos from "@/assets/medicamentos.json";
 
 export default {
@@ -133,105 +160,101 @@ export default {
         { text: "SKU", value: "sku" },
         { text: "DESCRIPCIÓN", value: "descripcion" },
         { text: "TIPO DE MEDICAMENTO", value: "tipo_insumo" },
-        { text: "CANTIDAD STOCK", value: "stock" },
       ],
-      items: [], // Inicialmente vacío
-      dialog: false, // Controla la apertura/cierre del pop-up de agregar
-      editDialog: false, // Controla el pop-up de editar
+      items: [],
+      dialog: false,
+      editDialog: false,
+      tipoInsumoOptions: ["Medicamento"], // Lista de opciones para el tipo de insumo
       newMed: {
         sku: "",
         descripcion: "",
-        tipo_insumo: "",
-        cantidad_comprimidos: "",
-        stock: "",
+        tipo_insumo: "Medicamento", // Valor predeterminado
+        stock: null,
       },
       editMed: {
         sku: "",
         descripcion: "",
-        tipo_insumo: "",
-        cantidad_comprimidos: "",
-        stock: "",
+        tipo_insumo: "Medicamento", // Valor predeterminado
+        stock: null,
       },
-      skuError: false, // Indica si hay un error de SKU duplicado
-      formError: false, // Indica si hay campos vacíos
+      skuError: false,
+      formError: false,
+      editFormError: false,
     };
   },
   mounted() {
-    // Asigna los datos del archivo JSON a items
     this.items = medicamentos;
   },
   methods: {
-    // Abrir diálogo de agregar medicamento
     openDialog() {
       this.dialog = true;
+      this.resetErrors();
     },
     closeDialog() {
       this.dialog = false;
       this.resetForm();
-      this.skuError = false;
-      this.formError = false; // Resetea también el error de formulario
     },
     addMedicamento() {
-      // Reseteamos los mensajes de error
       this.skuError = false;
       this.formError = false;
 
-      // Verifica si algún campo está vacío
       if (
         !this.newMed.sku ||
         !this.newMed.descripcion ||
         !this.newMed.tipo_insumo ||
-        !this.newMed.cantidad_comprimidos ||
-        !this.newMed.stock
+        this.newMed.stock === null || 
+        isNaN(this.newMed.stock)
       ) {
-        this.formError = true; // Muestra error si faltan campos
+        this.formError = true;
         return;
       }
 
-      // Valida si el SKU ya existe en la lista de medicamentos
       const exists = this.items.some((item) => item.sku === this.newMed.sku);
 
       if (exists) {
-        this.skuError = true; // Muestra error si el SKU ya existe
+        this.skuError = true;
       } else {
-        // Si no hay errores, agrega el nuevo medicamento
         this.skuError = false;
-
         this.items.push({ ...this.newMed });
-
-        // Cierra el diálogo y resetea el formulario
         this.closeDialog();
       }
     },
-    // Abrir diálogo de editar medicamento
-    openEditDialog() {
+    openEditDialog(item) {
+      this.editMed = { ...item };
       this.editDialog = true;
+      this.resetErrors();
     },
     closeEditDialog() {
       this.editDialog = false;
       this.resetEditForm();
     },
-    selectMed() {
-      const selectedMed = this.items.find(item => item.sku === this.editMed.sku);
-      if (selectedMed) {
-        this.editMed = { ...selectedMed };
-      }
-    },
     updateMedicamento() {
-      const index = this.items.findIndex(item => item.sku === this.editMed.sku);
+      this.editFormError = false;
+
+      if (
+        !this.editMed.sku ||
+        !this.editMed.descripcion ||
+        !this.editMed.tipo_insumo ||
+        this.editMed.stock === null || 
+        isNaN(this.editMed.stock)
+      ) {
+        this.editFormError = true;
+        return;
+      }
+
+      const index = this.items.findIndex((item) => item.sku === this.editMed.sku);
+      
       if (index !== -1) {
         this.items.splice(index, 1, { ...this.editMed });
         this.closeEditDialog();
       }
     },
     resetForm() {
-      // Resetea el formulario y elimina los mensajes de error
       this.newMed = {
         sku: "",
         descripcion: "",
-        tipo_insumo: "",
-        cantidad_comprimidos: "",
-        stock: "",
+        tipo_insumo: "Medicamento", // Restablecer el valor por defecto
+        stock: null,
       };
       this.skuError = false;
     },
@@ -239,17 +262,21 @@ export default {
       this.editMed = {
         sku: "",
         descripcion: "",
-        tipo_insumo: "",
-        cantidad_comprimidos: "",
-        stock: "",
+        tipo_insumo: "Medicamento", // Restablecer el valor por defecto
+        stock: null,
       };
+    },
+    resetErrors() {
+      this.formError = false;
+      this.skuError = false;
+      this.editFormError = false;
     },
   },
 };
 </script>
 
-<style scoped>
 
+<style scoped>
 .custom-container {
   padding: 40px 20px;
   border-radius: 16px;

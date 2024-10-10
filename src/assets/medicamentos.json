@@ -1,17 +1,17 @@
 [
-    { "sku": "00123", "descripcion": "Paracetamol 500mg", "tipo_insumo": "Analgésico", "cantidad_comprimidos": 10, "stock": 50 },
-    { "sku": "00124", "descripcion": "Ibuprofeno 400mg", "tipo_insumo": "Antiinflamatorio", "cantidad_comprimidos": 10, "stock": 75 },
-    { "sku": "00125", "descripcion": "Amoxicilina 500mg", "tipo_insumo": "Antibiótico", "cantidad_comprimidos": 10, "stock": 30 },
-    { "sku": "00126", "descripcion": "Loratadina 10mg", "tipo_insumo": "Antihistamínico", "cantidad_comprimidos": 10, "stock": 100 },
-    { "sku": "00127", "descripcion": "Omeprazol 20mg", "tipo_insumo": "Inhibidor de ácido", "cantidad_comprimidos": 10, "stock": 60 },
-    { "sku": "00128", "descripcion": "Aspirina 100mg", "tipo_insumo": "Analgésico", "cantidad_comprimidos": 10, "stock": 200 },
-    { "sku": "00129", "descripcion": "Metformina 850mg", "tipo_insumo": "Antidiabético", "cantidad_comprimidos": 10, "stock": 40 },
-    { "sku": "00130", "descripcion": "Simvastatina 20mg", "tipo_insumo": "Hipolipemiante", "cantidad_comprimidos": 10, "stock": 85 },
-    { "sku": "00131", "descripcion": "Diazepam 5mg", "tipo_insumo": "Ansiolítico", "cantidad_comprimidos": 10, "stock": 20 },
-    { "sku": "00132", "descripcion": "Clonazepam 2mg", "tipo_insumo": "Ansiolítico", "cantidad_comprimidos": 10, "stock": 15 },
-    { "sku": "00133", "descripcion": "Azitromicina 500mg", "tipo_insumo": "Antibiótico", "cantidad_comprimidos": 10, "stock": 45 },
-    { "sku": "00134", "descripcion": "Salbutamol Inhalador", "tipo_insumo": "Broncodilatador", "cantidad_comprimidos": 10, "stock": 25 },
-    { "sku": "00135", "descripcion": "Furosemida 40mg", "tipo_insumo": "Diurético", "cantidad_comprimidos": 10, "stock": 70 },
-    { "sku": "00136", "descripcion": "Enalapril 10mg", "tipo_insumo": "Antihipertensivo", "cantidad_comprimidos": 10, "stock": 90 }
+    { "sku": "00123", "descripcion": "Paracetamol 500mg", "tipo_insumo": "Medicamento", "stock": 50 },
+    { "sku": "00124", "descripcion": "Ibuprofeno 400mg", "tipo_insumo": "Medicamento", "stock": 75 },
+    { "sku": "00125", "descripcion": "Amoxicilina 500mg", "tipo_insumo": "Medicamento", "stock": 30 },
+    { "sku": "00126", "descripcion": "Loratadina 10mg", "tipo_insumo": "Medicamento", "stock": 100 },
+    { "sku": "00127", "descripcion": "Omeprazol 20mg", "tipo_insumo": "Medicamento", "stock": 60 },
+    { "sku": "00128", "descripcion": "Aspirina 100mg", "tipo_insumo": "Medicamento", "stock": 200 },
+    { "sku": "00129", "descripcion": "Metformina 850mg", "tipo_insumo": "Medicamento", "stock": 40 },
+    { "sku": "00130", "descripcion": "Simvastatina 20mg", "tipo_insumo": "Medicamento", "stock": 85 },
+    { "sku": "00131", "descripcion": "Diazepam 5mg", "tipo_insumo": "Medicamento", "stock": 20 },
+    { "sku": "00132", "descripcion": "Clonazepam 2mg", "tipo_insumo": "Medicamento", "stock": 15 },
+    { "sku": "00133", "descripcion": "Azitromicina 500mg", "tipo_insumo": "Medicamento", "stock": 45 },
+    { "sku": "00134", "descripcion": "Salbutamol Inhalador", "tipo_insumo": "Medicamento", "stock": 25 },
+    { "sku": "00135", "descripcion": "Furosemida 40mg", "tipo_insumo": "Medicamento", "stock": 70 },
+    { "sku": "00136", "descripcion": "Enalapril 10mg", "tipo_insumo": "Medicamento", "stock": 90 }
   ]
   
