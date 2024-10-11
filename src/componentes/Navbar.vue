@@ -8,12 +8,9 @@
       <v-app-bar-title class="navbar-title">Control y Carga de Medicamentos</v-app-bar-title>
 
       <template v-slot:append>
-        <v-btn
-          v-if="isSessionActive"
-          icon="mdi-account-circle"
-          @click="changeView('InformacionUsuario')"
-          class="navbar-icon"
-        ></v-btn>
+        <RouterLink v-if="isSessionActive" :to="{ name: 'InformacionUsuario' }">
+          <v-btn icon="mdi-account-circle" class="navbar-icon"></v-btn>
+        </RouterLink>
         <v-btn icon @click="logout" class="navbar-icon">
           <v-icon v-if="isSessionActive">mdi-export</v-icon>
           <v-icon v-else>mdi-account</v-icon>
@@ -28,78 +25,33 @@
       class="drawer"
     >
       <v-list>
-        <v-list-item
-          v-for="item in items"
-          :key="item.value"
-          @click="changeView(item.value)"
-        >
-          <v-list-item-title class="drawer-item-title">
-            {{ item.title }}
-          </v-list-item-title>
+        <v-list-item>
+          <RouterLink to="/home" class="drawer-item-title">Inicio</RouterLink>
+        </v-list-item>
+        <v-list-item>
+          <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
+        </v-list-item>
+        <v-list-item>
+          <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado De Medicamentos</RouterLink>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
     
     <br>
-    <component :is="currentViewComponent" />
+
   </div>
 </template>
 
 <script>
-import Home from './Home.vue';
-import ListadoDeMedicamentos from './ListadoDeMedicamentos.vue';
-import CargaDeMedicamentos from './CargaDeMedicamentos.vue';
-import InformacionUsuario from './InformacionUsuario.vue';
-
 export default {
   name: 'src-componentes-navbar',
-  components: {
-    Home,
-    ListadoDeMedicamentos,
-    CargaDeMedicamentos,
-    InformacionUsuario
-  },
   data() {
     return {
       drawer: false,
-      currentView: 'inicio',
       isSessionActive: false,
-      items: [
-        {
-          title: 'Inicio',
-          value: 'inicio',
-        },
-        {
-          title: 'Carga De Medicamentos',
-          value: 'cargaDeMedicamentos',
-        },
-        {
-          title: 'Listado De Medicamentos',
-          value: 'listadoDeMedicamentos',
-        },
-
-      ],
     };
   },
-  computed: {
-    currentViewComponent() {
-      switch (this.currentView) {
-        case 'listadoDeMedicamentos':
-          return 'ListadoDeMedicamentos';
-        case 'cargaDeMedicamentos':
-          return 'CargaDeMedicamentos';
-        case 'InformacionUsuario':
-          return 'InformacionUsuario';
-        default:
-          return 'Home';
-      }
-    },
-  },
   methods: {
-    changeView(view) {
-      this.currentView = view;
-      this.drawer = false;
-    },
     logout() {
       if (this.isSessionActive) {
         localStorage.removeItem('session');
@@ -117,6 +69,7 @@ export default {
 <style scoped>
 .navbar {
   background-color: #A3DEC3;
+  height: 64px; /* Ajusta esto según la altura que necesites */
 }
 
 .navbar-icon {
@@ -134,7 +87,6 @@ export default {
 
 .drawer-item-title {
   color: #0E3746;
+  text-decoration: none;
 }
-
-
 </style>

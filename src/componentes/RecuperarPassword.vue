@@ -28,7 +28,7 @@
           ></v-text-field>
 
           <!-- Enlace para volver al login -->
-          <a @click="$router.push('/login')" class="recuperar-link">Volver al inicio de sesión</a>
+          <RouterLink to="/login" class="recuperar-link">Volver al inicio de sesión</RouterLink>
         </v-card-text>
       </v-card>
     </v-container>

@@ -5,17 +5,26 @@ import ListadoDeMedicamentos from './componentes/ListadoDeMedicamentos.vue';
 import CargaDeMedicamentos from './componentes/CargaDeMedicamentos.vue';
 import RecuperarPassword from './componentes/RecuperarPassword.vue';
 import Login from './componentes/Login.vue';
-import Navbar from './componentes/Navbar.vue';
+import InformacionUsuario from './componentes/InformacionUsuario.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
-  { path: '/login', component: Login },
-  { path: '/recuperar-password', component: RecuperarPassword },
-  { path: '/navbar', component: Navbar },
-  { path: '/home', component: Home },
-  { path: '/listadoDeMedicamentos', component: ListadoDeMedicamentos },
-  { path: '/cargaDeMedicamentos', component: CargaDeMedicamentos },
-  { path: '/:pathMatch(.*)*', redirect: '/home' }
+  { path: '/login', name: 'Login', component: Login },
+  { path: '/recuperarPassword', name: 'RecuperarPassword', component: RecuperarPassword },
+  
+  // Agrupar rutas que necesitan la navbar
+  {
+    path: '/',
+    component: () => import('./componentes/Layout.vue'), // Importa el layout que contiene la navbar
+    children: [
+      { path: 'home', name: 'Home', component: Home },
+      { path: 'listadoDeMedicamentos', name: 'ListadoDeMedicamentos', component: ListadoDeMedicamentos },
+      { path: 'cargaDeMedicamentos', name: 'CargaDeMedicamentos', component: CargaDeMedicamentos },
+      { path: 'informacionUsuario', name: 'InformacionUsuario', component: InformacionUsuario },
+    ]
+  },
+  
+  { path: '/:pathMatch(.*)*', redirect: '/login' } // Ruta por defecto
 ];
 
 const router = createRouter({
@@ -24,5 +33,3 @@ const router = createRouter({
 });
 
 export default router;
-
-

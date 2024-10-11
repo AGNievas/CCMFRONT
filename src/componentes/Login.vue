@@ -27,10 +27,11 @@
 
             <v-btn type="submit">Iniciar Sesión</v-btn>
           </v-form>
-          <v-alert v-if="error" type="error">{{ error }}</v-alert>
-          <v-alert v-if="success" type="success">{{ successMessage }}</v-alert>
 
-          <a @click="$router.push('/recuperar-password')" class="recuperar-link">recuperar contraseña</a>
+          <v-alert v-if="error" type="error">{{ error }}</v-alert>
+
+          <!-- Enlace para recuperar contraseña -->
+          <RouterLink to="/recuperarPassword" class="recuperar-link">recuperar contraseña</RouterLink>
         </v-card-text>
       </v-card>
     </v-container>
@@ -46,8 +47,6 @@ export default {
       email: "",
       password: "",
       error: null,
-      success: false,
-      successMessage: "",
       usuarios: [],
       emailErrors: [],
       passwordErrors: [],
@@ -78,7 +77,6 @@ export default {
     },
     async login() {
       this.error = null;
-      this.success = false;
 
       if (!this.validateForm()) {
         return;
@@ -92,13 +90,12 @@ export default {
         return;
       }
 
-      // Almacena la información completa del usuario en localStorage
+      // Guardar la sesión del usuario en localStorage
       localStorage.setItem('session', 'active');
-      localStorage.setItem('user', JSON.stringify(user)); // Almacena el objeto usuario completo
+      localStorage.setItem('user', JSON.stringify(user)); // Guardar el objeto completo del usuario
 
-      this.success = true;
-      this.successMessage = "Inicio de sesión exitoso";
-      this.$router.push('/navbar');
+      // Redireccionar a la vista Navbar usando RouterLink programáticamente
+      this.$router.push('/home');
     },
   },
 };
@@ -118,6 +115,7 @@ export default {
   border: 1px solid #d9dcd1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+
 .app-bar-title {
   font-weight: bold;
   color: #0E3746;

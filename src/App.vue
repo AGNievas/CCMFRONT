@@ -1,14 +1,13 @@
 <template>
   <v-app>
-    <router-view />
+    <RouterView />
   </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'App'
-}
+  name: 'App',
+};
 </script>
 
 <style>
@@ -20,6 +19,4 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-
 </style>
-
