@@ -9,11 +9,11 @@
         <v-card-text>
           <v-form @submit.prevent="login">
             <v-text-field
-              v-model="email"
-              label="Email"
+              v-model="mail"
+              label="Mail"
               required
-              type="email"
-              :error-messages="emailErrors"
+              type="mail"
+              :error-messages="mailErrors"
               style="border: none; box-shadow: none;"
             ></v-text-field>
             <v-text-field
@@ -44,11 +44,11 @@ import { getUsuarios } from "./servicios/usuarios";
 export default {
   data() {
     return {
-      email: "",
+      mail: "",
       password: "",
       error: null,
       usuarios: [],
-      emailErrors: [],
+      mailErrors: [],
       passwordErrors: [],
     };
   },
@@ -56,24 +56,24 @@ export default {
     this.usuarios = await getUsuarios();
   },
   methods: {
-    validarEmail() {
+    validarMail() {
       var re = /\S+@\S+\.\S+/;
-      return re.test(this.email);
+      return re.test(this.mail);
     },
     validateForm() {
-      this.emailErrors = [];
+      this.mailErrors = [];
       this.passwordErrors = [];
 
-      if (!this.email) {
-        this.emailErrors.push("Email es requerido.");
-      } else if (!this.validarEmail()) {
-        this.emailErrors.push("Email no es válido.");
+      if (!this.mail) {
+        this.mailErrors.push("Mail es requerido.");
+      } else if (!this.validarMail()) {
+        this.mailErrors.push("Mail no es válido.");
       }
       if (!this.password) {
         this.passwordErrors.push("Password es requerido.");
       }
 
-      return !this.emailErrors.length && !this.passwordErrors.length;
+      return !this.mailErrors.length && !this.passwordErrors.length;
     },
     async login() {
       this.error = null;
@@ -82,10 +82,10 @@ export default {
         return;
       }
 
-      const user = this.usuarios.find(user => user.email === this.email && user.password === this.password);
+      const user = this.usuarios.find(user => user.mail === this.mail && user.password === this.password);
       if (!user) {
-        this.error = "Email o contraseña incorrectos";
-        this.email = "";
+        this.error = "Mail o contraseña incorrectos";
+        this.mail = "";
         this.password = "";
         return;
       }

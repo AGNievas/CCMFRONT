@@ -20,11 +20,11 @@
 
           <!-- Campo de correo electrónico -->
           <v-text-field
-            v-model="email"
+            v-model="mail"
             prepend-inner-icon="mdi-email"
             outlined
             readonly
-            class="email-field"
+            class="mail-field"
           ></v-text-field>
 
           <!-- Enlace para volver al login -->
@@ -40,7 +40,7 @@ export default {
   name: "RecuperarPassword",
   data() {
     return {
-      email: "vwilches@buenosaires.gob.ar", // Correo por defecto
+      mail: "vwilches@buenosaires.gob.ar", // Correo por defecto
     };
   },
 };
@@ -84,7 +84,7 @@ export default {
   margin-bottom: 30px;
 }
 
-.email-field {
+.mail-field {
   background-color: #f5f5f5;
   border-radius: 8px;
   margin-bottom: 20px;

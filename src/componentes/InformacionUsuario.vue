@@ -8,14 +8,14 @@
       <v-card-text>
         <div v-if="usuarioActual" class="user-details">
           <v-text-field
-            v-model="usuarioActual.nombre"
+            v-model="usuarioActual.name"
             label="Nombre"
             readonly
           ></v-text-field>
 
           <v-text-field
-            v-model="usuarioActual.email"
-            label="Email"
+            v-model="usuarioActual.mail"
+            label="Mail"
             readonly
           ></v-text-field>
 

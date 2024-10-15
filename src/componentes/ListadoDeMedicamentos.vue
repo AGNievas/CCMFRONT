@@ -38,7 +38,7 @@
               <th class="table-header text-start">SKU</th>
               <th class="table-header text-start">DESCRIPCIÓN</th>
               <th class="table-header text-start">TIPO DE MEDICAMENTO</th>
-              <th class="table-header text-start">CANTIDAD STOCK</th>
+              <th class="table-header text-start">CANTIDAD COMPRIMIDOS</th>
               <th class="table-header text-start">ACCIONES</th>
             </tr>
           </thead>
@@ -49,9 +49,10 @@
             <td class="text-start table-cell">{{ item.sku }}</td>
             <td class="text-start table-cell">{{ item.descripcion }}</td>
             <td class="text-start table-cell">{{ item.tipo_insumo }}</td>
-            <td class="text-start table-cell">{{ item.stock }}</td>
+            <td class="text-start table-cell">{{ item.cantidad_comprimidos }}</td>
             <td class="text-start table-cell">
               <v-btn small @click="openEditDialog(item)">Editar</v-btn>
+              <v-btn small color="red" @click="deleteMedicamento(item.id)">Eliminar</v-btn>
             </td>
           </tr>
         </template>
@@ -78,8 +79,8 @@
             ></v-select>
 
             <v-text-field 
-              v-model.number="newMed.stock" 
-              label="Cantidad Stock" 
+              v-model.number="newMed.cantidad_comprimidos" 
+              label="Cantidad Comprimidos" 
               required 
               type="number" 
               min="0"
@@ -112,9 +113,13 @@
 
         <v-card-text>
           <v-form ref="editForm">
+            <!-- SKU de solo lectura -->
             <v-text-field v-model="editMed.sku" label="SKU" required readonly></v-text-field>
+            
+            <!-- Campo para Descripción -->
             <v-text-field v-model="editMed.descripcion" label="Descripción" required></v-text-field>
 
+            <!-- Select para Tipo de Medicamento -->
             <v-select
               v-model="editMed.tipo_insumo"
               :items="tipoInsumoOptions"
@@ -122,14 +127,16 @@
               required
             ></v-select>
 
+            <!-- Campo para Cantidad de Comprimidos -->
             <v-text-field 
-              v-model.number="editMed.stock" 
-              label="Cantidad Stock" 
+              v-model.number="editMed.cantidad_comprimidos" 
+              label="Cantidad Comprimidos" 
               required 
               type="number" 
               min="0"
             ></v-text-field>
 
+            <!-- Mostrar error si falta algún campo -->
             <v-alert v-if="editFormError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
             </v-alert>
@@ -146,10 +153,13 @@
   </div>
 </template>
 
-
-
 <script>
-import medicamentos from "@/assets/medicamentos.json";
+import { 
+  getMedicamentos, 
+  createMedicamento, 
+  updateMedicamento, 
+  deleteMedicamento 
+} from "./servicios/medicamentos";
 
 export default {
   name: "ListadoDeMedicamentos",
@@ -159,7 +169,6 @@ export default {
       headers: [
         { text: "SKU", value: "sku" },
         { text: "DESCRIPCIÓN", value: "descripcion" },
-        { text: "TIPO DE MEDICAMENTO", value: "tipo_insumo" },
       ],
       items: [],
       dialog: false,
@@ -169,112 +178,162 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento", // Valor predeterminado
-        stock: null,
+        cantidad_comprimidos: 0,    // Preseleccionado en 0
       },
       editMed: {
+        id: "",
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento", // Valor predeterminado
-        stock: null,
+        cantidad_comprimidos: null,
       },
       skuError: false,
       formError: false,
       editFormError: false,
+      snackbar: false,
+      snackbarMessage: '',
     };
   },
   mounted() {
-    this.items = medicamentos;
+    // Cargar medicamentos desde la API
+    this.loadMedicamentos();
   },
   methods: {
+    // Cargar medicamentos
+    async loadMedicamentos() {
+      // Llamar al servicio para obtener medicamentos directamente
+      this.items = await getMedicamentos();
+    },
+
+    // Abrir diálogo para agregar medicamento
     openDialog() {
       this.dialog = true;
       this.resetErrors();
+      this.newMed = {
+        sku: "",
+        descripcion: "",
+        tipo_insumo: "Medicamento", // Valor predeterminado
+        cantidad_comprimidos: 0,    // Valor predeterminado en 0
+      };
     },
+
     closeDialog() {
       this.dialog = false;
       this.resetForm();
     },
-    addMedicamento() {
+
+    // Agregar nuevo medicamento
+    async addMedicamento() {
       this.skuError = false;
       this.formError = false;
 
+      // Validar campos
       if (
         !this.newMed.sku ||
         !this.newMed.descripcion ||
         !this.newMed.tipo_insumo ||
-        this.newMed.stock === null || 
-        isNaN(this.newMed.stock)
+        this.newMed.cantidad_comprimidos === null || 
+        isNaN(this.newMed.cantidad_comprimidos)
       ) {
         this.formError = true;
         return;
       }
 
+      // Verificar si el SKU ya existe
       const exists = this.items.some((item) => item.sku === this.newMed.sku);
 
-      if (exists) {
-        this.skuError = true;
+      if (!exists) {
+        try {
+          // Crear el medicamento a través del servicio
+          await createMedicamento(this.newMed);
+          await this.loadMedicamentos(); // Recargar medicamentos después de agregar
+          this.closeDialog();
+        } catch (error) {
+          console.error("Error al agregar el medicamento:", error);
+        }
       } else {
-        this.skuError = false;
-        this.items.push({ ...this.newMed });
-        this.closeDialog();
+        this.skuError = true;
       }
     },
+
+    // Abrir diálogo de edición
     openEditDialog(item) {
-      this.editMed = { ...item };
+      this.editMed = { ...item }; // Incluir el id para la actualización
       this.editDialog = true;
       this.resetErrors();
     },
+
     closeEditDialog() {
       this.editDialog = false;
       this.resetEditForm();
     },
-    updateMedicamento() {
+
+    // Actualizar medicamento sin try/catch
+    async updateMedicamento() {
       this.editFormError = false;
 
+      // Verificar que todos los campos estén completos
       if (
-        !this.editMed.sku ||
+        !this.editMed.sku || // El SKU debe estar, pero ya es de solo lectura
         !this.editMed.descripcion ||
         !this.editMed.tipo_insumo ||
-        this.editMed.stock === null || 
-        isNaN(this.editMed.stock)
+        this.editMed.cantidad_comprimidos === null || 
+        isNaN(this.editMed.cantidad_comprimidos)
       ) {
         this.editFormError = true;
         return;
       }
 
-      const index = this.items.findIndex((item) => item.sku === this.editMed.sku);
-      
-      if (index !== -1) {
-        this.items.splice(index, 1, { ...this.editMed });
+      try {
+        // Llamar al servicio para actualizar
+        await updateMedicamento(this.editMed.id, this.editMed);
+        await this.loadMedicamentos(); // Recargar la lista actualizada
         this.closeEditDialog();
+      } catch (error) {
+        console.error("Error al actualizar el medicamento:", error);
       }
     },
+
+    // Eliminar medicamento
+    async deleteMedicamento(id) {
+      try {
+        await deleteMedicamento(id);
+        await this.loadMedicamentos(); // Recargar después de eliminar
+      } catch (error) {
+        console.error("Error al eliminar el medicamento:", error);
+      }
+    },
+
+    // Resetear errores
+    resetErrors() {
+      this.skuError = false;
+      this.formError = false;
+      this.editFormError = false;
+    },
+
+    // Resetear formulario de nuevo medicamento
     resetForm() {
       this.newMed = {
         sku: "",
         descripcion: "",
-        tipo_insumo: "Medicamento", // Restablecer el valor por defecto
-        stock: null,
+        tipo_insumo: "Medicamento",
+        cantidad_comprimidos: 0,
       };
-      this.skuError = false;
     },
+
+    // Resetear formulario de edición
     resetEditForm() {
       this.editMed = {
+        id: "",
         sku: "",
         descripcion: "",
-        tipo_insumo: "Medicamento", // Restablecer el valor por defecto
-        stock: null,
+        tipo_insumo: "Medicamento",
+        cantidad_comprimidos: null,
       };
-    },
-    resetErrors() {
-      this.formError = false;
-      this.skuError = false;
-      this.editFormError = false;
     },
   },
 };
 </script>
-
 
 <style scoped>
 .custom-container {
@@ -302,6 +361,7 @@ export default {
   text-transform: none;
   background-color: #0E3746;
   color: white;
+  margin-right: 5px;
 }
 
 .headline {
