@@ -4,7 +4,7 @@ import { createVuetify } from 'vuetify';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import { es } from 'vuetify/locale'
+import { es } from 'vuetify/locale';
 
 // Asegúrate de importar los estilos de mdi
 import '@mdi/font/css/materialdesignicons.css';
@@ -23,9 +23,9 @@ const vuetify = createVuetify({
             mdi,
         },
     },
-    locales:{
-        locales: 'es',
-        message: {es},
+    locale: {
+        locale: 'es',    // Establecer idioma predeterminado como español
+        messages: { es }, // Definir las traducciones en español
     }
 });
 

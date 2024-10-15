@@ -24,13 +24,6 @@
         :items="items"
         :headers="headers"
         hide-default-header
-        :footer-props="{
-          'items-per-page-text': 'Elementos por página',
-          'page-text': '{0}-{1} de {2}',
-          'next-icon': 'mdi-chevron-right',
-          'prev-icon': 'mdi-chevron-left'
-        }"
-        no-data-text="No hay datos disponibles"
       >
         <template v-slot:thead>
           <thead>
