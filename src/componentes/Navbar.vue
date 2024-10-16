@@ -5,7 +5,7 @@
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
 
-      <v-app-bar-title class="navbar-title">Control y Carga de Medicamentos</v-app-bar-title>
+      <v-app-bar-title class="headline">Control y Carga de Medicamentos</v-app-bar-title>
 
       <template v-slot:append>
         <RouterLink v-if="isSessionActive" :to="{ name: 'InformacionUsuario' }">
@@ -33,6 +33,9 @@
         </v-list-item>
         <v-list-item>
           <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado De Medicamentos</RouterLink>
+        </v-list-item>
+        <v-list-item>
+          <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -66,27 +69,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.navbar {
-  background-color: #A3DEC3;
-  height: 64px; /* Ajusta esto según la altura que necesites */
-}
-
-.navbar-icon {
-  color: #0E3746;
-}
-
-.navbar-title {
-  color: #0E3746;
-  font-weight: bold;
-}
-
-.drawer {
-  background-color: #A3DEC3;
-}
-
-.drawer-item-title {
-  color: #0E3746;
-  text-decoration: none;
-}
-</style>

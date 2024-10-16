@@ -6,6 +6,7 @@ import CargaDeMedicamentos from './componentes/CargaDeMedicamentos.vue';
 import RecuperarPassword from './componentes/RecuperarPassword.vue';
 import Login from './componentes/Login.vue';
 import InformacionUsuario from './componentes/InformacionUsuario.vue';
+import ConsultaAltaPacientes from './componentes/ConsultaAltaPacientes.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -21,6 +22,7 @@ const routes = [
       { path: 'listadoDeMedicamentos', name: 'ListadoDeMedicamentos', component: ListadoDeMedicamentos },
       { path: 'cargaDeMedicamentos', name: 'CargaDeMedicamentos', component: CargaDeMedicamentos },
       { path: 'informacionUsuario', name: 'InformacionUsuario', component: InformacionUsuario },
+      { path: 'consultaAltaPacientes', name: 'ConsultaAltaPacientes', component: ConsultaAltaPacientes},
     ]
   },
   
