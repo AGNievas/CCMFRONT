@@ -72,6 +72,7 @@
 .navbar {
     background-color: #A3DEC3 !important;
     position: initial !important;
+    text-align: center;
 }
 
 .navbar-icon {
@@ -85,6 +86,7 @@
 
 .drawer {
     background-color: #A3DEC3;
+    text-align: center;
 }
 
 .headline {

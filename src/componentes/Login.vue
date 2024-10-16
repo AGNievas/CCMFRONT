@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-app-bar :elevation="2" style="background-color: #A3DEC3;">
+    <v-app-bar :elevation="2" class="navbar">
       <v-app-bar-title class="headline">Control y Consumo de Medicamentos</v-app-bar-title>
     </v-app-bar>
 
     <v-container>
       <v-card>
-        <v-card-text>
+        <v-card-text class="text-center">
           <v-form @submit.prevent="login">
             <v-text-field
               v-model="mail"

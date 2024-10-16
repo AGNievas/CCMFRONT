@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- Manteniendo la navbar original con el color de fondo personalizado -->
-    <v-app-bar :elevation="2" style="background-color: #A3DEC3;">
+    <v-app-bar :elevation="2" class="navbar">
       <v-app-bar-title class="headline">Recuperar Contraseña</v-app-bar-title>
     </v-app-bar>
 
     <!-- Contenido principal modificado -->
     <v-container>
-      <v-card class="v-card">
+      <v-card>
         <v-card-text class="text-center">
           <!-- Icono del candado -->
           <v-icon large class="lock-icon">mdi-lock</v-icon>
