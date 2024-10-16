@@ -16,12 +16,22 @@
 
         <v-spacer></v-spacer>
 
+        <v-select
+          v-model="area"
+          :items="areas"
+          item-title="nombre"
+          item-value="id"
+          label="Area de Stock"
+        ></v-select>
+
+        <v-spacer></v-spacer>
+
         <v-btn @click="openDialog" class="mx-2">Agregar Medicamento</v-btn>
       </v-card-title>
 
       <v-data-table
         :search="search"
-        :items="items"
+        :items="medicamentos"
         :headers="headers"
         hide-default-header
       >
@@ -32,20 +42,22 @@
               <th class="table-header text-start">DESCRIPCIÓN</th>
               <th class="table-header text-start">TIPO DE MEDICAMENTO</th>
               <th class="table-header text-start">CANTIDAD COMPRIMIDOS</th>
-              <th class="table-header text-start">ACCIONES</th>
+              <th class="table-header text-start">STOCK</th>
+
             </tr>
           </thead>
         </template>
 
-        <template v-slot:item="{ item }">
+        <template v-slot:item="{ item: medicamento }">
           <tr>
-            <td class="text-start table-cell">{{ item.sku }}</td>
-            <td class="text-start table-cell">{{ item.descripcion }}</td>
-            <td class="text-start table-cell">{{ item.tipo_insumo }}</td>
-            <td class="text-start table-cell">{{ item.cantidad_comprimidos }}</td>
-            <td class="text-start table-cell">
-              <v-btn small @click="openEditDialog(item)">Editar</v-btn>
-              <v-btn small color="red" @click="deleteMedicamento(item.id)">Eliminar</v-btn>
+            <td class="text-start table-cell">{{ medicamento.sku }}</td>
+            <td class="text-start table-cell">{{ medicamento.descripcion }}</td>
+            <td class="text-start table-cell">{{ medicamento.tipo_insumo }}</td>
+            <td class="text-start table-cell">{{ medicamento.cantidad_comprimidos }}</td>
+            <td class="text-start table-cell">{{ calcularStock(medicamento) }}</td>
+            <td class="text-start acciones-cell">
+              <v-btn icon small @click="openEditDialog(medicamento)"><v-icon>mdi-pencil</v-icon></v-btn>
+              <v-btn icon small color="red" @click="deleteMedicamento(medicamento.id)"><v-icon>mdi-delete</v-icon></v-btn>
             </td>
           </tr>
         </template>
@@ -76,7 +88,7 @@
               label="Cantidad Comprimidos" 
               required 
               type="number" 
-              min="0"
+              min="1"
             ></v-text-field>
 
             <v-alert v-if="formError" type="error" dismissible>
@@ -126,7 +138,7 @@
               label="Cantidad Comprimidos" 
               required 
               type="number" 
-              min="0"
+              min="1"
             ></v-text-field>
 
             <!-- Mostrar error si falta algún campo -->
@@ -153,6 +165,8 @@ import {
   updateMedicamento, 
   deleteMedicamento 
 } from "./servicios/medicamentos";
+import stockAreasId from "../assets/stockAreasId.json"
+import items from "../assets/items.json"
 
 export default {
   name: "ListadoDeMedicamentos",
@@ -163,7 +177,10 @@ export default {
         { text: "SKU", value: "sku" },
         { text: "DESCRIPCIÓN", value: "descripcion" },
       ],
-      items: [],
+      medicamentos: [],
+      areas:[],
+      items:[],
+      area:null,
       dialog: false,
       editDialog: false,
       tipoInsumoOptions: ["Medicamento"], // Lista de opciones para el tipo de insumo
@@ -171,14 +188,14 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento", // Valor predeterminado
-        cantidad_comprimidos: 0,    // Preseleccionado en 0
+        cantidad_comprimidos: 1,    // Preseleccionado en 0
       },
       editMed: {
         id: "",
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento", // Valor predeterminado
-        cantidad_comprimidos: null,
+        cantidad_comprimidos: 1,
       },
       skuError: false,
       formError: false,
@@ -187,16 +204,38 @@ export default {
       snackbarMessage: '',
     };
   },
-  beforeMount() {
+  mounted() {
     // Cargar medicamentos desde la API
     this.loadMedicamentos();
+    this.areas = stockAreasId;
+    this.area = this.areas[0].nombre;
+    this.items = items;
   },
   methods: {
     // Cargar medicamentos
     async loadMedicamentos() {
       // Llamar al servicio para obtener medicamentos directamente
-      this.items = await getMedicamentos();
+      this.medicamentos = await getMedicamentos();
     },
+
+    calcularStock(medicamento) {
+      if (this.area === 0) {
+        // Si el área es 0, sumar el stock de todos los items con el mismo SKU
+        let totalStock = 0;
+        this.items.forEach((item) => {
+          if (item.sku === medicamento.sku) {
+            totalStock += item.stock; // Suponiendo que cada item tiene una propiedad `stock`
+          }
+        });
+        return totalStock;
+      } else {
+        // Si el área es distinta de 0, buscar solo los items que coincidan con el SKU y área seleccionada
+        const itemEncontrado = this.items.find(
+          (item) => item.sku === medicamento.sku && item.areaId === this.area
+        );
+        return itemEncontrado ? itemEncontrado.stock : 0;
+      }
+    },  
 
     // Abrir diálogo para agregar medicamento
     openDialog() {
@@ -206,7 +245,7 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento", // Valor predeterminado
-        cantidad_comprimidos: 0,    // Valor predeterminado en 0
+        cantidad_comprimidos: 1,    // Valor predeterminado en 0
       };
     },
 
@@ -233,7 +272,7 @@ export default {
       }
 
       // Verificar si el SKU ya existe
-      const exists = this.items.some((item) => item.sku === this.newMed.sku);
+      const exists = this.medicamentos.some((medicamento) => medicamento.sku === this.newMed.sku);
 
       if (!exists) {
         try {
@@ -250,8 +289,8 @@ export default {
     },
 
     // Abrir diálogo de edición
-    openEditDialog(item) {
-      this.editMed = { ...item }; // Incluir el id para la actualización
+    openEditDialog(medicamento) {
+      this.editMed = { ...medicamento }; // Incluir el id para la actualización
       this.editDialog = true;
       this.resetErrors();
     },
@@ -310,7 +349,7 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: 0,
+        cantidad_comprimidos: 1,
       };
     },
 
@@ -321,7 +360,7 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: null,
+        cantidad_comprimidos: 1,
       };
     },
   },
@@ -348,6 +387,10 @@ export default {
 
 .table-cell {
   border: 1px solid #CECECE;
+}
+.acciones-cell {
+  border: none; /* Sin borde para la columna de acciones */
+  padding: 0;   /* Quitar padding para un ajuste más limpio */
 }
 
 .v-btn {
