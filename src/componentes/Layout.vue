@@ -26,9 +26,5 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  margin-top: 64px; /* Ajusta esto a la altura de tu Navbar */
-  /* padding: 16px; Agregar padding si lo deseas */
-  overflow-y: auto; /* Permitir desplazamiento si el contenido es largo */
-}
+
 </style>

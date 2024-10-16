@@ -7,7 +7,8 @@ import * as directives from 'vuetify/directives';
 import { es } from 'vuetify/locale';
 
 // Asegúrate de importar los estilos de mdi
-import '@mdi/font/css/materialdesignicons.css';
+import '@mdi/font/css/materialdesignicons.css'; // Línea agregada para importar los íconos
+import './assets/global.css';
 
 import router from './router';
 import axiosInstance from './axios';

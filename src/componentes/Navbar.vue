@@ -4,9 +4,7 @@
       <template v-slot:prepend>
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
-
       <v-app-bar-title class="headline">Control y Carga de Medicamentos</v-app-bar-title>
-
       <template v-slot:append>
         <RouterLink v-if="isSessionActive" :to="{ name: 'InformacionUsuario' }">
           <v-btn icon="mdi-account-circle" class="navbar-icon"></v-btn>
@@ -17,7 +15,6 @@
         </v-btn>
       </template>
     </v-app-bar>
-
     <v-navigation-drawer
       v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined"
@@ -39,9 +36,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    
     <br>
-
   </div>
 </template>
 

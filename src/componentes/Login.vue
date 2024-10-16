@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app-bar :elevation="2" style="background-color: #A3DEC3;">
-      <v-app-bar-title class="app-bar-title">Control y Consumo de Medicamentos</v-app-bar-title>
+      <v-app-bar-title class="headline">Control y Consumo de Medicamentos</v-app-bar-title>
     </v-app-bar>
 
     <v-container>
@@ -25,7 +25,7 @@
               style="border: none; box-shadow: none;"
             ></v-text-field>
 
-            <v-btn type="submit">Iniciar Sesión</v-btn>
+            <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
           </v-form>
 
           <v-alert v-if="error" type="error">{{ error }}</v-alert>
@@ -102,37 +102,4 @@ export default {
 </script>
 
 <style scoped>
-.v-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding-top: 150px; 
-}
-
-.v-card {
-  padding: 40px 20px;
-  border-radius: 16px;
-  background-color: white;
-  border: 1px solid #d9dcd1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.app-bar-title {
-  font-weight: bold;
-  color: #0E3746;
-}
-
-.recuperar-link {
-  display: block;
-  font-size: 14px;
-  color: #5c4dff;
-  text-decoration: none;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.v-btn {
-  text-transform: none; 
-  background-color: #0E3746;
-  color: white;
-}
 </style>

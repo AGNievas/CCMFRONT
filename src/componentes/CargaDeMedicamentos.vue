@@ -4,7 +4,7 @@
       <!-- Si no hay archivo cargado, mostrar botones de subir y descargar -->
       <div v-if="!archivoCargado">
         <v-row class="d-flex flex-column align-center">
-          <v-btn @click="subirArchivo" class="mx-2">Subir Archivo</v-btn>
+          <v-btn @click="subirArchivo" class="mx-2 btn-blue">Subir Archivo</v-btn>
           <p class="recuperar-link" @click="descargarPlantilla">Descargar Plantilla</p>
         </v-row>
       </div>
@@ -12,13 +12,13 @@
       <!-- Si ya hay un archivo cargado pero aún no se ha importado, mostrar su nombre y los botones de Importar/Cancelar -->
       <div v-if="archivoCargado && !archivoImportado">
         <p class="recuperar-link" @click="descargarArchivo">{{ nombreArchivo }}</p>
-        <v-btn @click="importarArchivo" class="mx-2">Importar</v-btn>
-        <v-btn @click="cancelarArchivo" class="mx-2">Cancelar</v-btn>
+        <v-btn @click="importarArchivo" class="mx-2 btn-blue">Importar</v-btn>
+        <v-btn @click="cancelarArchivo" class="mx-2 btn-blue">Cancelar</v-btn>
       </div>
 
       <!-- Si el archivo ya ha sido importado, mostrar solo el botón de descarga -->
       <div v-if="archivoImportado">
-        <v-btn @click="descargarArchivoImportado" class="mx-2">Descargar Archivo</v-btn>
+        <v-btn @click="descargarArchivoImportado" class="mx-2 btn-blue">Descargar Archivo</v-btn>
       </div>
     </v-card>
   </v-container>
@@ -97,31 +97,6 @@ export default {
 
 <style scoped>
 .v-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding-top: 50px; 
-}
-
-.v-card {
-  padding: 40px 20px;
-  border-radius: 16px;
-  background-color: white;
-  border: 1px solid #d9dcd1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.recuperar-link {
-  display: block;
-  font-size: 14px;
-  color: #5c4dff;
-  text-decoration: none;
-  cursor: pointer;
-  margin: 20px auto 20px;
-}
-
-.v-btn {
-  text-transform: none; 
-  background-color: #0E3746;
-  color: white;
+  padding-top: 50px !important; 
 }
 </style>

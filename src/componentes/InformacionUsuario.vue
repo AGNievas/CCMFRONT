@@ -1,5 +1,5 @@
 <template>
-  <v-container class="user-info-container">
+  <v-container class="v-container">
     <v-card flat>
       <v-card-title class="d-flex align-center">
         <h2>Información del Usuario</h2>
@@ -19,7 +19,7 @@
             readonly
           ></v-text-field>
 
-          <v-btn @click="openEditPasswordDialog" class="mx-2">Editar Contraseña</v-btn>
+          <v-btn @click="openEditPasswordDialog" class="btn-blue mx-2">Editar Contraseña</v-btn>
 
           <v-dialog v-model="editPasswordDialog" persistent max-width="400px">
             <v-card>
@@ -86,8 +86,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn text @click="closeEditPasswordDialog" class="mx-2">Cancelar</v-btn>
-                <v-btn text @click="updatePassword" class="mx-2">Confirmar</v-btn>
+                <v-btn text @click="closeEditPasswordDialog" class="btn-blue mx-2">Cancelar</v-btn>
+                <v-btn text @click="updatePassword" class="btn-blue mx-2">Confirmar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -199,38 +199,8 @@ export default {
 </script>
 
 <style scoped>
-.user-info-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.v-card-title {
-  font-size: 24px;
-  color: #0E3746;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.v-card {
-  border: 1px solid #d9dcd1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border-radius: 16px;
-}
-
-.v-btn {
-  text-transform: none;
-  background-color: #0E3746;
-  color: white;
-  margin-right: 5px;
-}
-
-.headline {
-  font-weight: bold;
-  color: #0E3746;
+.v-container {
+  max-width: 900px !important;
+  padding: 20px !important;
 }
 </style>

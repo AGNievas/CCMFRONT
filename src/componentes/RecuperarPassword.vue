@@ -2,12 +2,12 @@
   <div>
     <!-- Manteniendo la navbar original con el color de fondo personalizado -->
     <v-app-bar :elevation="2" style="background-color: #A3DEC3;">
-      <v-app-bar-title class="app-bar-title">Recuperar Contraseña</v-app-bar-title>
+      <v-app-bar-title class="headline">Recuperar Contraseña</v-app-bar-title>
     </v-app-bar>
 
     <!-- Contenido principal modificado -->
     <v-container>
-      <v-card class="recuperar-card">
+      <v-card class="v-card">
         <v-card-text class="text-center">
           <!-- Icono del candado -->
           <v-icon large class="lock-icon">mdi-lock</v-icon>
@@ -47,61 +47,4 @@ export default {
 </script>
 
 <style scoped>
-.app-bar-title {
-  font-weight: bold;
-  color: #0E3746;
-}
-.v-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding-top: 150px; 
-}
-
-.recuperar-card {
-  padding: 40px 20px;
-  border-radius: 16px;
-  background-color: white;
-  border: 1px solid #d9dcd1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.lock-icon {
-  font-size: 48px;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.recuperar-title {
-  font-weight: bold;
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.recuperar-text {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 30px;
-}
-
-.mail-field {
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.recuperar-link {
-  display: block;
-  font-size: 14px;
-  color: #5c4dff;
-  text-decoration: none;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.app-bar-title {
-  font-weight: bold;
-  color: #0E3746;
-  font-size: 24px;
-}
 </style>
