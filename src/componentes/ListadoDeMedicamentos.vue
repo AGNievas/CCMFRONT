@@ -187,7 +187,7 @@ export default {
       snackbarMessage: '',
     };
   },
-  mounted() {
+  beforeMount() {
     // Cargar medicamentos desde la API
     this.loadMedicamentos();
   },
