@@ -8,14 +8,20 @@
       <v-card-text>
         <div v-if="usuarioActual" class="user-details">
           <v-text-field
-            v-model="usuarioActual.name"
+            v-model="usuarioActual.fullNameUsuario"
             label="Nombre"
             readonly
           ></v-text-field>
 
           <v-text-field
-            v-model="usuarioActual.mail"
-            label="Mail"
+            v-model="usuarioActual.cuil"
+            label="Cuil"
+            readonly
+          ></v-text-field>
+
+          <v-text-field
+            v-model="usuarioActual.stockAreaId"
+            label="Area"
             readonly
           ></v-text-field>
 
@@ -103,11 +109,21 @@
 <script>
 import { updateUsuario } from "./servicios/usuariosService.js"; // Importa la función del servicio
 // import usuariosService from "./servicios/usuariosService.js";
+import { useGlobalStore } from "@/stores/global.js";
+
 export default {
   name: 'InformacionUsuario',
   data() {
     return {
-      usuarioActual: null,
+      
+      usuarioActual: {
+        cuil:null,
+        usuarioId: null,
+        stockAreaId: null,
+        fullNameUsuario: null,
+        rolId: null,
+        esAdmin: false,
+      },
       editPasswordDialog: false,
       currentPassword: "",
       newPassword: "",
@@ -119,12 +135,21 @@ export default {
       showCurrentPassword: false, // Para alternar visibilidad de la contraseña actual
       showNewPassword: false, // Para alternar visibilidad de la nueva contraseña
       showRepeatNewPassword: false, // Para alternar visibilidad de repetir contraseña
+      globalStore: useGlobalStore(),
     };
+    
   },
   mounted() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = this.globalStore.getLogueado
     if (user) {
-      this.usuarioActual = user;
+      this.usuarioActual = {
+        cuil: this.globalStore.getUsuarioCuil,
+        usuarioId: this.globalStore.getUsuarioId,
+        stockAreaId: this.globalStore.getStockAreaId==1? "Deposito General": this.globalStore.getStockAreaId==2 ? "Farmacia" : "Guardia",
+        fullNameUsuario: this.globalStore.getfullNameUsuario,
+        rolId: this.globalStore.getRolId,
+        esAdmin: this.rolId ==1? true : false,
+      };
     }
   },
   methods: {
@@ -135,7 +160,8 @@ export default {
       this.repeatNewPassword = "";
       this.resetErrors();
     },
-    closeEditPasswordDialog() {
+
+      closeEditPasswordDialog() {
       this.editPasswordDialog = false;
       this.resetErrors();
     },

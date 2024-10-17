@@ -29,7 +29,7 @@
 
 <script>
 import loginService from "./servicios/loginService";
-
+import { useGlobalStore } from "@/stores/global";
 export default {
   data() {
     return {
@@ -40,6 +40,7 @@ export default {
       error: null,
       cuilErrors: [],
       passwordErrors: [],
+      globalStore: useGlobalStore(),
     };
   },
   methods: {
@@ -90,10 +91,13 @@ export default {
 
       try {
         const { cuil, password } = this.formData;
-        await loginService.login(cuil, password);
-        this.resetearFormulario();
+        const {payload: response} = await loginService.login(cuil, password);
+        const {usuarioId, stockAreaId,fullNameUsuario, rolId} = response
         localStorage.setItem('session', 'active');
+        this.globalStore.setUsuario(cuil, usuarioId, stockAreaId,fullNameUsuario, rolId, rolId==1, true)
         this.$router.push('/home');
+        console.log(this.globalStore.getRolId,"El rol id",)
+        this.resetearFormulario();
       } catch (error) {
         this.error = error;
       }

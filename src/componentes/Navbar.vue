@@ -42,27 +42,35 @@
 
 <script>
 import loginService from './servicios/loginService';
-
+import { useGlobalStore } from '@/stores/global';
 export default {
   name: 'src-componentes-navbar',
   data() {
     return {
       drawer: false,
       isSessionActive: false,
+      globalStore : useGlobalStore(),
     };
   },
   methods: {
     logout() {
       if (this.isSessionActive) {
+        
+        this.globalStore.setUsuario(null,null,null,null,false,false)
+        loginService.logout();
         localStorage.removeItem('session');
         this.isSessionActive = false;
-        loginService.logout();
       }
       this.$router.push('/login');
     },
   },
+
+  beforeMount(){
+    console.log(this.isSessionActive)
+    this.isSessionActive = this.globalStore.getLogueado;
+  },
   mounted() {
-    this.isSessionActive = !!localStorage.getItem('session');
+    this.isSessionActive = this.globalStore.getLogueado;
   },
 };
 </script>

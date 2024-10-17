@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar v-if="isSessionActive" />
+    <Navbar  />
     <div class="content">
       <RouterView />
     </div>
@@ -9,7 +9,7 @@
 
 <script>
 import Navbar from './Navbar.vue';
-
+import { useGlobalStore } from '@/stores/global';
 export default {
   components: {
     Navbar,
@@ -17,10 +17,12 @@ export default {
   data() {
     return {
       isSessionActive: false,
+      globalStore : useGlobalStore(),
     };
   },
   mounted() {
-    this.isSessionActive = !!localStorage.getItem('session');
+    this.isSessionActive = this.globalStore.getLogueado;
+
   },
 };
 </script>

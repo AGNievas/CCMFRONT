@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useGlobalStore = defineStore('global', {
     state: () => ({
+        cuil: null,
         usuarioId: null,
         stockAreaId: null,
         fullNameUsuario: null,
@@ -10,7 +11,8 @@ export const useGlobalStore = defineStore('global', {
         logueado: false,
     }),
     actions:{
-        setUsuario(usuarioId, stockAreaId, fullNameUsuario, rolId,esAdmin,logueado){
+        setUsuario(cuil,usuarioId, stockAreaId, fullNameUsuario, rolId,esAdmin,logueado){
+            this.cuil= cuil
             this.usuarioId = usuarioId
             this.stockAreaId = stockAreaId
             this.fullNameUsuario = fullNameUsuario
@@ -20,6 +22,7 @@ export const useGlobalStore = defineStore('global', {
         }       
     },
     getters:{
+        getUsuarioCuil: state => state.cuil,
         getUsuarioId: state => state.usuarioId,
         getStockAreaId: state => state.stockAreaId,
         getfullNameUsuario: state => state.fullNameUsuario,

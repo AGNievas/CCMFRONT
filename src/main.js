@@ -5,6 +5,7 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { es } from 'vuetify/locale';
+import { createPinia } from 'pinia'
 
 // Asegúrate de importar los estilos de mdi
 import '@mdi/font/css/materialdesignicons.css'; // Línea agregada para importar los íconos
@@ -31,8 +32,11 @@ const vuetify = createVuetify({
 });
 
 const app = createApp(App);
+const pinia = createPinia()
+
+
 app.use(vuetify);
 app.use(router);
-
+app.use(pinia)
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');

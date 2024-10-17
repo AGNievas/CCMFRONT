@@ -7,14 +7,12 @@ const loginService = {
     async login(cuil, password) {
         try {
             console.log("servicio login front", cuil, password)
-          const response = await axiosInstance.post(`${API_URL}/login`,  {
+          const {data: response} = await axiosInstance.post(`${API_URL}/login`,  {
               cuil,
               password,
             
           }, {withCredentials:true},);
-         
-
-          console.log(response)
+          return response
         } catch (error) {
           console.log(error)
           throw new Error(error.response.data.message);
