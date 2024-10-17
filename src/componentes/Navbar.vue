@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import loginService from './servicios/loginService';
+
 export default {
   name: 'src-componentes-navbar',
   data() {
@@ -54,6 +56,7 @@ export default {
       if (this.isSessionActive) {
         localStorage.removeItem('session');
         this.isSessionActive = false;
+        loginService.logout();
       }
       this.$router.push('/login');
     },

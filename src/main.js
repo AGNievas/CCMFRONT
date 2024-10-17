@@ -33,5 +33,6 @@ const vuetify = createVuetify({
 const app = createApp(App);
 app.use(vuetify);
 app.use(router);
+
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');
