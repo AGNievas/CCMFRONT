@@ -101,8 +101,8 @@
 </template>
 
 <script>
-import { updateUsuario } from "./servicios/usuarios"; // Importa la función del servicio
-
+import { updateUsuario } from "./servicios/usuariosService.js"; // Importa la función del servicio
+// import usuariosService from "./servicios/usuariosService.js";
 export default {
   name: 'InformacionUsuario',
   data() {
