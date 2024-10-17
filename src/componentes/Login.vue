@@ -16,10 +16,10 @@
 
             <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
           </v-form>
+          <br>
 
-          <v-alert v-if="error" type="error">{{ error }}</v-alert>
-
-          <!-- Enlace para recuperar contraseña -->
+          <v-card-text v-if="error" style="color: red; font-weight: bold;">{{ error }}</v-card-text>
+          <!-- <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error }}</v-alert> -->
           <RouterLink to="/recuperarPassword" class="recuperar-link">recuperar contraseña</RouterLink>
         </v-card-text>
       </v-card>
@@ -30,103 +30,99 @@
 <script>
 import loginService from "./servicios/loginService";
 
-
 export default {
   data() {
     return {
-
       formData: {
         cuil: "",
         password: "",
       },
       error: null,
-
-      // cuil: "",
-      // password: "",
-      // error: null,
-
       cuilErrors: [],
       passwordErrors: [],
     };
   },
-  async mounted() {
-
-  },
   methods: {
-  validateForm() {
-    this.cuilErrors = [];
-    this.passwordErrors = [];
+    validateForm() {
+      this.cuilErrors = [];
+      this.passwordErrors = [];
 
-    if (!this.formData.cuil) {
-      this.cuilErrors.push("CUIL es requerido.");
-    } else if (!this.validarCuil()) {
-      this.cuilErrors.push("CUIL no es válido.");
-    }
-    if (!this.formData.password) {
-      this.passwordErrors.push("Password es requerido.");
-    }
+      if (!this.formData.cuil) {
+        this.cuilErrors.push("CUIL es requerido.");
+      } else if (!this.validarCuil()) {
+        this.cuilErrors.push("CUIL no es válido. Debe tener el formato 20-12345678-9.");
+      }
 
-    return !this.cuilErrors.length && !this.passwordErrors.length;
+      if (!this.formData.password) {
+        this.passwordErrors.push("Password es requerido.");
+      }
+
+      return !this.cuilErrors.length && !this.passwordErrors.length;
+    },
+
+    validarCuil() {
+      const re = /^\d{2}-\d{8}-\d{1}$/;
+      return re.test(this.formData.cuil);
+    },
+
+    formatearCuil(cuil) {
+      let cleanedCuil = cuil.replace(/[^\d]/g, '');
+      let formattedCuil = '';
+
+      if (cleanedCuil.length > 0) {
+        formattedCuil += cleanedCuil.slice(0, 2);
+      }
+      if (cleanedCuil.length > 2) {
+        formattedCuil += '-' + cleanedCuil.slice(2, 10);
+      }
+      if (cleanedCuil.length > 10) {
+        formattedCuil += '-' + cleanedCuil.slice(10, 11);
+      }
+
+      return formattedCuil;
+    },
+
+    async login() {
+      if (!this.validateForm()) {
+        this.error = "Por favor, corrige los errores antes de continuar.";
+        return;
+      }
+
+      try {
+        const { cuil, password } = this.formData;
+        await loginService.login(cuil, password);
+        this.resetearFormulario();
+        localStorage.setItem('session', 'active');
+        this.$router.push('/home');
+      } catch (error) {
+        this.error = error;
+      }
+    },
+
+    resetearFormulario() {
+      this.formData = {
+        cuil: '',
+        password: '',
+      };
+    },
   },
-
-  validarCuil() {
-    var re = /^\d{2}-\d{8}-\d{1}$/;  // Definimos el regex que valida el formato CUIL.
-    const formattedCuil = this.formData.cuil.replace(/(\d{2})(\d{8})(\d{1})/, '$1-$2-$3');
-    return re.test(formattedCuil);
-  },
-
-  formatearCuil(cuil) {
-    // Se asegura de mantener el formato correcto mientras el usuario ingresa los dígitos
-    let cleanedCuil = cuil.replace(/[^\d]/g, '');
-    let formattedCuil = '';
-
-    if (cleanedCuil.length > 0) {
-      formattedCuil += cleanedCuil.slice(0, 2);
-    }
-    if (cleanedCuil.length > 2) {
-      formattedCuil += '-' + cleanedCuil.slice(2, 10);
-    }
-    if (cleanedCuil.length > 10) {
-      formattedCuil += '-' + cleanedCuil.slice(10, 11);
-    }
-
-    return formattedCuil;
-  },
-
-  async login() {
-    if (!this.validarCuil() || !this.validateForm()) {
-      return;
-    }
-    try {
-      const { cuil, password } = this.formData;
-      console.log("login front", cuil, password)
-      await loginService.login(cuil, password);
-      // const { nameUsuario, stockAreaId, rolId, usuarioId } = 
-      this.resetearFormulario();
-      // this.globalStore.setUsuario(nameUsuario, stockAreaId, rolId, usuarioId);
-      console.log('login exitoso');
-    } catch (error) {
-      this.error = "Hubo un error al intentar iniciar sesión";
-    }
-
-    
-    localStorage.setItem('session', 'active');
-    console.log(localStorage)
-      // Guardar el objeto completo del usuario
-    this.$router.push('/home');
-  },
-
-
-
-  resetearFormulario() {
-    this.formData = {
-      cuil: '',
-      password: '',
-    };
-  },
-},
-
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.custom-alert {
+  max-height: 60px;
+  overflow-y: auto; 
+  margin-bottom: 10px;
+}
+
+
+v-card-text {
+  min-height: 150px; 
+}
+
+.btn-blue {
+  margin-top: 20px; 
+}
+</style>

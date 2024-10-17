@@ -16,7 +16,8 @@ const loginService = {
 
           console.log(response)
         } catch (error) {
-          throw new Error("Email o contraseña incorrectos.");
+          console.log(error)
+          throw new Error(error.response.data.message);
         }
       },
 
