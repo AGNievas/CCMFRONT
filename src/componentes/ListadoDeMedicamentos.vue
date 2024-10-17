@@ -42,7 +42,6 @@
               <th class="table-header text-start">SKU</th>
               <th class="table-header text-start">DESCRIPCIÓN</th>
               <th class="table-header text-start">TIPO DE MEDICAMENTO</th>
-              <th class="table-header text-start">CANTIDAD COMPRIMIDOS</th>
               <th class="table-header text-start">STOCK</th>
               <th class="table-header text-start"></th>
             </tr>
@@ -53,9 +52,8 @@
           <tr>
             <td class="text-start">{{ medicamento.sku }}</td>
             <td class="text-start">{{ medicamento.descripcion }}</td>
-            <td class="text-start">{{ medicamento.tipo_insumo }}</td>
-            <td class="text-start">{{ medicamento.cantidad_comprimidos }}</td>
-            <td class="text-start">{{ calcularStock(medicamento) }}</td>
+            <td class="text-start">{{ medicamento.tipoInsumo }}</td>
+            <td class="text-start">{{ medicamento.cantidad }}</td>
             <td class="text-start acciones-cell">
               <v-btn icon small color= "#0E3746" @click="openEditDialog(medicamento)">
                 <v-icon>mdi-pencil</v-icon>
@@ -171,13 +169,16 @@
 
 <script>
 import {
-  getMedicamentos,
+  // getMedicamentos,
+  getMedicamentosByStockAreaId,
   createMedicamento,
   updateMedicamento,
   deleteMedicamento
-} from "./servicios/medicamentos";
-import stockAreasId from "../assets/stockAreasId.json";
-import items from "../assets/items.json";
+} from "./servicios/medicamentosService.js";
+
+// import medicamentosService from "./servicios/medicamentosService.js"
+// import stockAreasId from "../assets/stockAreasId.json";
+// import items from "../assets/items.json";
 
 export default {
   name: "ListadoDeMedicamentos",
@@ -222,43 +223,53 @@ export default {
       this.calcularStockMedicamentos(); // Llamamos al método que calcula el stock para todos los medicamentos
     }
   },
-  beforeMount() {
-    this.loadMedicamentos().then(() => {
-      this.calcularStockMedicamentos(); // Calcular el stock cuando se carguen los medicamentos
-    });
-    this.areas = stockAreasId;
-    this.area = this.areas[0].id; // Área por defecto
-    this.items = items;
+  // beforeMount() {
+  //   this.loadMedicamentos().then(() => {
+  //     this.calcularStockMedicamentos(); // Calcular el stock cuando se carguen los medicamentos
+  //   });
+  //   this.areas = stockAreaService.getAllStockAreas();
+  //   this.area = this.areas[0].id; // Área por defecto
+  //   this.items = items;
+  // },
+
+
+  mounted(){
+     this.loadMedicamentos()
   },
+
   methods: {
+
+
+    
     async loadMedicamentos() {
-      this.medicamentos = await getMedicamentos();
-      this.calcularStockMedicamentos();
+      this.medicamentos = await getMedicamentosByStockAreaId(1);
+      console.log("load medicamentos",this.medicamentos)
+      // this.calcularStockMedicamentos();
     },
 
-    calcularStock(medicamento) {
-      if (this.area === 0) {
-        let totalStock = 0;
-        this.items.forEach((item) => {
-          if (item.sku === medicamento.sku) {
-            totalStock += item.stock;
-          }
-        });
-        return totalStock;
-      } else {
-        const itemEncontrado = this.items.find(
-          (item) => item.sku === medicamento.sku && item.areaId === this.area
-        );
-        return itemEncontrado ? itemEncontrado.stock : 0;
-      }
-    },
+    // calcularStock(medicamento) {
+    //   if (this.area === 0) {
+    //     let totalStock = 0;
+    //     this.items.forEach((item) => {
+    //       if (item.sku === medicamento.sku) {
+    //         totalStock += item.stock;
+    //       }
+    //     });
+    //     return totalStock;
+    //   } else {
+    //     const itemEncontrado = this.items.find(
+    //       (item) => item.sku === medicamento.sku && item.areaId === this.area
+    //     );
+    //     return itemEncontrado ? itemEncontrado.stock : 0;
+    //   }
+    // },
 
-    calcularStockMedicamentos() {
-      // Actualiza el stock de cada medicamento basado en el área seleccionada
-      this.medicamentos.forEach((medicamento) => {
-        medicamento.stock = this.calcularStock(medicamento); // Asignar el stock calculado al medicamento
-      });
-    },
+    // calcularStockMedicamentos() {
+    //   // Actualiza el stock de cada medicamento basado en el área seleccionada
+    //   this.medicamentos.forEach((medicamento) => {
+    //     medicamento.stock = this.calcularStock(medicamento); // Asignar el stock calculado al medicamento
+    //   });
+    // },
 
     openDialog() {
       this.dialog = true;

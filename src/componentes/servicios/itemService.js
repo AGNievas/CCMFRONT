@@ -5,10 +5,10 @@ const API_URL = "/item";
 
 const itemService = { 
 
-    async getAllItems() {
+    async getAllItem() {
         try {
-          const response = await axiosInstance.get(API_URL);
-          return response.data;
+          const response = await axiosInstance.get(API_URL, {withCredentials:true});
+          return response.data.return;
         } catch (error) {
           console.error("Error al obtener Items:", error);
           return [];
@@ -17,7 +17,7 @@ const itemService = {
 
       async  getItemById(id) {
         try {
-          const response = await axiosInstance.get(`${API_URL}/${id}`);
+          const response = await axiosInstance.get(`${API_URL}/${id}`, {withCredentials:true});
           return response.data;
         } catch (error) {
           console.error(`Error al obtener el item id: ${id} `, error);
@@ -27,7 +27,7 @@ const itemService = {
       
       async  getItemsBySku(sku) {
         try {
-          const response = await axiosInstance.get(`${API_URL}/medicamento/${sku}`);
+          const response = await axiosInstance.get(`${API_URL}/Item/${sku}`, {withCredentials:true});
           return response.data;
         } catch (error) {
           console.error(`Error al obtener el item con sku: ${sku} `, error);
@@ -39,32 +39,48 @@ const itemService = {
 
       async  getItemsYDescripcionByStockAreaId(stockAreaId) {
         try {
-          const response = await axiosInstance.get(`${API_URL}/listado-items/${stockAreaId}`);
+          const response = await axiosInstance.get(`${API_URL}/listado-items/${stockAreaId}`, {withCredentials:true});
           return response.data;
         } catch (error) {
           console.error(`Error al obtener el items del Stock Area id : ${stockAreaId} `, error);
           throw error;
         }
       },
-      
-       async  updateMedicamento(id, medicamentoActualizado) {
+
+     
+
+      async  createItem(sku, stock, stockAreaId) {
         try {
-          const {data} = await axiosInstance.put(`${URL}/${id}`, medicamentoActualizado);
-          return data;
+          console.log("AntescrearItemPostResponse")
+          const response = await axiosInstance.post(`${URL}`,{sku, stock, stockAreaId},{withCredentials:true});
+          console.log("DespcrearItemPostResponse",response.data.return)
+          return response.data.return;
+        } catch (error) {
+          console.error("Error al obtener Items:", error);
+          return [];
+        }
+      },
+      
+       async  updateItem(id,sku, stock,stockAreaId) {
+        try {
+          console.log("AntesUpdateItemPutResponse")
+          const {data: itemActualizado} = await axiosInstance.put(`${URL}/${id}`, sku,stock,stockAreaId);
+          console.log("DespuesItemPuttResponse")
+          return itemActualizado;
         } catch (error) {
           console.error("Error al actualizar el usuario:", error);
           throw error;
         }
       },
       
-      // Función para eliminar un medicamento usando el id de MockAPI
-       async  deleteMedicamento(id) {
+      
+      async  deleteItem(id) {
         try {
-          const url = `${URL}/${id}`;
-          console.log(`Eliminando medicamento en: ${url}`); // Verificar URL
-          await axiosInstance.delete(url);
+          console.log("antesDeleteItem", sku)
+          const {data: ItemEliminado} = await axiosInstance.delete(`${URL}/${sku}`,{withCredentials:true});
+          return ItemEliminado;
         } catch (error) {
-          console.error("Error al eliminar medicamento:", error.response ? error.response.data : error.message);
+          console.error("Error al actualizar el usuario:", error);
           throw error;
         }
       }
