@@ -76,8 +76,8 @@ const itemService = {
       
       async  deleteItem(id) {
         try {
-          console.log("antesDeleteItem", sku)
-          const {data: ItemEliminado} = await axiosInstance.delete(`${URL}/${sku}`,{withCredentials:true});
+          console.log("antesDeleteItem", id)
+          const {data: ItemEliminado} = await axiosInstance.delete(`${URL}/${id}`,{withCredentials:true});
           return ItemEliminado;
         } catch (error) {
           console.error("Error al actualizar el usuario:", error);
