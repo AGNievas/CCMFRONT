@@ -7,23 +7,11 @@
 
       <v-card-text>
         <div v-if="usuarioActual" class="user-details">
-          <v-text-field
-            v-model="usuarioActual.fullNameUsuario"
-            label="Nombre"
-            readonly
-          ></v-text-field>
+          <v-text-field v-model="usuarioActual.fullNameUsuario" label="Nombre" readonly></v-text-field>
 
-          <v-text-field
-            v-model="usuarioActual.cuil"
-            label="Cuil"
-            readonly
-          ></v-text-field>
+          <v-text-field v-model="usuarioActual.cuil" label="Cuil" readonly></v-text-field>
 
-          <v-text-field
-            v-model="usuarioActual.stockAreaId"
-            label="Area"
-            readonly
-          ></v-text-field>
+          <v-text-field v-model="usuarioActual.stockAreaId" label="Area" readonly></v-text-field>
 
           <v-btn @click="openEditPasswordDialog" class="btn-blue mx-2">Editar Contraseña</v-btn>
 
@@ -36,12 +24,8 @@
               <v-card-text>
                 <v-form ref="form" v-model="formValid">
                   <!-- Contraseña Actual -->
-                  <v-text-field
-                    v-model="currentPassword"
-                    :type="showCurrentPassword ? 'text' : 'password'"
-                    label="Contraseña Actual"
-                    required
-                  >
+                  <v-text-field v-model="currentPassword" :type="showCurrentPassword ? 'text' : 'password'"
+                    label="Contraseña Actual" required>
                     <template v-slot:append>
                       <v-icon @click="toggleShowCurrentPassword">
                         {{ showCurrentPassword ? 'mdi-eye-off' : 'mdi-eye' }}
@@ -50,12 +34,8 @@
                   </v-text-field>
 
                   <!-- Nueva Contraseña -->
-                  <v-text-field
-                    v-model="newPassword"
-                    :type="showNewPassword ? 'text' : 'password'"
-                    label="Nueva Contraseña"
-                    required
-                  >
+                  <v-text-field v-model="newPassword" :type="showNewPassword ? 'text' : 'password'"
+                    label="Nueva Contraseña" required>
                     <template v-slot:append>
                       <v-icon @click="toggleShowNewPassword">
                         {{ showNewPassword ? 'mdi-eye-off' : 'mdi-eye' }}
@@ -64,12 +44,8 @@
                   </v-text-field>
 
                   <!-- Repetir Nueva Contraseña -->
-                  <v-text-field
-                    v-model="repeatNewPassword"
-                    :type="showRepeatNewPassword ? 'text' : 'password'"
-                    label="Repetir Nueva Contraseña"
-                    required
-                  >
+                  <v-text-field v-model="repeatNewPassword" :type="showRepeatNewPassword ? 'text' : 'password'"
+                    label="Repetir Nueva Contraseña" required>
                     <template v-slot:append>
                       <v-icon @click="toggleShowRepeatNewPassword">
                         {{ showRepeatNewPassword ? 'mdi-eye-off' : 'mdi-eye' }}
@@ -79,7 +55,7 @@
 
                   <!-- Mostrar errores si faltan campos o las contraseñas no coinciden -->
                   <v-alert v-if="formError" type="error" dismissible>
-                    Todos los campos son obligatorios. Por favor, completa la información.
+                    {{errorMessage}}
                   </v-alert>
                   <v-alert v-if="passwordMismatchError" type="error" dismissible>
                     Las nuevas contraseñas no coinciden. Por favor, inténtalo de nuevo.
@@ -107,7 +83,7 @@
 </template>
 
 <script>
-import { updateUsuario } from "./servicios/usuariosService.js"; // Importa la función del servicio
+import usuariosService from "./servicios/usuariosService.js"; // Importa la función del servicio
 // import usuariosService from "./servicios/usuariosService.js";
 import { useGlobalStore } from "@/stores/global.js";
 
@@ -115,15 +91,16 @@ export default {
   name: 'InformacionUsuario',
   data() {
     return {
-      
+
       usuarioActual: {
-        cuil:null,
+        cuil: null,
         usuarioId: null,
         stockAreaId: null,
         fullNameUsuario: null,
         rolId: null,
         esAdmin: false,
       },
+      errorMessage:"",
       editPasswordDialog: false,
       currentPassword: "",
       newPassword: "",
@@ -137,78 +114,69 @@ export default {
       showRepeatNewPassword: false, // Para alternar visibilidad de repetir contraseña
       globalStore: useGlobalStore(),
     };
-    
+
   },
   mounted() {
-    const user = this.globalStore.getLogueado
-    if (user) {
-      this.usuarioActual = {
-        cuil: this.globalStore.getUsuarioCuil,
-        usuarioId: this.globalStore.getUsuarioId,
-        stockAreaId: this.globalStore.getStockAreaId==1? "Deposito General": this.globalStore.getStockAreaId==2 ? "Farmacia" : "Guardia",
-        fullNameUsuario: this.globalStore.getfullNameUsuario,
-        rolId: this.globalStore.getRolId,
-        esAdmin: this.rolId ==1? true : false,
-      };
-    }
+    this.iniciarUsuario()
   },
   methods: {
+
+
+    iniciarUsuario() {
+      const userLogueado = this.globalStore.getLogueado
+      if (userLogueado) {
+        this.usuarioActual = {
+          cuil: this.globalStore.getUsuarioCuil,
+          usuarioId: this.globalStore.getUsuarioId,
+          stockAreaId: this.globalStore.getStockAreaId == 1 ? "Deposito General" : this.globalStore.getStockAreaId == 2 ? "Farmacia" : "Guardia",
+          fullNameUsuario: this.globalStore.getfullNameUsuario,
+          rolId: this.globalStore.getRolId,
+          esAdmin: this.rolId == 1 ? true : false,
+        };
+      }
+
+    },
     openEditPasswordDialog() {
       this.editPasswordDialog = true;
       this.currentPassword = "";
       this.newPassword = "";
       this.repeatNewPassword = "";
+      this.errorMessage="";
       this.resetErrors();
     },
 
-      closeEditPasswordDialog() {
+    closeEditPasswordDialog() {
       this.editPasswordDialog = false;
       this.resetErrors();
     },
     async updatePassword() {
       this.resetErrors();
 
-      // Verificar que todos los campos estén completos
+     
       if (!this.currentPassword || !this.newPassword || !this.repeatNewPassword) {
         this.formError = true;
         return;
       }
 
-      // Verificar que la contraseña actual sea correcta
-      if (this.currentPassword !== this.usuarioActual.password) {
-        this.currentPasswordError = true;
-        return;
-      }
-
-      // Verificar que las nuevas contraseñas coincidan
       if (this.newPassword !== this.repeatNewPassword) {
         this.passwordMismatchError = true;
         return;
+
       }
-
-      try {
-        const updatedUser = {
-          ...this.usuarioActual,
-          password: this.newPassword,
-        };
-
-        // Actualizar el usuario a través del servicio
-        await updateUsuario(this.usuarioActual.id, updatedUser);
-
-        // Guardar los cambios en localStorage
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-
-        alert("Contraseña actualizada con éxito.");
+       try {
+        await usuariosService.updatePassword(this.usuarioActual.usuarioId, this.currentPassword, this.newPassword)
         this.closeEditPasswordDialog();
-      } catch (error) {
-        console.error("Error al actualizar la contraseña:", error);
-        alert("Ocurrió un error al actualizar la contraseña.");
+      }catch (error) {
+        this.formError = true
+        this.errorMessage= error
       }
+
     },
     resetErrors() {
       this.formError = false;
       this.passwordMismatchError = false;
       this.currentPasswordError = false;
+      this.errorMessage="";
     },
     // Métodos para alternar la visibilidad de las contraseñas
     toggleShowCurrentPassword() {

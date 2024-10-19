@@ -69,6 +69,17 @@ const usuariosService = {
         console.error("Error al actualizar el usuario:", error);
         throw error;
       }
+    },
+
+    async updatePassword(id, currentPassword, newPassword){
+      try{
+        
+        const response = await axiosInstance.put(`${URL}/update-password/${id}`, {currentPassword, newPassword},{withCredentials:true})
+        return response
+      }
+      catch(error){
+        throw error.response.data.message
+      }
     }
 }
 
