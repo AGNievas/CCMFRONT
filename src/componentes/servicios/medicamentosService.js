@@ -10,7 +10,19 @@ const medicamentosService = {
 
   async getAllMedicamento() {
     try {
-      const response = await axiosInstance.get(URL,{withCredentials:true}) ;
+      const response = await axiosInstance.get("/item",{withCredentials:true}) ;
+      return response.data.return;
+    } catch (error) {
+      console.error("Error al obtener medicamentos:", error);
+      return [];
+    }
+  },
+
+  async getAllMedicamentoByStockAreaId(id) {
+    try {
+      console.log(id,"servicio front")
+      const response = await axiosInstance.get(`/item/listado-items/${id}`,{withCredentials:true}) ;
+      console.log(response)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);

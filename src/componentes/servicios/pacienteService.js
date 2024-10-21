@@ -12,6 +12,17 @@ const pacienteService = {
       return [];
     }
   },
+  async getAllPacienteByStockAreaId(id) {
+    try {
+      const response = await axiosInstance.get(`${URL}/area/${id}`, { withCredentials: true });
+      
+      console.log(response)
+      return response.data.message;
+    } catch (error) {
+      console.error("Error al obtener Paciente:", error);
+      return [];
+    }
+  },
 
   async getPacienteById(id) {
     try {

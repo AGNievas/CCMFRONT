@@ -1,15 +1,12 @@
 <template>
-  <div>
-    <Navbar  />
-    <div class="content">
-      <RouterView />
-    </div>
-  </div>
-</template>
+     <Navbar  />
+     <RouterView />
+  </template>
 
 <script>
 import Navbar from './Navbar.vue';
 import { useGlobalStore } from '@/stores/global';
+import { mapStores } from 'pinia'
 export default {
   components: {
     Navbar,
@@ -17,13 +14,19 @@ export default {
   data() {
     return {
       isSessionActive: false,
-      globalStore : useGlobalStore(),
+     
     };
   },
   mounted() {
     this.isSessionActive = this.globalStore.getLogueado;
-
+    
   },
+  
+
+  computed: {
+    ...mapStores(useGlobalStore)
+  }
+ 
 };
 </script>
 

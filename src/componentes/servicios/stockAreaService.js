@@ -10,8 +10,10 @@ const stockAreaService = {
 
   async getAllStockArea() {
     try {
+      console.log("llega aca?")
       const response = await axiosInstance.get(URL,{withCredentials:true}) ;
-      return response.data.return;
+      console.log(response.data.message.result)
+      return response.data.message.result;
     } catch (error) {
       console.error("Error al obtener stockArea:", error);
       return [];
@@ -54,17 +56,17 @@ const stockAreaService = {
   },
 
  
-  async  updateStockArea(id, nombre) {
-    try {
-      console.log("antesUpdateStockArea", sku,descripcion,tipoInsumo)
-      const {data: StockAreaActualizado} = await axiosInstance.put(`${URL}/${id}`, {nombre},{withCredentials:true});
-      console.log("despuesUpdateStockArea", StockAreaActualizado)
-      return StockAreaActualizado;
-    } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
-      throw error;
-    }
-  },
+  // async  updateStockArea(id, nombre) {
+  //   try {
+  //     console.log("antesUpdateStockArea", sku,descripcion,tipoInsumo)
+  //     const {data: StockAreaActualizado} = await axiosInstance.put(`${URL}/${id}`, {nombre},{withCredentials:true});
+  //     console.log("despuesUpdateStockArea", StockAreaActualizado)
+  //     return StockAreaActualizado;
+  //   } catch (error) {
+  //     console.error("Error al actualizar el usuario:", error);
+  //     throw error;
+  //   }
+  // },
 
   async  deleteStockArea(id) {
     try {

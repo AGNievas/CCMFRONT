@@ -1,4 +1,5 @@
 <template>
+  <div class="background-image"></div>
   <v-container>
     <v-card>
       <!-- Si no hay archivo cargado, mostrar botones de subir y descargar -->

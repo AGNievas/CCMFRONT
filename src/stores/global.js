@@ -19,7 +19,16 @@ export const useGlobalStore = defineStore('global', {
             this.rolId = rolId
             this.esAdmin = esAdmin
             this.logueado = logueado
-        }       
+        }   ,
+        logout(){
+            this.cuil= null
+            this.usuarioId = null
+            this.stockAreaId = null
+            this.fullNameUsuario = null
+            this.rolId = null
+            this.esAdmin = false
+            this.logueado = false 
+        }    
     },
     getters:{
         getUsuarioCuil: state => state.cuil,
