@@ -1,16 +1,12 @@
-// src/services/medicamentos.js
-
 import axiosInstance from "@/axios.js";
 
-const URL = '/medicamento'; // URL base
-
-
+const URL = '/medicamento';
 
 const medicamentosService = {
 
   async getAllMedicamento() {
     try {
-      const response = await axiosInstance.get(URL,{withCredentials:true}) ;
+      const response = await axiosInstance.get("/item", { withCredentials: true });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -18,11 +14,22 @@ const medicamentosService = {
     }
   },
 
+  async getAllMedicamentoByStockAreaId(id) {
+    try {
+      console.log(id, "servicio front")
+      const response = await axiosInstance.get(`/item/listado-items/${id}`, { withCredentials: true });
+      console.log(response)
+      return response.data.return;
+    } catch (error) {
+      console.error("Error al obtener medicamentos:", error);
+      return [];
+    }
+  },
 
-  async  getMedicamentoBySku(sku) {
+  async getMedicamentoBySku(sku) {
     try {
       console.log("crearMedicamentoPostResponse")
-      const response = await axiosInstance.get(`${URL}/${sku}`,{withCredentials:true});
+      const response = await axiosInstance.get(`${URL}/${sku}`, { withCredentials: true });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -30,11 +37,11 @@ const medicamentosService = {
     }
   },
 
-  async  createMedicamento(sku, descripcion, tipoInsumo) {
+  async createMedicamento(sku, descripcion, tipoInsumo) {
     try {
       console.log("crearMedicamentoPostResponse")
-      const response = await axiosInstance.post(`${URL}`,{sku,descripcion, tipoInsumo},{withCredentials:true});
-      console.log("crearMedicamentoPostResponse",response.data.return)
+      const response = await axiosInstance.post(`${URL},{sku,descripcion, tipoInsumo}`, { withCredentials: true });
+      console.log("crearMedicamentoPostResponse", response.data.return)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -42,11 +49,11 @@ const medicamentosService = {
     }
   },
 
-  async  cargaMasivaMedicamento(filePath) {
+  async cargaMasivaMedicamento(filePath) {
     try {
       console.log("cargaMasivaAntesResponse")
-      const response = await axiosInstance.post(`${URL}`,{filePath},{withCredentials:true});
-      console.log("cargaMasivaPostResponse",response.data.return)
+      const response = await axiosInstance.post(`${URL},{filePath}`, { withCredentials: true });
+      console.log("cargaMasivaPostResponse", response.data.return)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -54,12 +61,10 @@ const medicamentosService = {
     }
   },
 
-
-
-  async  updateMedicamento(sku, descripcion, tipoInsumo) {
+  async updateMedicamento(sku, descripcion, tipoInsumo) {
     try {
-      console.log("antesUpdateMedicamento", sku,descripcion,tipoInsumo)
-      const {data: medicamentoActualizado} = await axiosInstance.put(`${URL}/${sku}`, {descripcion, tipoInsumo},{withCredentials:true});
+      console.log("antesUpdateMedicamento", sku, descripcion, tipoInsumo)
+      const { data: medicamentoActualizado } = await axiosInstance.put(`${URL}/${sku}`, { descripcion, tipoInsumo }, { withCredentials: true });
       console.log("despuesUpdateMedicamento", medicamentoActualizado)
       return medicamentoActualizado;
     } catch (error) {
@@ -68,10 +73,10 @@ const medicamentosService = {
     }
   },
 
-  async  deleteMedicamento(sku) {
+  async deleteMedicamento(sku) {
     try {
       console.log("antesDeleteMedicamento", sku)
-      const {data: medicamentoEliminado} = await axiosInstance.delete(`${URL}/${sku}`,{withCredentials:true});
+      const { data: medicamentoEliminado } = await axiosInstance.delete(`${URL}/${sku}`, { withCredentials: true });
       return medicamentoEliminado;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
@@ -80,7 +85,5 @@ const medicamentosService = {
   }
 
 }
-
-
 
 export default medicamentosService;

@@ -3,6 +3,7 @@ import axiosInstance from "@/axios.js";
 const URL = "/aplique";
 
 const apliqueService = {
+
   async getAllAplique() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
@@ -49,11 +50,11 @@ const apliqueService = {
     }
   },
 
-  async createAplique(dni, sku, cantidad, aplicante,stockAreaId) {
+  async createAplique(dni, sku, cantidad, aplicante, stockAreaId) {
     try {
       const response = await axiosInstance.post(
         `${URL}`,
-        { dni, sku, cantidad, aplicante,stockAreaId },
+        { dni, sku, cantidad, aplicante, stockAreaId },
         { withCredentials: true }
       );
 
@@ -72,11 +73,13 @@ const apliqueService = {
     try {
       const { data: ApliqueActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
-        { dni,
-            sku,
-            cantidad,
-            aplicante,
-            fechaAplicacion },
+        {
+          dni,
+          sku,
+          cantidad,
+          aplicante,
+          fechaAplicacion
+        },
         { withCredentials: true }
       );
 

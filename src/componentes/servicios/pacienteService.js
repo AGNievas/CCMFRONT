@@ -3,10 +3,23 @@ import axiosInstance from "@/axios.js";
 const URL = "/paciente";
 
 const pacienteService = {
+
   async getAllPaciente() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
       return response.data.return;
+    } catch (error) {
+      console.error("Error al obtener Paciente:", error);
+      return [];
+    }
+  },
+
+  async getAllPacienteByStockAreaId(id) {
+    try {
+      const response = await axiosInstance.get(`${URL}/area/${id}`, { withCredentials: true });
+
+      console.log(response)
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
       return [];
