@@ -6,22 +6,32 @@ export const useGlobalStore = defineStore('global', {
         usuarioId: null,
         stockAreaId: null,
         fullNameUsuario: null,
-        rolId:null,
+        rolId: null,
         esAdmin: false,
         logueado: false,
     }),
-    actions:{
-        setUsuario(cuil,usuarioId, stockAreaId, fullNameUsuario, rolId,esAdmin,logueado){
-            this.cuil= cuil
+    actions: {
+        setUsuario(cuil, usuarioId, stockAreaId, fullNameUsuario, rolId, esAdmin, logueado) {
+            this.cuil = cuil
             this.usuarioId = usuarioId
             this.stockAreaId = stockAreaId
             this.fullNameUsuario = fullNameUsuario
             this.rolId = rolId
             this.esAdmin = esAdmin
             this.logueado = logueado
-        }       
+        }
+        ,
+        logout() {
+            this.cuil = null
+            this.usuarioId = null
+            this.stockAreaId = null
+            this.fullNameUsuario = null
+            this.rolId = null
+            this.esAdmin = false
+            this.logueado = false
+        }
     },
-    getters:{
+    getters: {
         getUsuarioCuil: state => state.cuil,
         getUsuarioId: state => state.usuarioId,
         getStockAreaId: state => state.stockAreaId,

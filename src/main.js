@@ -7,8 +7,7 @@ import * as directives from 'vuetify/directives';
 import { es } from 'vuetify/locale';
 import { createPinia } from 'pinia'
 
-// Asegúrate de importar los estilos de mdi
-import '@mdi/font/css/materialdesignicons.css'; // Línea agregada para importar los íconos
+import '@mdi/font/css/materialdesignicons.css';
 import './assets/global.css';
 
 import router from './router';
@@ -26,8 +25,8 @@ const vuetify = createVuetify({
         },
     },
     locale: {
-        locale: 'es',    // Establecer idioma predeterminado como español
-        messages: { es }, // Definir las traducciones en español
+        locale: 'es',
+        messages: { es }, 
     }
 });
 

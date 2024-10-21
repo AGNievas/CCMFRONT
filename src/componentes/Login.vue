@@ -1,8 +1,5 @@
 <template>
   <div>
-    <v-app-bar :elevation="2" class="navbar">
-      <v-app-bar-title class="headline">Control y Consumo de Medicamentos</v-app-bar-title>
-    </v-app-bar>
 
     <v-container>
       <v-card>
@@ -91,12 +88,18 @@ export default {
 
       try {
         const { cuil, password } = this.formData;
-        const {payload: response} = await loginService.login(cuil, password);
-        const {usuarioId, stockAreaId,fullNameUsuario, rolId} = response
-        localStorage.setItem('session', 'active');
-        this.globalStore.setUsuario(cuil, usuarioId, stockAreaId,fullNameUsuario, rolId, rolId==1, true)
+        const { payload: response } = await loginService.login(cuil, password);
+        const { usuarioId, stockAreaId, fullNameUsuario, rolId } = response
+        sessionStorage.setItem('session', JSON.stringify({
+          cuil,
+          usuarioId,
+          stockAreaId,
+          fullNameUsuario,
+          rolId
+        }));
+        this.globalStore.setUsuario(cuil, usuarioId, stockAreaId, fullNameUsuario, rolId, rolId == 1, true)
         this.$router.push('/home');
-        console.log(this.globalStore.getRolId,"El rol id",)
+        console.log(this.globalStore.getRolId, "El rol id",)
         this.resetearFormulario();
       } catch (error) {
         this.error = error;
@@ -114,19 +117,18 @@ export default {
 </script>
 
 <style scoped>
-
 .custom-alert {
   max-height: 60px;
-  overflow-y: auto; 
+  overflow-y: auto;
   margin-bottom: 10px;
 }
 
 
 v-card-text {
-  min-height: 150px; 
+  min-height: 150px;
 }
 
 .btn-blue {
-  margin-top: 20px; 
+  margin-top: 20px;
 }
 </style>

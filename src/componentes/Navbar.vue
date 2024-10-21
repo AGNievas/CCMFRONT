@@ -6,21 +6,19 @@
       </template>
       <v-app-bar-title class="headline">Control y Carga de Medicamentos</v-app-bar-title>
       <template v-slot:append>
-        <RouterLink v-if="isSessionActive" :to="{ name: 'InformacionUsuario' }">
+        <RouterLink v-if="this.globalStore.getLogueado" :to="{ name: 'InformacionUsuario' }">
           <v-btn icon="mdi-account-circle" class="navbar-icon"></v-btn>
         </RouterLink>
         <v-btn icon @click="logout" class="navbar-icon">
-          <v-icon v-if="isSessionActive">mdi-export</v-icon>
+          <v-icon v-if="this.globalStore.getLogueado">mdi-export</v-icon>
           <v-icon v-else>mdi-account</v-icon>
         </v-btn>
       </template>
     </v-app-bar>
-    <v-navigation-drawer
-      v-model="drawer"
-      :location="$vuetify.display.mobile ? 'bottom' : undefined"
-      temporary
-      class="drawer"
-    >
+
+
+    <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
+      :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
         <v-list-item>
           <RouterLink to="/home" class="drawer-item-title">Inicio</RouterLink>
@@ -34,44 +32,52 @@
         <v-list-item>
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
+
       </v-list>
     </v-navigation-drawer>
-    <br>
+
   </div>
 </template>
 
 <script>
 import loginService from './servicios/loginService';
 import { useGlobalStore } from '@/stores/global';
+import { mapStores } from 'pinia'
+
 export default {
   name: 'src-componentes-navbar',
   data() {
     return {
       drawer: false,
       isSessionActive: false,
-      globalStore : useGlobalStore(),
+
     };
   },
   methods: {
     logout() {
-      if (this.isSessionActive) {
-        
-        this.globalStore.setUsuario(null,null,null,null,false,false)
-        loginService.logout();
-        localStorage.removeItem('session');
-        this.isSessionActive = false;
-      }
+      loginService.logout();
+      sessionStorage.removeItem('session');
+      this.globalStore.logout()
+      this.isSessionActive = false;
+
       this.$router.push('/login');
     },
   },
 
-  beforeMount(){
-    console.log(this.isSessionActive)
-    this.isSessionActive = this.globalStore.getLogueado;
+  computed: {
+    ...mapStores(useGlobalStore)
+
+
   },
   mounted() {
-    this.isSessionActive = this.globalStore.getLogueado;
+    this.isSessionActive = sessionStorage.length > 1
   },
+
+  updated() {
+    console.log(this.isSessionActive)
+    this.isSessionActive = sessionStorage.length > 1
+
+  }
+
 };
 </script>
-
