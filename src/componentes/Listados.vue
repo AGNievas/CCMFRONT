@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input v-model="searchTerm" placeholder="Buscar..." />
+   
     <Tabla :data="filteredItems" :columns="columns" />
    
   </div>

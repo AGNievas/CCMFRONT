@@ -1,4 +1,4 @@
-// src/services/medicamentos.js
+
 
 import axiosInstance from "@/axios.js";
 

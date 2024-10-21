@@ -11,9 +11,10 @@
       hide-details
       class="mx-2"
     ></v-select>
-
+    <Tabla :data="filteredItems" :columns="columns" />
     <!-- Componente Listados.vue reutilizable -->
     <Listados v-if="selectedArea" :tipoListado="'medicamentos'" :items="medicamentosAMostrar" />
+    <Tabla :data="filteredItems" :columns="columns" />
   </div>
 </template>
 
