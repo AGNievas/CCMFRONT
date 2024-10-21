@@ -1,8 +1,8 @@
 [
-    { "id":1, "stock": 20, "sku": "00123", "stockAreaId": "1"},
-    { "id":2, "stock": 30, "sku": "00123", "stockAreaId": "3"},
-    { "id":3, "stock": 15, "sku": "00125", "stockAreaId": "2"},
-    { "id":4, "stock": 35, "sku": "00125", "stockAreaId": "1"},
-    { "id":5, "stock": 26, "sku": "00129", "stockAreaId": "2"},
-    { "id":6, "stock": 28, "sku": "00131", "stockAreaId": "4"}
+    {"stock": 20, "sku": "123", "stockAreaId": "1"},
+    {"stock": 30, "sku": "123", "stockAreaId": "3"},
+    {"stock": 15, "sku": "125", "stockAreaId": "2"},
+    {"stock": 35, "sku": "125", "stockAreaId": "1"},
+    {"stock": 26, "sku": "129", "stockAreaId": "2"},
+    {"stock": 28, "sku": "131", "stockAreaId": "4"}
 ]

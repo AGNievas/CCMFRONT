@@ -6,7 +6,7 @@ const medicamentosService = {
 
   async getAllMedicamento() {
     try {
-      const response = await axiosInstance.get("/item", { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/`, { withCredentials: true });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -40,7 +40,7 @@ const medicamentosService = {
   async createMedicamento(sku, descripcion, tipoInsumo) {
     try {
       console.log("crearMedicamentoPostResponse")
-      const response = await axiosInstance.post(`${URL},{sku,descripcion, tipoInsumo}`, { withCredentials: true });
+      const response = await axiosInstance.post(`${URL}`,{sku,descripcion, tipoInsumo}, { withCredentials: true });
       console.log("crearMedicamentoPostResponse", response.data.return)
       return response.data.return;
     } catch (error) {
@@ -52,7 +52,7 @@ const medicamentosService = {
   async cargaMasivaMedicamento(filePath) {
     try {
       console.log("cargaMasivaAntesResponse")
-      const response = await axiosInstance.post(`${URL},{filePath}`, { withCredentials: true });
+      const response = await axiosInstance.post(`${URL}`,{filePath}, { withCredentials: true });
       console.log("cargaMasivaPostResponse", response.data.return)
       return response.data.return;
     } catch (error) {

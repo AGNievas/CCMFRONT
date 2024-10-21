@@ -1,6 +1,6 @@
 <template>
-  <div class="custom-container">
-    <v-card flat>
+  <div>
+    <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
         <v-text-field
           v-model="search"
@@ -23,11 +23,12 @@
           variant="solo"
           hide-details
           class="mx-2"
+          @update:modelValue="onAreaChange"
         ></v-select>
 
         <v-spacer></v-spacer>
         <v-btn  class="mx-2 btn-blue">Transferir Stock</v-btn>
-        <v-btn @click="openDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
+        <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
       <v-data-table
@@ -41,7 +42,7 @@
             <tr>
               <th class="table-header text-start">SKU</th>
               <th class="table-header text-start">DESCRIPCIÓN</th>
-              <th class="table-header text-start">TIPO DE MEDICAMENTO</th>
+              <th class="table-header text-start">TIPO DE INSUMO</th>
               <th class="table-header text-start">STOCK</th>
               <th class="table-header text-start"></th>
             </tr>
@@ -52,13 +53,16 @@
           <tr>
             <td class="text-start">{{ medicamento.sku }}</td>
             <td class="text-start">{{ medicamento.descripcion }}</td>
-            <td class="text-start">{{ medicamento.tipoInsumo }}</td>
-            <td class="text-start">{{ medicamento.cantidad }}</td>
+            <td class="text-start">{{ medicamento.tipo_insumo }}</td>
+
+            <td v-if="area === 0" class="text-start">{{ calcularStock(medicamento) }}</td>
+            <td v-else>{{ medicamento.cantidad }}</td>
+
             <td class="text-start acciones-cell">
               <v-btn icon small color= "#0E3746" @click="openEditDialog(medicamento)">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn icon small color="red" @click="confirmDelete(medicamento.id)">
+              <v-btn icon small color="red" @click="confirmDelete(medicamento.sku)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </td>
@@ -75,13 +79,13 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn class="btn-blue" text @click="closeDeleteDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="deleteMedicamento(confirmDeleteId)">Confirmar</v-btn>
+          <v-btn class="btn-blue" text @click="deleteMedicamento(confirmDeleteSku)">Confirmar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- Pop-up para agregar medicamento -->
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="addDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
           <span class="headline">Agregar Nuevo Medicamento</span>
@@ -99,14 +103,7 @@
 
             ></v-select>
 
-            <v-text-field
-              v-model.number="newMed.cantidad_comprimidos"
-              label="Cantidad Comprimidos"
-              required
-              type="number"
-              min="1"
 
-            ></v-text-field>
 
             <v-alert v-if="formError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
@@ -120,7 +117,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
+          <v-btn class="btn-blue" text @click="closeAddDialog">Cancelar</v-btn>
           <v-btn class="btn-blue" text @click="addMedicamento">Agregar</v-btn>
         </v-card-actions>
       </v-card>
@@ -142,14 +139,7 @@
               label="Tipo de Medicamento"
               required
             ></v-select>
-            <v-text-field
-              v-model.number="editMed.cantidad_comprimidos"
-              label="Cantidad Comprimidos"
-              required
-              type="number"
-              min="1"
 
-            ></v-text-field>
 
             <v-alert v-if="editFormError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
@@ -165,20 +155,15 @@
       </v-card>
     </v-dialog>
   </div>
+
 </template>
 
 <script>
-import {
-  // getMedicamentos,
-  getMedicamentosByStockAreaId,
-  createMedicamento,
-  updateMedicamento,
-  deleteMedicamento
-} from "./servicios/medicamentosService.js";
+import stockAreasIdService from "./servicios/stockAreaService.js";
+import itemService from "./servicios/itemService";
+import medicamentosService from "./servicios/medicamentosService.js";
 
-// import medicamentosService from "./servicios/medicamentosService.js"
-// import stockAreasId from "../assets/stockAreasId.json";
-// import items from "../assets/items.json";
+
 
 export default {
   name: "ListadoDeMedicamentos",
@@ -191,25 +176,23 @@ export default {
       ],
       medicamentos: [],
       areas: [],
-      items: [],
+      itemsMed: [],
       area: null,
-      dialog: false,
+      addDialog: false,
       editDialog: false,
       deleteDialog: false,
-      confirmDeleteId: null, // ID del medicamento a eliminar
+      confirmDeleteSku: null,
       tipoInsumoOptions: ["Medicamento"],
       newMed: {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: 1
       },
       editMed: {
         id: "",
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: 1
       },
       skuError: false,
       formError: false,
@@ -218,72 +201,71 @@ export default {
       snackbarMessage: ''
     };
   },
-  watch: {
-    area() {
-      this.calcularStockMedicamentos(); // Llamamos al método que calcula el stock para todos los medicamentos
-    }
-  },
-  // beforeMount() {
-  //   this.loadMedicamentos().then(() => {
-  //     this.calcularStockMedicamentos(); // Calcular el stock cuando se carguen los medicamentos
-  //   });
-  //   this.areas = stockAreaService.getAllStockAreas();
-  //   this.area = this.areas[0].id; // Área por defecto
-  //   this.items = items;
-  // },
 
-
-  mounted(){
-     this.loadMedicamentos()
+  beforeMount(){
+    this.loadStockAreasId()
+    this.loadMedicamentos()
+    this.loadItemsMed()
   },
 
   methods: {
 
+    onAreaChange(selectedArea) {
+      console.log("holaaaa")
+      this.area = selectedArea; 
+      if(this.area == 0){
+        this.loadMedicamentos()
+      } else {
+        this.loadMedicamentosByAreaId(this.area)
+      }
+    },
 
-    
+    async loadMedicamentosByAreaId(id){
+      this.medicamentos = await medicamentosService.getAllMedicamentoByStockAreaId(id)
+    },
+
     async loadMedicamentos() {
-      this.medicamentos = await getMedicamentosByStockAreaId(1);
+      this.medicamentos = await medicamentosService.getAllMedicamento();
       console.log("load medicamentos",this.medicamentos)
       // this.calcularStockMedicamentos();
     },
 
-    // calcularStock(medicamento) {
-    //   if (this.area === 0) {
-    //     let totalStock = 0;
-    //     this.items.forEach((item) => {
-    //       if (item.sku === medicamento.sku) {
-    //         totalStock += item.stock;
-    //       }
-    //     });
-    //     return totalStock;
-    //   } else {
-    //     const itemEncontrado = this.items.find(
-    //       (item) => item.sku === medicamento.sku && item.areaId === this.area
-    //     );
-    //     return itemEncontrado ? itemEncontrado.stock : 0;
-    //   }
-    // },
+    async loadStockAreasId(){
+      this.areas = await stockAreasIdService.getAllStockArea();
+      // console.log("load stockAreasId",this.areas)
+      this.area = this.areas[0].id; // Área por defecto
+      // console.log("area", this.area)
+    },
 
-    // calcularStockMedicamentos() {
-    //   // Actualiza el stock de cada medicamento basado en el área seleccionada
-    //   this.medicamentos.forEach((medicamento) => {
-    //     medicamento.stock = this.calcularStock(medicamento); // Asignar el stock calculado al medicamento
-    //   });
-    // },
+    async loadItemsMed(){
+      this.itemsMed = await itemService.getAllItem();
+      console.log("load items",this.itemsMed)
+    },
 
-    openDialog() {
-      this.dialog = true;
+    calcularStock(medicamento) {
+      
+        let totalStock = 0;
+        this.itemsMed.forEach((itemMed) => {
+          if (itemMed.sku === medicamento.sku) {
+            totalStock += itemMed.stock;
+          }
+        });
+        return totalStock;
+      
+    },
+
+    openAddDialog() {
+      this.addDialog = true;
       this.resetErrors();
       this.newMed = {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: 1
       };
     },
 
-    closeDialog() {
-      this.dialog = false;
+    closeAddDialog() {
+      this.addDialog = false;
       this.resetForm();
     },
 
@@ -294,23 +276,21 @@ export default {
       if (
         !this.newMed.sku ||
         !this.newMed.descripcion ||
-        !this.newMed.tipo_insumo ||
-        this.newMed.cantidad_comprimidos === null ||
-        isNaN(this.newMed.cantidad_comprimidos)
+        !this.newMed.tipo_insumo 
       ) {
         this.formError = true;
         return;
       }
 
       const exists = this.medicamentos.some(
-        (medicamento) => medicamento.sku === this.newMed.sku
+        (medicamento) => medicamento.sku == this.newMed.sku
       );
 
       if (!exists) {
         try {
-          await createMedicamento(this.newMed);
+          await medicamentosService.createMedicamento(this.newMed.sku, this.newMed.descripcion, this.newMed.tipo_insumo);
           await this.loadMedicamentos();
-          this.closeDialog();
+          this.closeAddDialog();
         } catch (error) {
           console.error("Error al agregar el medicamento:", error);
         }
@@ -336,16 +316,14 @@ export default {
       if (
         !this.editMed.sku ||
         !this.editMed.descripcion ||
-        !this.editMed.tipo_insumo ||
-        this.editMed.cantidad_comprimidos === null ||
-        isNaN(this.editMed.cantidad_comprimidos)
+        !this.editMed.tipo_insumo 
       ) {
         this.editFormError = true;
         return;
       }
 
       try {
-        await updateMedicamento(this.editMed.id, this.editMed);
+        await medicamentosService.updateMedicamento(this.editMed.sku, this.editMed.descripcion, this.editMed.tipo_insumo);
         await this.loadMedicamentos();
         this.closeEditDialog();
       } catch (error) {
@@ -353,19 +331,19 @@ export default {
       }
     },
 
-    confirmDelete(id) {
-      this.confirmDeleteId = id;
+    confirmDelete(sku) {
+      this.confirmDeleteSku = sku;
       this.deleteDialog = true;
     },
 
     closeDeleteDialog() {
       this.deleteDialog = false;
-      this.confirmDeleteId = null;
+      this.confirmDeleteSku = null;
     },
 
-    async deleteMedicamento(id) {
+    async deleteMedicamento(sku) {
       try {
-        await deleteMedicamento(id);
+        await medicamentosService.deleteMedicamento(sku);
         await this.loadMedicamentos();
         this.closeDeleteDialog();
       } catch (error) {
@@ -378,7 +356,6 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: 1
       };
       this.skuError = false;
       this.formError = false;
@@ -389,7 +366,6 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
-        cantidad_comprimidos: 1
       };
       this.editFormError = false;
     },
