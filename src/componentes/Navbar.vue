@@ -32,6 +32,9 @@
         <v-list-item>
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
+        <v-list-item>
+          <RouterLink to="/listadoDeUsuarios" class="drawer-item-title">Listado De Usuarios</RouterLink>
+        </v-list-item>
 
       </v-list>
     </v-navigation-drawer>

@@ -6,7 +6,7 @@ import RecuperarPassword from "./componentes/RecuperarPassword.vue";
 import Login from "./componentes/Login.vue";
 import InformacionUsuario from "./componentes/InformacionUsuario.vue";
 import ConsultaAltaPacientes from "./componentes/ConsultaAltaPacientes.vue";
-
+import ListadoDeUsuarios from "./componentes/ListadoDeUsuarios.vue";
 
 const routes = [
   { path: "/", redirect: "/login" },
@@ -36,6 +36,11 @@ const routes = [
     path: "/consultaAltaPacientes",
     name: "ConsultaAltaPacientes",
     component: ConsultaAltaPacientes,
+  },
+  {
+    path: "/listadoDeUsuarios",
+    name: "ListadoDeUsuarios",
+    component: ListadoDeUsuarios,
   },
   {
     path: "/",
