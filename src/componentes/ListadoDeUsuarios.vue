@@ -102,8 +102,8 @@ export default {
       restoreDialog: false,  // Estado del diálogo de restaurar contraseña
       confirmRestorePass: null,
       confirmDeleteId: null,
-      newUsuario: { cuil: "", fullName: "", rol: "", stockAreaId: "", rolId:"" },
-      editUsuario: { cuil: "", fullName: "", rol: "", stockAreaId: "" , rolId:""},
+      newUsuario: { cuil: "", fullName: "", stockAreaId: "", rolId:"" },
+      editUsuario: { cuil: "", fullName: "", stockAreaId: "" , rolId:""},
       cuilError: false,
       formError: false,
       editFormError: false,
@@ -174,7 +174,7 @@ export default {
 
     // Confirmar restauración de contraseña
     confirmRestorePassword(usuario) {
-      this.confirmRestorePass = usuario.cuil;
+      this.confirmRestorePass = usuario;
       this.restoreDialog = true;
     },
 

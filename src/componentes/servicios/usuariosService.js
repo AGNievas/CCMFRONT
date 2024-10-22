@@ -39,17 +39,17 @@ const usuariosService = {
   },
 
   async createUsuario(usuario) {
-    try {
+    try {console.log(usuario,"servicio")
       const cuil = usuario.cuil;
       const fullName = usuario.fullName;
-      const rolId = usuario.rol;
+      const rolId = usuario.rolId;
       const stockAreaId = usuario.stockAreaId;
 
       const password = parsearCuil.extraerNumeroDelCuil(usuario.cuil);
 
       const response = await axiosInstance.post(
         `${URL}`,
-        { cuil, password, fullName, rolId, stockAreaId },
+        { cuil, password, fullName,  stockAreaId,rolId },
         { withCredentials: true }
       );
 
@@ -107,7 +107,8 @@ const usuariosService = {
 
   async restorePassword(usuario) {
     try {
-      const dni = await parsearCuil.extraerNumeroDelCuil(usuario.cuil);
+      console.log(usuario,"restore")
+      const dni =  parsearCuil.extraerNumeroDelCuil(usuario.cuil);
       const response = await axiosInstance.put(
         `${URL}/blank-password/${usuario.id}`,
         { dni },
