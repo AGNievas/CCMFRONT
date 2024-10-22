@@ -46,7 +46,7 @@
               <v-btn icon small color= "#0E3746" @click="openEditDialog(usuario)">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn icon small color= "#0E3746" @click="confirmRestorePassword(usuario.cuil)">
+              <v-btn icon small color= "#0E3746" @click="confirmRestorePassword(usuario)">
                 <v-icon>mdi-cached</v-icon>
               </v-btn>
               <v-btn icon small color="red" @click="confirmDelete(usuario.id)">
@@ -298,13 +298,9 @@ export default {
       this.confirmRestorePass = null;
     },
 
-    async restorePassword(cuil) {
+    async restorePassword(usuario) {
       try {
-        const usuario = await usuariosService.getUsuarioByCuil(cuil);
-        console.log("esto es el usuario",usuario)
-        const id = usuario.id
-        console.log("a ver que onda",id)
-        await usuariosService.restorePassword(id,cuil);
+        await usuariosService.restorePassword(usuario);
         await this.loadUsuarios();
         this.closeRestorePassword();
       } catch (error) {
