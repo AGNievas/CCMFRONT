@@ -73,6 +73,18 @@ const transferenciaStockService = {
     }
   },
 
+  // async createTransferencia(usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
+  //   try {
+  //     console.log("AntescrearUserPostResponse")
+  //     const response = await axiosInstance.post(`${URL}`, { usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo}, { withCredentials: true });
+  //     console.log("DespcrearUserPostResponse", response.data.return)
+  //     return response.data.return;
+  //   } catch (error) {
+  //     console.error("Error al obtener Users:", error);
+  //     return [];
+  //   }
+  // },
+
 
 
   async updateTransferenciaStock(id,
