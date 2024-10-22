@@ -2,28 +2,12 @@
   <div>
     <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          label="Buscar"
-          prepend-inner-icon="mdi-magnify"
-          variant="solo"
-          hide-details
-          single-line
-          class="rounded-search-bar"
-        ></v-text-field>
-
+        <v-text-field v-model="search" density="compact" label="Buscar" prepend-inner-icon="mdi-magnify" variant="solo" hide-details single-line class="rounded-search-bar"></v-text-field>
         <v-spacer></v-spacer>
-        
-        <v-btn @click="openDialog" class="mx-2 btn-blue">Agregar Usuario</v-btn>
+        <v-btn @click="openAddUserDialog" class="mx-2 btn-blue">Agregar Usuario</v-btn>
       </v-card-title>
 
-      <v-data-table
-        :search="search"
-        :items="usuarios"
-        :headers="headers"
-        hide-default-header
-      >
+      <v-data-table :search="search" :items="usuariosConArea" :headers="headers" hide-default-header>
         <template v-slot:thead>
           <thead>
             <tr>
@@ -40,145 +24,68 @@
           <tr>
             <td class="text-start">{{ usuario.cuil }}</td>
             <td class="text-start">{{ usuario.fullName }}</td>
-            <td class="text-start">{{ usuario.rolId }}</td>
-            <td class="text-start">{{ getNombreArea(usuario.stockAreaId) }}</td>
+            <td class="text-start">{{ usuario.rolName }}</td>
+            <td class="text-start">{{ usuario.nombreArea }}</td>
             <td class="text-start acciones-cell">
-              <v-btn icon small color= "#0E3746" @click="openEditDialog(usuario)">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-btn icon small color= "#0E3746" @click="confirmRestorePassword(usuario)">
-                <v-icon>mdi-cached</v-icon>
-              </v-btn>
-              <v-btn icon small color="red" @click="confirmDelete(usuario.id)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
+              <v-btn icon small color="#0E3746" @click="openEditDialog(usuario)"><v-icon>mdi-pencil</v-icon></v-btn>
+              <v-btn icon small color="#0E3746" @click="confirmRestorePassword(usuario)"><v-icon>mdi-cached</v-icon></v-btn>
+              <v-btn icon small color="red" @click="confirmDelete(usuario.id)"><v-icon>mdi-delete</v-icon></v-btn>
             </td>
           </tr>
         </template>
       </v-data-table>
     </v-card>
 
-    <!-- Pop-up para confirmar eliminación -->
-    <v-dialog v-model="deleteDialog" persistent max-width="400px">
-      <v-card>
-        <v-card-title class="headline">Confirmar Eliminación</v-card-title>
-        <v-card-text>¿Estás seguro de que deseas eliminar este usuario?</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeDeleteDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="deleteUsuario(confirmDeleteId)">Confirmar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!-- Componente ConfirmDialog para eliminar y restaurar contraseñas -->
+    <ConfirmDialog
+      v-model="deleteDialog"
+      title="Confirmar Eliminación"
+      text="¿Estás seguro de que deseas eliminar este usuario?"
+      @confirm="deleteUsuario"
+    />
+    <ConfirmDialog
+      v-model="restoreDialog"
+      title="Restaurar Contraseña"
+      text="¿Estás seguro de que deseas restaurar la contraseña de este usuario?"
+      @confirm="restorePassword"
+    />
+    
+    <!-- Componente UsuarioDialog para agregar y editar usuarios -->
+    <UsuarioDialog 
+  v-model="dialog" 
+  :is-editing="false" 
+  :usuario="newUsuario"   
+  @save="addUsuario" 
+  :roles="roles" 
+  :areas="stockAreas" 
+/>
 
-    <!-- Pop-up para confirmar restauracion de contraseña -->
-    <v-dialog v-model="restoreDialog" persistent max-width="400px">
-      <v-card>
-        <v-card-title class="headline">Restaurar contraseña</v-card-title>
-        <v-card-text>¿Estás seguro de que deseas restaurar la contraseña de este usuario?</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeRestorePassword">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="restorePassword(confirmRestorePass)">Confirmar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Pop-up para agregar usuario -->
-    <v-dialog v-model="dialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Agregar Nuevo Usuario</span>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="form">
-            <v-text-field v-model="newUsuario.cuil" label="CUIL" required></v-text-field>
-            <v-text-field v-model="newUsuario.fullName" label="Nombre Completo" required></v-text-field>
-
-            <v-select
-              v-model="newUsuario.rol"
-              :items="tipoRoles"
-              label="Rol"
-              required
-
-            ></v-select>
-
-            <v-select
-              v-model="newUsuario.stockAreaId"
-              :items="stockAreas"
-              item-title="nombre"
-              item-value="id"
-              label="Area"
-              required
-
-            ></v-select>
-
-            <v-alert v-if="formError" type="error" dismissible>
-              Todos los campos son obligatorios. Por favor, completa la información.
-            </v-alert>
-
-            <v-alert v-if="cuilError" type="error" dismissible>
-              El CUIL ya existe. Por favor, elige otro.
-            </v-alert>
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="addUsuario">Agregar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Pop-up para editar medicamento -->
-    <v-dialog v-model="editDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Editar Usuario</span>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="editForm">
-            <v-text-field v-model="editUsuario.cuil" label="CUIL" required></v-text-field>
-            <v-text-field v-model="editUsuario.fullName" label="Nombre Completo" required></v-text-field>
-
-            <v-select
-              v-model="editUsuario.rol"
-              :items="tipoRoles"
-              label="Roles"
-              required
-            ></v-select>
-            <v-select
-              v-model="editUsuario.stockAreaId"
-              :items="stockAreas"
-              item-title="nombre"
-              item-value="id"
-              label="Area"
-              required
-            ></v-select>
-
-            <v-alert v-if="editFormError" type="error" dismissible>
-              Todos los campos son obligatorios. Por favor, completa la información.
-            </v-alert>
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeEditDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="updateUsuario">Actualizar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+<UsuarioDialog 
+    v-model="editDialog" 
+    :is-editing="true" 
+    :usuario="editUsuario" 
+    @update:usuario="editUsuario = $event"
+    @save="updateUsuario" 
+    :roles="roles" 
+    :areas="stockAreas" 
+  />
   </div>
 </template>
 
 <script>
-import usuariosService from "./servicios/usuariosService.js";
-import stockAreaService from "./servicios/stockAreaService.js";
+import ConfirmDialog from './ConfirmDialog.vue'; // Dialogo de confirmación genérico
+import UsuarioDialog from './UsuarioDialog.vue'; // Dialogo para agregar/editar usuarios
+import usuariosService from './servicios/usuariosService.js';
+import stockAreaService from './servicios/stockAreaService.js';
+import rolService from './servicios/rolService';
+
 
 export default {
   name: "ListadoDeUsuarios",
+  components: {
+    ConfirmDialog,
+    UsuarioDialog,
+  },
   data() {
     return {
       search: "",
@@ -187,30 +94,16 @@ export default {
         { text: "NOMBRE COMPLETO", value: "fullname" }
       ],
       usuarios: [],
-      items: [],
-      dialog: false,
-      editDialog: false,
-      deleteDialog: false,
-      restoreDialog: false,
+      stockAreas: [],
+      roles:[],
+      dialog: false,         // Estado del diálogo de agregar usuario
+      editDialog: false,     // Estado del diálogo de editar usuario
+      deleteDialog: false,   // Estado del diálogo de eliminación
+      restoreDialog: false,  // Estado del diálogo de restaurar contraseña
       confirmRestorePass: null,
-      restoredPw: null,
-      confirmDeleteId: null, // ID del usuario a eliminar
-      tipoRoles: ["Enfermero"],
-      stockAreas:[],
-      newUsuario: {
-        id: "",
-        cuil: "",
-        fullName: "",
-        rol: "",
-        stockAreaId: ""
-      },
-      editUsuario: {
-        id: "",
-        cuil: "",
-        fullName: "",
-        rol: "",
-        stockAreaId: ""
-      },
+      confirmDeleteId: null,
+      newUsuario: { cuil: "", fullName: "", rol: "", stockAreaId: "", rolId:"" },
+      editUsuario: { cuil: "", fullName: "", rol: "", stockAreaId: "" , rolId:""},
       cuilError: false,
       formError: false,
       editFormError: false,
@@ -219,181 +112,154 @@ export default {
     };
   },
 
+  computed: {
+    usuariosConArea() {
+      return this.usuarios.map(usuario => ({
+        ...usuario,
+        nombreArea: this.getNombreArea(usuario.stockAreaId),
+        rolName: this.getNombreRol(usuario.rolId)
+      }));
+    }
+  },
+
   mounted() {
     this.loadUsuarios();
     this.loadStockAreas();
+    this.loadRols();
   },
 
   methods: {
+    
+    async loadRols(){
+      this.roles = await rolService.getAllRol();
+    },
+
+    // Método para cargar la lista de usuarios
     async loadUsuarios() {
       this.usuarios = await usuariosService.getAllUsuarios();
-      console.log("load usuarios", this.usuarios);
     },
 
+    // Método para cargar las áreas
     async loadStockAreas() {
       this.stockAreas = await stockAreaService.getAllStockArea();
-      console.log("load stockAreas", this.stockAreas);
     },
 
-    openDialog() {
+    // Obtener nombre de área
+    getNombreArea(stockAreaId) {
+      const area = this.stockAreas.find(area => area.id === stockAreaId);
+      return area ? area.nombre : 'Área no encontrada';
+    },
+
+    getNombreRol(rolId){
+      const rol = this.roles.find(rol => rol.id === rolId);
+      return rol ? rol.name : 'Rol no encontrado';
+    },
+
+    // Abrir el diálogo de agregar usuario
+    openAddUserDialog() {
       this.dialog = true;
-      this.resetErrors();
-      this.newUsuario = {
-        id: "",
-        cuil: "",
-        fullName: "",
-        rol: "",
-        stockAreaId: "",
-      };
     },
 
-    closeDialog() {
-      this.dialog = false;
-      this.resetForm();
-    },
-
-    async addUsuario() {
-      this.cuilError = false;
-      this.formError = false;
-
-      if (
-        !this.newUsuario.cuil ||
-        !this.newUsuario.fullName ||
-        this.newUsuario.rol === null ||
-        this.newUsuario.stockAreaId === null
-      ) {
-        this.formError = true;
-        return;
-      }
-
-      const exists = this.usuarios.some(
-        (usuario) => usuario.cuil === this.newUsuario.cuil
-      );
-
-      if (!exists) {
-        try {
-          await usuariosService.createUsuario(this.newUsuario.cuil,this.newUsuario.cuil,this.newUsuario.fullName,this.newUsuario.stockAreaId);
-          await this.loadUsuarios();
-          this.closeDialog();
-        } catch (error) {
-          console.error("Error al agregar el usuario:", error);
-        }
-      } else {
-        this.cuilError = true;
-      }
-    },
-
+    // Abrir el diálogo de edición de usuario
     openEditDialog(usuario) {
-      this.editDialog = true;
       this.editUsuario = { ...usuario };
-      this.resetEditErrors();
-    },
-    confirmRestorePassword(cuil) {
-      this.confirmRestorePass = cuil;
-      this.restoreDialog = true;
+      this.editDialog = true;
     },
 
-    closeRestorePassword() {
-      this.restoreDialog = false;
-      this.confirmRestorePass = null;
-    },
-
-    async restorePassword(usuario) {
-      try {
-        await usuariosService.restorePassword(usuario);
-        await this.loadUsuarios();
-        this.closeRestorePassword();
-      } catch (error) {
-        console.error("Error al restaurar la contraseña del usuario:", error);
-      }
-    },
-
-    closeEditDialog() {
-      this.editDialog = false;
-      this.resetEditForm();
-    },
-
-    async getNombreArea(id){
-      let area = await stockAreaService.getStockAreaById(id);
-      let areaNombre = area.nombre
-      console.log("pepe",area)
-      console.log("pepito",areaNombre)
-      return areaNombre
-    },
-
-
-
-    async updateUsuario() {
-      this.editFormError = false;
-
-      if (
-        !this.editUsuario.cuil ||
-        !this.editUsuario.fullName ||
-        this.editUsuario.rol === null ||
-        this.editUsuario.stockAreaId === null
-      ) {
-        this.editFormError = true;
-        return;
-      }
-      
-      try {
-        await usuariosService.updateUsuario(this.editUsuario.id,this.editUsuario.cuil, this.editUsuario.fullName,this.editUsuario.stockAreaId);
-        await this.loadUsuarios();
-        this.closeEditDialog();
-      } catch (error) {
-        console.error("Error al actualizar el usuario:", error);
-      }
-    },
-
+    // Confirmar eliminación de usuario
     confirmDelete(cuil) {
       this.confirmDeleteId = cuil;
       this.deleteDialog = true;
     },
 
-    closeDeleteDialog() {
-      this.deleteDialog = false;
-      this.confirmDeleteId = null;
+    // Confirmar restauración de contraseña
+    confirmRestorePassword(usuario) {
+      this.confirmRestorePass = usuario.cuil;
+      this.restoreDialog = true;
     },
 
-    async deleteUsuario(cuil) {
+    // Método para agregar usuario
+    async addUsuario(newUsuario) {
+      console.log(newUsuario, "nuevo user")
+  if (!this.validarFormulario(newUsuario)) {
+    this.formError = true;
+    return;
+  }
+
+  try {
+    console.log(newUsuario, "usuarionuevito")
+    await usuariosService.createUsuario(
+     newUsuario
+    );
+
+    await this.loadUsuarios();
+    this.dialog = false; // Cerrar diálogo
+    this.resetNewUsuario();
+  } catch (error) {
+    console.error('Error al agregar el usuario:', error);
+  }
+},
+
+
+    // Método para resetear el formulario de nuevo usuario
+    resetNewUsuario() {
+      this.newUsuario = { cuil: "", fullName: "", rol: "", stockAreaId: "", rolId:"" };
+      this.formError = false;
+    },
+
+    // Método para actualizar usuario
+    async updateUsuario(editUsuario) {
+      // Validar el formulario antes de actualizar
+      if (!this.validarFormulario(editUsuario)) {
+        this.editFormError = true;
+        return;
+      }
+
+      console.log(editUsuario,"editanding")
       try {
-        await usuariosService.deleteUsuario(cuil);
+        // Llamar al servicio de actualización del usuario
+        await usuariosService.updateUsuario(
+          editUsuario.id,
+          editUsuario.cuil,
+          editUsuario.fullName,
+          editUsuario.stockAreaId,
+          editUsuario.rolId
+        );
+
+        // Recargar la lista de usuarios y cerrar el diálogo
         await this.loadUsuarios();
-        this.closeDeleteDialog();
+        this.editDialog = false;
+      
+      } catch (error) {
+        console.error("Error al actualizar el usuario:", error);
+      }
+    },
+
+    // Método para eliminar usuario
+    async deleteUsuario() {
+      try {
+        await usuariosService.deleteUsuario(this.confirmDeleteId);
+        await this.loadUsuarios();
+        this.deleteDialog = false; // Cerrar diálogo de eliminación
       } catch (error) {
         console.error("Error al eliminar el usuario:", error);
       }
     },
 
-    resetForm() {
-      this.newUsuario = {
-        id: "",
-        cuil: "",
-        fullName: "",
-        rol: "",
-        stockAreaId: ""
-      };
-      this.cuilError = false;
-      this.formError = false;
+    // Método para restaurar contraseña
+    async restorePassword() {
+      try {
+        await usuariosService.restorePassword(this.confirmRestorePass);
+        await this.loadUsuarios();
+        this.restoreDialog = false; // Cerrar diálogo de restaurar contraseña
+      } catch (error) {
+        console.error("Error al restaurar la contraseña del usuario:", error);
+      }
     },
 
-    resetEditForm() {
-      this.editUsuario = {
-        cuil: "",
-        fullName: "",
-        rol: "",
-        stockAreaId: ""
-      };
-      this.editFormError = false;
-    },
-
-    resetErrors() {
-      this.cuilError = false;
-      this.formError = false;
-    },
-
-    resetEditErrors() {
-      this.editFormError = false;
+    // Validar formulario
+    validarFormulario(usuario) {
+      return usuario.cuil && usuario.fullName && usuario.rol !== null && usuario.stockAreaId !== null;
     }
   }
 };

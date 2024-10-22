@@ -4,7 +4,6 @@ import parsearCuil from "@/utils/parsearCuil";
 const URL = "/user";
 
 const usuariosService = {
-
   async getAllUsuarios() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
@@ -17,7 +16,9 @@ const usuariosService = {
 
   async getUsuarioById(id) {
     try {
-      const response = await axiosInstance.get(`${URL}/${id}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/${id}`, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       console.error(`Error al obtener el User id: ${id} `, error);
@@ -27,7 +28,9 @@ const usuariosService = {
 
   async getUsuarioByCuil(cuil) {
     try {
-      const response = await axiosInstance.get(`${URL}/cuil/${cuil}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/cuil/${cuil}`, {
+        withCredentials: true,
+      });
       return response.data.return;
     } catch (error) {
       console.error(`Error al obtener el User con cuil: ${cuil} `, error);
@@ -35,11 +38,21 @@ const usuariosService = {
     }
   },
 
-  async createUsuario(cuil,  fullName, stockAreaId) {
+  async createUsuario(usuario) {
     try {
-      const password = parsearCuil.extraerNumeroDelCuil(cuil)
-      const response = await axiosInstance.post(`${URL}`, { cuil, password, fullName, stockAreaId }, { withCredentials: true });
-      console.log("DespcrearUserPostResponse", response.data.return)
+      const cuil = usuario.cuil;
+      const fullName = usuario.fullName;
+      const rolId = usuario.rol;
+      const stockAreaId = usuario.stockAreaId;
+
+      const password = parsearCuil.extraerNumeroDelCuil(usuario.cuil);
+
+      const response = await axiosInstance.post(
+        `${URL}`,
+        { cuil, password, fullName, rolId, stockAreaId },
+        { withCredentials: true }
+      );
+
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);
@@ -47,11 +60,16 @@ const usuariosService = {
     }
   },
 
-  async updateUsuario(id, cuil, fullName, stockAreaId) {
+  async updateUsuario(id, cuil, fullName, stockAreaId, rolId) {
     try {
-      console.log("AntesUpdateUserPutResponse")
-      const { data: usuarioActualizado } = await axiosInstance.put(`${URL}/${id}`, { cuil, fullName, stockAreaId }, { withCredentials: true });
-      console.log("DespuesUserPuttResponse")
+      console.log(id, cuil, fullName, stockAreaId, rolId);
+      console.log("AntesUpdateUserPutResponse");
+      const { data: usuarioActualizado } = await axiosInstance.put(
+        `${URL}/${id}`,
+        { cuil, fullName, stockAreaId,rolId },
+        { withCredentials: true }
+      );
+      console.log("DespuesUserPuttResponse");
       return usuarioActualizado;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
@@ -61,41 +79,45 @@ const usuariosService = {
 
   async deleteUsuario(id) {
     try {
-      console.log("antesDeleteUser", id)
-      const { data: usuerioEliminado } = await axiosInstance.delete(`${URL}/${id}`, { withCredentials: true });
+      console.log("antesDeleteUser", id);
+      const { data: usuerioEliminado } = await axiosInstance.delete(
+        `${URL}/${id}`,
+        { withCredentials: true }
+      );
+      console.log(usuerioEliminado, "acaaaa");
       return usuerioEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al eliminar Front Delete el usuario:", error);
       throw error;
     }
   },
 
   async updatePassword(id, currentPassword, newPassword) {
     try {
-
-      const response = await axiosInstance.put(`${URL}/update-password/${id}`, { currentPassword, newPassword }, { withCredentials: true })
-      return response
-    }
-    catch (error) {
-      throw error.response.data.message
+      const response = await axiosInstance.put(
+        `${URL}/update-password/${id}`,
+        { currentPassword, newPassword },
+        { withCredentials: true }
+      );
+      return response;
+    } catch (error) {
+      throw error.response.data.message;
     }
   },
 
   async restorePassword(usuario) {
     try {
-      const dni = await parsearCuil.extraerNumeroDelCuil(usuario.cuil)
-      const response = await axiosInstance.put(`${URL}/blank-password/${usuario.id}`, { dni }, { withCredentials: true })
-      return response
+      const dni = await parsearCuil.extraerNumeroDelCuil(usuario.cuil);
+      const response = await axiosInstance.put(
+        `${URL}/blank-password/${usuario.id}`,
+        { dni },
+        { withCredentials: true }
+      );
+      return response;
+    } catch (error) {
+      throw error.response.data.message;
     }
-    catch (error) {
-      throw error.response.data.message
-    }
-  }
-}
+  },
+};
 
 export default usuariosService;
-
-
-
-
-

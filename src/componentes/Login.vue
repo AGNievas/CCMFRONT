@@ -27,6 +27,7 @@
 <script>
 import loginService from "./servicios/loginService";
 import { useGlobalStore } from "@/stores/global";
+import  parsearCuil  from '@/utils/parsearCuil';
 export default {
   data() {
     return {
@@ -63,21 +64,8 @@ export default {
       return re.test(this.formData.cuil);
     },
 
-    formatearCuil(cuil) {
-      let cleanedCuil = cuil.replace(/[^\d]/g, '');
-      let formattedCuil = '';
-
-      if (cleanedCuil.length > 0) {
-        formattedCuil += cleanedCuil.slice(0, 2);
-      }
-      if (cleanedCuil.length > 2) {
-        formattedCuil += '-' + cleanedCuil.slice(2, 10);
-      }
-      if (cleanedCuil.length > 10) {
-        formattedCuil += '-' + cleanedCuil.slice(10, 11);
-      }
-
-      return formattedCuil;
+    formatearCuil(cuil){
+      return parsearCuil.formatearCuil(cuil)
     },
 
     async login() {
