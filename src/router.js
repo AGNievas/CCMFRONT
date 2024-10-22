@@ -10,38 +10,14 @@ import ListadoDeUsuarios from "./componentes/ListadoDeUsuarios.vue";
 
 const routes = [
   { path: "/", redirect: "/login" },
-  { path: "/login", name: "Login", component: Login },
-  {
-    path: "/recuperarPassword",
-    name: "RecuperarPassword",
-    component: RecuperarPassword,
-  },
+  { path: "/login", name: "Login", component: Login , meta: { title: "Iniciar Sesión"} },
+  { path: "/recuperarPassword", name: "RecuperarPassword", component: RecuperarPassword , meta: { title: "Recuperar Contraseña"}  },
   { path: "/home", name: "Home", component: Home },
-  {
-    path: "/listadoDeMedicamentos",
-    name: "ListadoDeMedicamentos",
-    component: ListadoDeMedicamentos,
-  },
-  {
-    path: "/cargaDeMedicamentos",
-    name: "CargaDeMedicamentos",
-    component: CargaDeMedicamentos,
-  },
-  {
-    path: "/informacionUsuario",
-    name: "InformacionUsuario",
-    component: InformacionUsuario,
-  },
-  {
-    path: "/consultaAltaPacientes",
-    name: "ConsultaAltaPacientes",
-    component: ConsultaAltaPacientes,
-  },
-  {
-    path: "/listadoDeUsuarios",
-    name: "ListadoDeUsuarios",
-    component: ListadoDeUsuarios,
-  },
+  { path: "/listadoDeMedicamentos", name: "ListadoDeMedicamentos", component: ListadoDeMedicamentos,  meta: { title: "Listado de Medicamentos"} },
+  { path: "/cargaDeMedicamentos", name: "CargaDeMedicamentos", component: CargaDeMedicamentos, meta: { title: "Importación Masiva"}  },
+  { path: "/informacionUsuario", name: "InformacionUsuario", component: InformacionUsuario , meta: { title: "Información del Usuario"} },
+  { path: "/consultaAltaPacientes", name: "ConsultaAltaPacientes", component: ConsultaAltaPacientes, meta: { title: "Consultar Paciente"} },
+  { path: "/listadoDeUsuarios", name: "ListadoDeUsuarios", component: ListadoDeUsuarios , meta: { title: "Listado de Usuarios"} },
   {
     path: "/",
     component: () => import("./componentes/Layout.vue"),
@@ -54,6 +30,12 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  document.title = 
+  to.meta.title || "CCM - Control y Consumo de Medicamentos";
+  next();
 });
 
 export default router;
