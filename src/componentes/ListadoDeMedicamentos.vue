@@ -27,7 +27,7 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn  class="mx-2 btn-blue">Transferir Stock</v-btn>
+        <v-btn @click="openTransferDialog" class="mx-2 btn-blue">Transferir Stock</v-btn>
         <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
@@ -71,6 +71,68 @@
       </v-data-table>
     </v-card>
 
+     <!-- Pop-up para transferencia de stock  -->
+    <v-dialog v-model="transferDialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Transferir Stock</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form">
+            <!-- <v-text-field v-model="transfer.sku" label="SKU" required></v-text-field> -->
+            <v-select
+              @click="loadMedicamentos"
+              v-model="transfer.sku"
+              :items="medicamentos"
+              item-title="sku"
+              item-value="sku"
+              label="Sku"
+              required
+            ></v-select>
+
+            <v-text-field
+              v-model.number="transfer.cantidad"
+              label="Cantidad"
+              required
+              type="number"
+              min="1"
+            ></v-text-field>
+
+            <v-select
+              v-model="transfer.stockAreaIdOrigen"
+              :items="areas"
+              item-title="nombre"
+              item-value="id"
+              label="Origen"
+              required
+            ></v-select>
+
+            <v-select
+              v-model="transfer.stockAreaDestino"
+              :items="areas"
+              item-title="nombre"
+              item-value="id"
+              label="Destino"
+              required
+            ></v-select>
+
+            <v-text-field v-model="transfer.motivo" label="Motivo" required></v-text-field>
+
+            <v-alert v-if="transferFormError" type="error" dismissible>
+              Todos los campos son obligatorios. Por favor, completa la información.
+            </v-alert>
+
+          </v-form>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="btn-blue" text @click="closeTransferDialog">Cancelar</v-btn>
+          <v-btn class="btn-blue" text @click="transferMedicamento">Agregar</v-btn>
+        </v-card-actions> 
+      </v-card>
+    </v-dialog>
+    
     <!-- Pop-up para confirmar eliminación -->
     <v-dialog v-model="deleteDialog" persistent max-width="400px">
       <v-card>
@@ -102,8 +164,6 @@
               required
 
             ></v-select>
-
-
 
             <v-alert v-if="formError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
@@ -139,7 +199,6 @@
               label="Tipo de Medicamento"
               required
             ></v-select>
-
 
             <v-alert v-if="editFormError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
@@ -178,27 +237,27 @@ export default {
       areas: [],
       itemsMed: [],
       area: null,
-      addDialog: false,
-      editDialog: false,
-      deleteDialog: false,
-      confirmDeleteSku: null,
       tipoInsumoOptions: ["Medicamento"],
-      newMed: {
-        sku: "",
-        descripcion: "",
-        tipo_insumo: "Medicamento",
-      },
-      editMed: {
-        id: "",
-        sku: "",
-        descripcion: "",
-        tipo_insumo: "Medicamento",
-      },
+      
+      addDialog: false,
       skuError: false,
       formError: false,
+
+      editDialog: false,
       editFormError: false,
-      snackbar: false,
-      snackbarMessage: ''
+
+      deleteDialog: false,
+      confirmDeleteSku: null,
+
+      transferDialog: false,
+      transferFormError: false,
+      transfer:{
+        sku: "",
+        cantidad: null,
+        stockAreaIdOrigen: "",
+        stockAreaIdDestino: "",
+        motivo: "",
+      },
     };
   },
 
@@ -252,6 +311,16 @@ export default {
         });
         return totalStock;
       
+    },
+
+    openTransferDialog(){
+      this.transferDialog = true;
+      this.resetTransferErrors();
+    },
+
+    closeTransferDialog(){
+      this.transferDialog = false;
+      this.resetTransferForm();
     },
 
     openAddDialog() {
@@ -370,6 +439,17 @@ export default {
       this.editFormError = false;
     },
 
+    resetTransferForm(){
+      this.transfer={
+        sku: "",
+        cantidad: null,
+        stockAreaIdOrigen: "",
+        stockAreaIdDestino: "",
+        motivo: "",
+      };
+      this.transferError = false;
+    },
+
     resetErrors() {
       this.skuError = false;
       this.formError = false;
@@ -377,6 +457,10 @@ export default {
 
     resetEditErrors() {
       this.editFormError = false;
+    },
+
+    resetTransferErrors(){
+      this.transferError = false;
     }
   }
 };
