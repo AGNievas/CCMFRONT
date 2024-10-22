@@ -1,6 +1,6 @@
 <template>
-  <div class="custom-container">
-    <v-card flat>
+  <div>
+    <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
         <v-text-field
           v-model="search"
@@ -30,7 +30,7 @@
               <th class="table-header text-start">CUIL</th>
               <th class="table-header text-start">NOMBRE COMPLETO</th>
               <th class="table-header text-start">ROL</th>
-              <th class="table-header text-start">AREA?</th>
+              <th class="table-header text-start">AREA</th>
               <th class="table-header text-start"></th>
             </tr>
           </thead>
@@ -41,10 +41,13 @@
             <td class="text-start">{{ usuario.cuil }}</td>
             <td class="text-start">{{ usuario.fullName }}</td>
             <td class="text-start">{{ usuario.rolId }}</td>
-            <td class="text-start">{{ usuario.stockAreaId }}</td>
+            <td class="text-start">{{ getNombreArea(usuario.stockAreaId) }}</td>
             <td class="text-start acciones-cell">
               <v-btn icon small color= "#0E3746" @click="openEditDialog(usuario)">
                 <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn icon small color= "#0E3746" @click="confirmRestorePassword(usuario.cuil)">
+                <v-icon>mdi-cached</v-icon>
               </v-btn>
               <v-btn icon small color="red" @click="confirmDelete(usuario.id)">
                 <v-icon>mdi-delete</v-icon>
@@ -64,6 +67,19 @@
           <v-spacer></v-spacer>
           <v-btn class="btn-blue" text @click="closeDeleteDialog">Cancelar</v-btn>
           <v-btn class="btn-blue" text @click="deleteUsuario(confirmDeleteId)">Confirmar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Pop-up para confirmar restauracion de contraseña -->
+    <v-dialog v-model="restoreDialog" persistent max-width="400px">
+      <v-card>
+        <v-card-title class="headline">Restaurar contraseña</v-card-title>
+        <v-card-text>¿Estás seguro de que deseas restaurar la contraseña de este usuario?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="btn-blue" text @click="closeRestorePassword">Cancelar</v-btn>
+          <v-btn class="btn-blue" text @click="restorePassword(confirmRestorePass)">Confirmar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -175,6 +191,9 @@ export default {
       dialog: false,
       editDialog: false,
       deleteDialog: false,
+      restoreDialog: false,
+      confirmRestorePass: null,
+      restoredPw: null,
       confirmDeleteId: null, // ID del usuario a eliminar
       tipoRoles: ["Enfermero"],
       stockAreas:[],
@@ -269,11 +288,44 @@ export default {
       this.editUsuario = { ...usuario };
       this.resetEditErrors();
     },
+    confirmRestorePassword(cuil) {
+      this.confirmRestorePass = cuil;
+      this.restoreDialog = true;
+    },
+
+    closeRestorePassword() {
+      this.restoreDialog = false;
+      this.confirmRestorePass = null;
+    },
+
+    async restorePassword(cuil) {
+      try {
+        const usuario = await usuariosService.getUsuarioByCuil(cuil);
+        console.log("esto es el usuario",usuario)
+        const id = usuario.id
+        console.log("a ver que onda",id)
+        await usuariosService.restorePassword(id,cuil);
+        await this.loadUsuarios();
+        this.closeRestorePassword();
+      } catch (error) {
+        console.error("Error al restaurar la contraseña del usuario:", error);
+      }
+    },
 
     closeEditDialog() {
       this.editDialog = false;
       this.resetEditForm();
     },
+
+    async getNombreArea(id){
+      let area = await stockAreaService.getStockAreaById(id);
+      let areaNombre = area.nombre
+      console.log("pepe",area)
+      console.log("pepito",areaNombre)
+      return areaNombre
+    },
+
+
 
     async updateUsuario() {
       this.editFormError = false;
@@ -287,9 +339,9 @@ export default {
         this.editFormError = true;
         return;
       }
-
+      
       try {
-        await usuariosService.updateUsuario(this.editUsuario.cuil, this.editUsuario);
+        await usuariosService.updateUsuario(this.editUsuario.id,this.editUsuario.cuil, this.editUsuario.fullName,this.editUsuario.stockAreaId);
         await this.loadUsuarios();
         this.closeEditDialog();
       } catch (error) {

@@ -24,12 +24,12 @@ const usuariosService = {
     }
   },
 
-  async getUsuarioByCuil(sku) {
+  async getUsuarioByCuil(cuil) {
     try {
-      const response = await axiosInstance.get(`${URL}/User/${sku}`, { withCredentials: true });
-      return response.data;
+      const response = await axiosInstance.get(`${URL}/cuil/${cuil}`, { withCredentials: true });
+      return response.data.return;
     } catch (error) {
-      console.error(`Error al obtener el User con sku: ${sku} `, error);
+      console.error(`Error al obtener el User con cuil: ${cuil} `, error);
       throw error;
     }
   },
@@ -46,10 +46,10 @@ const usuariosService = {
     }
   },
 
-  async updateUsuario(id, cuil, password, fullName, stockAreaId) {
+  async updateUsuario(id, cuil, fullName, stockAreaId) {
     try {
       console.log("AntesUpdateUserPutResponse")
-      const { data: usuarioActualizado } = await axiosInstance.put(`${URL}/${id}`, { cuil, password, fullName, stockAreaId }, { withCredentials: true });
+      const { data: usuarioActualizado } = await axiosInstance.put(`${URL}/${id}`, { cuil, fullName, stockAreaId }, { withCredentials: true });
       console.log("DespuesUserPuttResponse")
       return usuarioActualizado;
     } catch (error) {
@@ -73,6 +73,17 @@ const usuariosService = {
     try {
 
       const response = await axiosInstance.put(`${URL}/update-password/${id}`, { currentPassword, newPassword }, { withCredentials: true })
+      return response
+    }
+    catch (error) {
+      throw error.response.data.message
+    }
+  },
+
+  async restorePassword(id, newPassword) {
+    try {
+
+      const response = await axiosInstance.put(`${URL}/update-password/${id}`, { newPassword }, { withCredentials: true })
       return response
     }
     catch (error) {
