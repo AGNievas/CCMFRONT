@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card>
-      <!-- Si no hay archivo cargado, mostrar botones de subir y descargar -->
+     
       <div v-if="!archivoCargado">
         <v-row class="d-flex flex-column align-center">
           <v-btn @click="subirArchivo" class="mx-2 btn-blue">Subir Archivo</v-btn>
@@ -9,16 +9,16 @@
         </v-row>
       </div>
 
-      <!-- Si ya hay un archivo cargado pero aún no se ha importado, mostrar su nombre y los botones de Importar/Cancelar -->
+      
       <div v-if="archivoCargado && !archivoImportado">
         <p class="recuperar-link" @click="descargarArchivo">{{ nombreArchivo }}</p>
         <v-btn @click="importarArchivo" class="mx-2 btn-blue">Importar</v-btn>
         <v-btn @click="cancelarArchivo" class="mx-2 btn-blue">Cancelar</v-btn>
       </div>
-
-      <!-- Si el archivo ya ha sido importado, mostrar solo el botón de descarga -->
+    
       <div v-if="archivoImportado">
-        <v-btn @click="descargarArchivoImportado" class="mx-2 btn-blue">Descargar Archivo</v-btn>
+        <v-btn @click="descargarArchivo" class="mx-2 btn-blue">Descargar Archivo</v-btn>
+       
       </div>
     </v-card>
   </v-container>
@@ -26,7 +26,7 @@
 
 <script>
 import Papa from "papaparse";
-
+import medicamentosService from "./servicios/medicamentosService";
 export default {
   name: "CargaDeMedicamentos",
   data() {
@@ -35,6 +35,8 @@ export default {
       archivoImportado: false,
       nombreArchivo: "",
       archivo: null,
+      archivoCsvEnviado: null,
+      archivoADescargar:null
     };
   },
   methods: {
@@ -49,30 +51,51 @@ export default {
           this.archivo = file;
 
           // Usando PapaParse para leer el archivo CSV
+
+          
           Papa.parse(file, {
+            header:true,
+            dynamicTyping:true,
             complete: (result) => {
               console.log("CSV Parsed Data:", result.data);
               this.archivoCargado = true;
+              this.archivoCsvEnviado= result.data
+              
             },
+
+           
+            
             error: (error) => {
               console.error("Error al leer el archivo CSV:", error);
             },
           });
+         
+         
         }
+        console.log(this.archivo, input,"en subir archivos")
       };
       input.click();
     },
     descargarPlantilla() {
-      // Lógica para descargar plantilla, si es necesario
-      console.log("Descargando plantilla...");
+    
     },
     descargarArchivo() {
-      // Implementar la lógica de descarga si es necesario
-      console.log("Descargando archivo:", this.nombreArchivo);
-    },
-    importarArchivo() {
-      // Simular una importación exitosa, y cambiar el estado
-      console.log("Importando archivo al backend...");
+   const blob = new Blob([this.archivoADescargar], { type: 'text/csv' });
+   const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'medicamentos.csv'); 
+  document.body.appendChild(link);
+  link.click();
+
+  // Limpiar el enlace temporal
+  document.body.removeChild(link);
+},
+    async importarArchivo() {
+        this.archivoADescargar = await medicamentosService.cargaMasivaMedicamento(this.archivoCsvEnviado)
+       console.log(this.archivoADescargar, "archivo devuelto")
+
+      
       this.archivoImportado = true;
     },
     cancelarArchivo() {

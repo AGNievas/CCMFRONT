@@ -1,9 +1,9 @@
 <template>
   <div>
     <!-- Manteniendo la navbar original con el color de fondo personalizado -->
-    <v-app-bar :elevation="2" class="navbar">
+    <!-- <v-app-bar :elevation="2" class="navbar">
       <v-app-bar-title class="headline">Recuperar Contraseña</v-app-bar-title>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <!-- Contenido principal modificado -->
     <v-container>

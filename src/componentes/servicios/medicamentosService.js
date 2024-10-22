@@ -51,10 +51,10 @@ const medicamentosService = {
 
   async cargaMasivaMedicamento(filePath) {
     try {
-      console.log("cargaMasivaAntesResponse")
-      const response = await axiosInstance.post(`${URL}`,{filePath}, { withCredentials: true });
-      console.log("cargaMasivaPostResponse", response.data.return)
-      return response.data.return;
+      console.log("cargaMasivaAntesResponse", filePath)
+      const response = await axiosInstance.post(`${URL}/carga-masiva`,{filePath}, { withCredentials: true });
+      console.log("cargaMasivaPostResponse", response.data)
+      return response.data;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
       return [];
