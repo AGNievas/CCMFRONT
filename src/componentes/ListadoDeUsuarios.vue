@@ -7,7 +7,8 @@
         <v-btn @click="openAddUserDialog" class="mx-2 btn-blue">Agregar Usuario</v-btn>
       </v-card-title>
 
-      <v-data-table :search="search" :items="usuariosConArea" :headers="headers" hide-default-header>
+      
+      <v-data-table :items="usuariosConArea" :headers="headers" hide-default-header>
         <template v-slot:thead>
           <thead>
             <tr>
@@ -34,9 +35,12 @@
           </tr>
         </template>
       </v-data-table>
+
+    
+    
     </v-card>
 
-    <!-- Componente ConfirmDialog para eliminar y restaurar contraseñas -->
+   
     <ConfirmDialog
       v-model="deleteDialog"
       title="Confirmar Eliminación"
@@ -50,7 +54,7 @@
       @confirm="restorePassword"
     />
     
-    <!-- Componente UsuarioDialog para agregar y editar usuarios -->
+    
     <UsuarioDialog 
   v-model="dialog" 
   :is-editing="false" 
@@ -73,8 +77,8 @@
 </template>
 
 <script>
-import ConfirmDialog from './ConfirmDialog.vue'; // Dialogo de confirmación genérico
-import UsuarioDialog from './UsuarioDialog.vue'; // Dialogo para agregar/editar usuarios
+import ConfirmDialog from './ConfirmDialog.vue';
+import UsuarioDialog from './UsuarioDialog.vue';
 import usuariosService from './servicios/usuariosService.js';
 import stockAreaService from './servicios/stockAreaService.js';
 import rolService from './servicios/rolService';
@@ -96,10 +100,10 @@ export default {
       usuarios: [],
       stockAreas: [],
       roles:[],
-      dialog: false,         // Estado del diálogo de agregar usuario
-      editDialog: false,     // Estado del diálogo de editar usuario
-      deleteDialog: false,   // Estado del diálogo de eliminación
-      restoreDialog: false,  // Estado del diálogo de restaurar contraseña
+      dialog: false,         
+      editDialog: false,    
+      deleteDialog: false,  
+      restoreDialog: false,  
       confirmRestorePass: null,
       confirmDeleteId: null,
       newUsuario: { cuil: "", fullName: "", stockAreaId: "", rolId:"" },
@@ -114,12 +118,21 @@ export default {
 
   computed: {
     usuariosConArea() {
-      return this.usuarios.map(usuario => ({
+    const searchTrimmed = this.search.trim().toLowerCase();
+    
+    return [...this.usuarios] 
+      .map(usuario => ({
         ...usuario,
         nombreArea: this.getNombreArea(usuario.stockAreaId),
         rolName: this.getNombreRol(usuario.rolId)
-      }));
-    }
+      }))
+      .filter(usuario => {
+        const cuilMatches = usuario.cuil.toLowerCase().includes(searchTrimmed);
+        const nameMatches = usuario.fullName.toLowerCase().includes(searchTrimmed);
+
+        return cuilMatches || nameMatches;
+      });
+  }
   },
 
   mounted() {
