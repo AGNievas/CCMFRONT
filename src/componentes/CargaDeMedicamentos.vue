@@ -92,6 +92,7 @@ export default {
   document.body.removeChild(link);
 },
     async importarArchivo() {
+      console.log(this.archivoCsvEnviado)
         this.archivoADescargar = await medicamentosService.cargaMasivaMedicamento(this.archivoCsvEnviado)
        console.log(this.archivoADescargar, "archivo devuelto")
 

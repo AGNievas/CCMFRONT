@@ -1,4 +1,5 @@
 import axiosInstance from "@/axios.js";
+import parsearCuil from "@/utils/parsearCuil";
 
 const URL = "/user";
 
@@ -34,9 +35,9 @@ const usuariosService = {
     }
   },
 
-  async createUsuario(cuil, password, fullName, stockAreaId) {
+  async createUsuario(cuil,  fullName, stockAreaId) {
     try {
-      console.log("AntescrearUserPostResponse")
+      const password = parsearCuil.extraerNumeroDelCuil(cuil)
       const response = await axiosInstance.post(`${URL}`, { cuil, password, fullName, stockAreaId }, { withCredentials: true });
       console.log("DespcrearUserPostResponse", response.data.return)
       return response.data.return;
@@ -80,10 +81,10 @@ const usuariosService = {
     }
   },
 
-  async restorePassword(id, newPassword) {
+  async restorePassword(usuario) {
     try {
-
-      const response = await axiosInstance.put(`${URL}/update-password/${id}`, { newPassword }, { withCredentials: true })
+      const dni = await parsearCuil.extraerNumeroDelCuil(usuario.cuil)
+      const response = await axiosInstance.put(`${URL}/blank-password/${usuario.id}`, { dni }, { withCredentials: true })
       return response
     }
     catch (error) {
