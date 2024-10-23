@@ -20,6 +20,10 @@
       Tabla,
     },
     props: {
+      search: {
+        type: Array,
+        required: true,
+      },
       headers: {
         type: Array,
         required: true, // Recibimos los headers desde ListadoDeUsuarios

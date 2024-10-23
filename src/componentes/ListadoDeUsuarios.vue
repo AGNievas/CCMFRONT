@@ -99,16 +99,14 @@ export default {
   computed: {
     // Generar dinámicamente los headers
     usuariosHeaders() {
-  return [
-    { text: 'CUIL', value: 'cuil' },
-    { text: 'Nombre Completo', value: 'fullName' },
-    { text: 'Rol', value: 'rolName' },
-    { text: 'Área', value: 'nombreArea' },
-    { text: 'Acciones', value: 'acciones', sortable: false },
-  ];
-},
-
-
+      return [
+        { text: 'CUIL', value: 'cuil' },
+        { text: 'Nombre Completo', value: 'fullName' },
+        { text: 'Rol', value: 'rolName' },
+        { text: 'Área', value: 'nombreArea' },
+        { text: '', value: 'acciones', sortable: false },
+      ];
+    },
     usuariosConArea() {
       const searchTrimmed = this.search.trim().toLowerCase();
 
@@ -126,12 +124,12 @@ export default {
         });
     },
     usuariosFiltradosParaVista() {
-  return this.usuariosConArea.map(usuario => ({
-    cuil: usuario.cuil,
-    fullName: usuario.fullName,
-    rolName: this.getNombreRol(usuario.rolId), // Asegúrate de que este campo se llama 'rolName'
-    nombreArea: this.getNombreArea(usuario.stockAreaId), // Asegúrate de que este campo se llama 'nombreArea'
-    id: usuario.id, // id oculto pero necesario para las acciones
+      return this.usuariosConArea.map(usuario => ({
+        cuil: usuario.cuil,
+        fullName: usuario.fullName,
+        rolName: this.getNombreRol(usuario.rolId), // Asegúrate de que este campo se llama 'rolName'
+        nombreArea: this.getNombreArea(usuario.stockAreaId), // Asegúrate de que este campo se llama 'nombreArea'
+        id: usuario.id, // id oculto pero necesario para las acciones
   }));
 },
   },
@@ -145,6 +143,7 @@ export default {
   methods: {
     async loadRols() {
       this.roles = await rolService.getAllRol();
+      console.log('Roles:', this.roles);
     },
 
     async loadUsuarios() {
@@ -177,6 +176,7 @@ export default {
 
     confirmDelete(id) {
       this.confirmDeleteId = id;
+      console.log("id deleteeeee", id)
       this.deleteDialog = true;
     },
 

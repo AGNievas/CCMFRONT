@@ -8,7 +8,7 @@ const rolService = {
     try {
       console.log("llega aca? roles")
       const response = await axiosInstance.get(`${URL}/`, { withCredentials: true });
-      console.log(response.data.message, "roles")
+      console.log(response.data, "AAAAAAAAAAAAAAAAAAA")
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Rol:", error);

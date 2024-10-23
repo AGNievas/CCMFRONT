@@ -31,44 +31,12 @@
         <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
-      <v-data-table
-        :search="search"
-        :items="medicamentos"
-        :headers="headers"
-        hide-default-header
-      >
-        <template v-slot:thead>
-          <thead>
-            <tr>
-              <th class="table-header text-start">SKU</th>
-              <th class="table-header text-start">DESCRIPCIÓN</th>
-              <th class="table-header text-start">TIPO DE INSUMO</th>
-              <th class="table-header text-start">STOCK</th>
-              <th class="table-header text-start"></th>
-            </tr>
-          </thead>
-        </template>
-
-        <template v-slot:item="{ item: medicamento }">
-          <tr>
-            <td class="text-start">{{ medicamento.sku }}</td>
-            <td class="text-start">{{ medicamento.descripcion }}</td>
-            <td class="text-start">{{ medicamento.tipo_insumo }}</td>
-
-            <td v-if="area === 0" class="text-start">{{ calcularStock(medicamento) }}</td>
-            <td v-else>{{ medicamento.cantidad }}</td>
-
-            <td class="text-start acciones-cell">
-              <v-btn icon small color= "#0E3746" @click="openEditDialog(medicamento)">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-btn icon small color="red" @click="confirmDelete(medicamento.sku)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
+      <Listado
+        :items="filteredMedicamentosConStock"
+        :headers="usuariosHeaders"
+        @edit="openEditDialog"
+        @delete="confirmDelete"
+      />
     </v-card>
 
      <!-- Pop-up para transferencia de stock  -->
@@ -122,6 +90,10 @@
               Todos los campos son obligatorios. Por favor, completa la información.
             </v-alert>
 
+            <v-alert v-if="transferCantError" type="error" dismissible>
+              Cantidad no disponible para transferir.
+            </v-alert>
+
           </v-form>
         </v-card-text>
 
@@ -132,19 +104,13 @@
         </v-card-actions> 
       </v-card>
     </v-dialog>
-    
-    <!-- Pop-up para confirmar eliminación -->
-    <v-dialog v-model="deleteDialog" persistent max-width="400px">
-      <v-card>
-        <v-card-title class="headline">Confirmar Eliminación</v-card-title>
-        <v-card-text>¿Estás seguro de que deseas eliminar este medicamento?</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeDeleteDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="deleteMedicamento(confirmDeleteSku)">Confirmar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+
+    <ConfirmDialog
+      v-model="deleteDialog"
+      title="Confirmar Eliminación"
+      text="¿Estás seguro de que deseas eliminar este medicamento?"
+      @confirm="deleteMedicamento"
+    />
 
     <!-- Pop-up para agregar medicamento -->
     <v-dialog v-model="addDialog" persistent max-width="600px">
@@ -218,24 +184,29 @@
 </template>
 
 <script>
+import Listado from './Listado.vue';
+import ConfirmDialog from './ConfirmDialog.vue';
 import stockAreasIdService from "./servicios/stockAreaService.js";
 import itemService from "./servicios/itemService";
 import medicamentosService from "./servicios/medicamentosService.js";
+import transferenciaStockService from "./servicios/ordenTransferenciaService";
+import { useGlobalStore } from "@/stores/global.js";
 
 
 
 export default {
   name: "ListadoDeMedicamentos",
+  components: {
+    Listado,
+    ConfirmDialog
+    },
   data() {
     return {
-      search: "",
-      headers: [
-        { text: "SKU", value: "sku" },
-        { text: "DESCRIPCIÓN", value: "descripcion" }
-      ],
+      search: '',
       medicamentos: [],
       areas: [],
       itemsMed: [],
+      medicamentosConStock: [],
       area: null,
       tipoInsumoOptions: ["Medicamento"],
       
@@ -251,13 +222,9 @@ export default {
 
       transferDialog: false,
       transferFormError: false,
-      transfer:{
-        sku: "",
-        cantidad: null,
-        stockAreaIdOrigen: "",
-        stockAreaIdDestino: "",
-        motivo: "",
-      },
+      transferCantError: false,
+
+      globalStore: useGlobalStore(),
     };
   },
 
@@ -267,8 +234,29 @@ export default {
     this.loadItemsMed()
   },
 
-  methods: {
+  computed: {
 
+    usuariosHeaders() {
+      return [
+        { text: 'SKU', value: 'sku' },
+        { text: 'DESCRIPCIÓN', value: 'descripcion' },
+        { text: 'TIPO DE INSUMO', value: 'tipo_insumo' },
+        { text: 'STOCK', value: 'cantidad' },
+        { text: '', value: 'acciones', sortable: false },
+      ];
+    },
+
+    filteredMedicamentosConStock() {
+      const searchTerm = this.search.toLowerCase();
+      return this.medicamentosConStock.filter(medicamento => {
+        const skuMatch = String(medicamento.sku).includes(searchTerm); // Convierte sku a string para poder buscar
+        const descripcionMatch = medicamento.descripcion.toLowerCase().includes(searchTerm);
+        return skuMatch || descripcionMatch;
+      });
+    },
+  },
+
+  methods: {
     onAreaChange(selectedArea) {
       console.log("holaaaa")
       this.area = selectedArea; 
@@ -280,29 +268,33 @@ export default {
     },
 
     async loadMedicamentosByAreaId(id){
-      this.medicamentos = await medicamentosService.getAllMedicamentoByStockAreaId(id)
+      this.medicamentosConStock = await medicamentosService.getAllMedicamentoByStockAreaId(id)
     },
 
     async loadMedicamentos() {
       this.medicamentos = await medicamentosService.getAllMedicamento();
-      console.log("load medicamentos",this.medicamentos)
-      // this.calcularStockMedicamentos();
+      this.medicamentosConStock = this.calcularMedicamentosConStock(this.medicamentos);
     },
 
     async loadStockAreasId(){
       this.areas = await stockAreasIdService.getAllStockArea();
-      // console.log("load stockAreasId",this.areas)
-      this.area = this.areas[0].id; // Área por defecto
-      // console.log("area", this.area)
+      this.area = this.areas[0].id;
+      this.onAreaChange(this.area)
     },
 
     async loadItemsMed(){
       this.itemsMed = await itemService.getAllItem();
-      console.log("load items",this.itemsMed)
+    },
+
+    calcularMedicamentosConStock(medicamentos){
+      medicamentos.forEach(medicamento => {
+          medicamento.cantidad = this.calcularStock(medicamento);
+      });
+      return medicamentos;
+
     },
 
     calcularStock(medicamento) {
-      
         let totalStock = 0;
         this.itemsMed.forEach((itemMed) => {
           if (itemMed.sku === medicamento.sku) {
@@ -310,17 +302,66 @@ export default {
           }
         });
         return totalStock;
-      
     },
 
     openTransferDialog(){
       this.transferDialog = true;
       this.resetTransferErrors();
+      this.transfer = {
+        sku: "",
+        cantidad: null,
+        stockAreaIdOrigen: "",
+        stockAreaIdDestino: "",
+        motivo: "",
+      }
     },
 
     closeTransferDialog(){
-      this.transferDialog = false;
+      this.transferDialog= false;
       this.resetTransferForm();
+    },
+
+    async transferMedicamento(){
+      this.transferFormError = false;
+      this.transferCantError = false;
+
+      if(!this.transfer.sku ||
+        !this.transfer.cantidad ||
+        !this.transfer.stockAreaIdOrigen ||
+        !this.transfer.stockAreaIdDestino ||
+        !this.transfer.motivo
+        ) {
+          this.transferFormError = true;
+          return;
+        }
+
+      const itemExist = this.itemsMed.some(
+        (itemMed) => (itemMed.sku == this.transfer.sku) && (itemMed.stockAreaId == this.tranfer.stockAreaIdOrigen)
+      );
+
+      if(itemExist){
+        let itemMed = [];
+        this.itemsMed.forEach(item => {
+          if((item.sku == this.transfer.sku) && (item.stockAreaId == this.tranfer.stockAreaIdOrigen)){
+            itemMed = item;
+          }else{
+            this.transferCantError = true;
+          }
+        });
+        const cantidadSuficiente = this.transfer.cantidad <= itemMed.stock;
+        if(cantidadSuficiente){
+          
+          try {
+            await transferenciaStockService.createTransferencia(this.globalStore.getUsuarioId , this.transfer.sku, this.transfer.cantidad, this.transfer.stockAreaIdOrigen, this.transfer.stockAreaIdDestino, this.tranfer.motivo);
+            this.closeTransferDialog();
+          } catch (error) {
+            console.error("Error al transferir stock: ", error);
+          }
+
+        }else{
+          this.transferCantError = true;
+        }
+      }
     },
 
     openAddDialog() {
@@ -339,8 +380,7 @@ export default {
     },
 
     async addMedicamento() {
-      this.skuError = false;
-      this.formError = false;
+      this.resetErrors();
 
       if (
         !this.newMed.sku ||
@@ -380,7 +420,7 @@ export default {
     },
 
     async updateMedicamento() {
-      this.editFormError = false;
+      this.resetEditErrors();
 
       if (
         !this.editMed.sku ||
@@ -410,9 +450,9 @@ export default {
       this.confirmDeleteSku = null;
     },
 
-    async deleteMedicamento(sku) {
+    async deleteMedicamento() {
       try {
-        await medicamentosService.deleteMedicamento(sku);
+        await medicamentosService.deleteMedicamento(this.confirmDeleteSku);
         await this.loadMedicamentos();
         this.closeDeleteDialog();
       } catch (error) {
@@ -426,8 +466,7 @@ export default {
         descripcion: "",
         tipo_insumo: "Medicamento",
       };
-      this.skuError = false;
-      this.formError = false;
+      this.resetErrors();
     },
 
     resetEditForm() {
@@ -436,7 +475,7 @@ export default {
         descripcion: "",
         tipo_insumo: "Medicamento",
       };
-      this.editFormError = false;
+      this.resetEditErrors();
     },
 
     resetTransferForm(){
@@ -447,7 +486,7 @@ export default {
         stockAreaIdDestino: "",
         motivo: "",
       };
-      this.transferError = false;
+      this.resetTransferErrors();
     },
 
     resetErrors() {
@@ -461,6 +500,7 @@ export default {
 
     resetTransferErrors(){
       this.transferError = false;
+      this.transferCantError = false;
     }
   }
 };

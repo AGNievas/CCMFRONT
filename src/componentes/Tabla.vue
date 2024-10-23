@@ -1,22 +1,28 @@
 <template>
-  <v-card>
+  <div>
     <v-data-table
       :headers="headers"
       :items="data"
-      class="elevation-1"
-      dense
+      hide-default-header
     >
+      <template v-slot:thead>
+          <thead>
+            <tr>
+              <th class="table-header text-start" v-for="(value, key) in headers" :key="key">{{ value.text }}</th>
+            </tr>
+          </thead>
+        </template>
       <!-- Filas de la tabla -->
       <template v-slot:item="{ item }">
         <tr>
-          <td v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
-          <td>
+          <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
+          <td class="text-start acciones-cell">
             <!-- Botón de editar -->
             <v-btn icon small color="#0E3746" @click="$emit('edit', item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <!-- Botón de eliminar -->
-            <v-btn icon small color="red" @click="$emit('delete', item.id)">
+            <v-btn icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
             <!-- Botón de restaurar contraseña solo si es admin y es listado de usuarios -->
@@ -33,7 +39,7 @@
         </tr>
       </template>
     </v-data-table>
-  </v-card>
+  </div>
 </template>
 
 <script>
