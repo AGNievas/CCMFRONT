@@ -7,6 +7,7 @@ const usuariosService = {
   async getAllUsuarios() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
+      console.log("usuariosService", response.data.return)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);

@@ -6,8 +6,12 @@ const pacienteService = {
 
   async getAllPaciente() {
     try {
+      console.log("aca")
       const response = await axiosInstance.get(URL, { withCredentials: true });
-      return response.data.return;
+
+      console.log(response)
+      
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
       return [];
@@ -38,7 +42,7 @@ const pacienteService = {
     }
   },
 
-  async getPacienteByDni(dni) {
+  async getPacienteByDniYGenero(dni) {
     try {
       const response = await axiosInstance.get(`${URL}/dni/${dni}`, {
         withCredentials: true,
@@ -50,26 +54,31 @@ const pacienteService = {
     }
   },
 
-  async createPaciente(nombre) {
+  async createPaciente(paciente) {
     try {
+      console.log(paciente,"crearpacienteservie")
+      const {dni, nombre, apellido, fechaNacimiento, genero} = paciente;
+      
       const response = await axiosInstance.post(
         `${URL}`,
-        { nombre },
+        { dni, nombre, apellido, fechaNacimiento, genero },
         { withCredentials: true }
       );
-
-      return response.data.return;
+      console.log(response, "servicio front post backend")
+      console.log(response.data.success, "Creo con exito?")
+      return response.data.success;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
       return [];
     }
   },
 
-  async updatePaciente(id, nombre) {
-    try {
+  async updatePaciente(paciente) {
+    try {console.log(paciente)
+      const {id, dni, nombre, apellido, fechaNacimiento, genero} = paciente;
       const { data: pacienteActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
-        { nombre },
+        { id, dni, nombre, apellido, fechaNacimiento, genero },
         { withCredentials: true }
       );
 
@@ -80,10 +89,11 @@ const pacienteService = {
     }
   },
 
-  async deletePaciente(id) {
+  async deletePaciente(dni) {
     try {
+      console.log(dni,"servicio front delete")
       const { data: pacienteEliminado } = await axiosInstance.delete(
-        `${URL}/${id}`,
+        `${URL}/${dni}`,
         { withCredentials: true }
       );
       return pacienteEliminado;
