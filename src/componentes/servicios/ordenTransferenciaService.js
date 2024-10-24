@@ -52,7 +52,7 @@ const ordenTransferenciaService = {
 
 
   async createTransferencia(usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
-    try {
+    try {console.log(usuarioId)
       console.log("AntescrearOrdenPostResponse")
       const response = await axiosInstance.post(`${URL}`, { usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo}, { withCredentials: true });
       console.log("DespcrearOrdenPostResponse", response.data.return)

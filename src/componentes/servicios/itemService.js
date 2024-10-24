@@ -2,9 +2,10 @@
 import axiosInstance from '@/axios';
 const API_URL = "/item";
 
+  const DEPOSITO_GENERAL = 1;
 
 const itemService = { 
-
+     
     async getAllItem() {
         try {
           const response = await axiosInstance.get(API_URL, {withCredentials:true});
@@ -49,11 +50,11 @@ const itemService = {
 
      
 
-      async  createItem(sku, stock, stockAreaId) {
+      async  createItem(sku, descripcion, tipo_insumo, stock) {
         try {
-          console.log("AntescrearItemPostResponse")
-          const response = await axiosInstance.post(`${URL}`,{sku, stock, stockAreaId},{withCredentials:true});
-          console.log("DespcrearItemPostResponse",response.data.return)
+          const stockAreaId = DEPOSITO_GENERAL;
+          const response = await axiosInstance.post(`${URL}`,{sku, descripcion, tipo_insumo, stock, stockAreaId},{withCredentials:true});
+          console.log("DespcrearItemPostResponse",response)
           return response.data.return;
         } catch (error) {
           console.error("Error al obtener Items:", error);
@@ -63,8 +64,8 @@ const itemService = {
       
        async  updateItem(id,sku, stock,stockAreaId) {
         try {
-          console.log("AntesUpdateItemPutResponse")
-          const {data: itemActualizado} = await axiosInstance.put(`${URL}/${id}`, sku,stock,stockAreaId);
+         
+          const { data: itemActualizado } = await axiosInstance.put(`${URL}/${id}`, sku,stock,stockAreaId);
           console.log("DespuesItemPuttResponse")
           return itemActualizado;
         } catch (error) {
