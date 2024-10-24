@@ -130,6 +130,25 @@
 
             ></v-select>
 
+            <!-- stock -->
+            <v-text-field
+              v-model.number="newMed.stock"
+              label="Stock"
+              required
+              type="number"
+              min="0"
+            ></v-text-field>
+
+            <!-- areaid -->
+            <!-- <v-select
+              v-model="newMed.area"
+              :items="areas"
+              item-title="nombre"
+              item-value="id"
+              label="Area"
+              required
+            ></v-select> -->
+
             <v-alert v-if="formError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
             </v-alert>
@@ -351,7 +370,7 @@ export default {
 
       if(itemExist != null && itemExist.stock >= this.transfer.cantidad){
         try {
-            await ordenTransferenciaService.createTransferencia(this.globalStore.getUsuarioId , this.transfer.sku, this.transfer.cantidad, this.transfer.stockAreaIdOrigen, this.transfer.stockAreaIdDestino, this.tranfer.motivo);
+            await ordenTransferenciaService.createTransferencia(this.globalStore.getUsuarioId , this.transfer.sku, this.transfer.cantidad, this.transfer.stockAreaIdOrigen, this.transfer.stockAreaIdDestino, this.transfer.motivo);
             this.closeTransferDialog();
           } catch (error) {
             console.error("Error al transferir stock: ", error);
@@ -369,6 +388,7 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
+        stock: null,
       };
     },
 
@@ -383,7 +403,8 @@ export default {
       if (
         !this.newMed.sku ||
         !this.newMed.descripcion ||
-        !this.newMed.tipo_insumo 
+        !this.newMed.tipo_insumo ||
+        !this.newMed.stock
       ) {
         this.formError = true;
         return;
@@ -395,7 +416,7 @@ export default {
 
       if (!exists) {
         try {
-          await medicamentosService.createMedicamento(this.newMed.sku, this.newMed.descripcion, this.newMed.tipo_insumo);
+          await itemService.createItem(this.newMed.sku, this.newMed.descripcion, this.newMed.tipo_insumo, this.newMed.stock);
           await this.loadMedicamentos();
           this.closeAddDialog();
         } catch (error) {
@@ -463,6 +484,7 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
+        stock: null,
       };
       this.resetErrors();
     },
