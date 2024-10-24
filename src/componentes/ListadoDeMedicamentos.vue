@@ -526,11 +526,16 @@ export default {
           );
           await itemService.deleteItem(itemDelete.id);
         }
-        await this.loadItemsMed();
-        await this.loadMedicamentos();
+       
         this.closeDeleteDialog();
       } catch (error) {
         console.error("Error al eliminar el medicamento:", error);
+      }
+      finally{
+      
+        await this.loadItemsMed();
+        await this.loadMedicamentos();
+       
       }
     },
 

@@ -68,7 +68,7 @@ const medicamentosService = {
       console.log("despuesUpdateMedicamento", medicamentoActualizado)
       return medicamentoActualizado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar el Medicamento:", error);
       throw error;
     }
   },
@@ -79,7 +79,7 @@ const medicamentosService = {
       const { data: medicamentoEliminado } = await axiosInstance.delete(`${URL}/${sku}`, { withCredentials: true });
       return medicamentoEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar el Medicamento:", error);
       throw error;
     }
   }

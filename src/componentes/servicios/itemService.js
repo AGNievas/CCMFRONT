@@ -82,7 +82,7 @@ const itemService = {
           const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/${id}`,{withCredentials:true});
           return ItemEliminado;
         } catch (error) {
-          console.error("Error al actualizar el usuario:", error);
+          console.error("Error al actualizar el Item1:", error);
           throw error;
         }
       },
@@ -93,7 +93,7 @@ const itemService = {
           const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/items/${sku}`,{withCredentials:true});
           return ItemEliminado;
         } catch (error) {
-          console.error("Error al actualizar el usuario:", error);
+          console.error("Error al actualizar el Item2:", error);
           throw error;
         }
       }
