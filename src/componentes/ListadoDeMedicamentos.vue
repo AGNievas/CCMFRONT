@@ -521,7 +521,10 @@ export default {
           await itemService.deleteItemsBySku(this.confirmDeleteSku);
           await medicamentosService.deleteMedicamento(this.confirmDeleteSku);
         }else{
-          await medicamentosService.deleteMedicamento(this.confirmDeleteSku);
+          let itemDelete = this.itemsMed.find(
+            (itemMed) => (itemMed.sku == this.confirmDeleteSku) && (itemMed.stockAreaId == this.area)
+          );
+          await itemService.deleteItem(itemDelete.id);
         }
         await this.loadItemsMed();
         await this.loadMedicamentos();
