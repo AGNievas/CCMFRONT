@@ -232,6 +232,12 @@ export default {
       addDialog: false,
       skuError: false,
       formError: false,
+      newMed: {
+        sku: "",
+        descripcion: "",
+        tipo_insumo: "Medicamento",
+        stock: null,
+      },
 
       editDialog: false,
       editFormError: false,
