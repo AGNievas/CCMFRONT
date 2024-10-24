@@ -517,7 +517,13 @@ export default {
 
     async deleteMedicamento() {
       try {
-        await medicamentosService.deleteMedicamento(this.confirmDeleteSku);
+        if(this.area == 0 && this.globalStore.getEsAdmin){
+          await itemService.deleteItemsBySku(this.confirmDeleteSku);
+          await medicamentosService.deleteMedicamento(this.confirmDeleteSku);
+        }else{
+          await medicamentosService.deleteMedicamento(this.confirmDeleteSku);
+        }
+        await this.loadItemsMed();
         await this.loadMedicamentos();
         this.closeDeleteDialog();
       } catch (error) {
