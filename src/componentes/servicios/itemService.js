@@ -79,7 +79,18 @@ const itemService = {
       async  deleteItem(id) {
         try {
           console.log("antesDeleteItem", id)
-          const {data: ItemEliminado} = await axiosInstance.delete(`${URL}/${id}`,{withCredentials:true});
+          const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/${id}`,{withCredentials:true});
+          return ItemEliminado;
+        } catch (error) {
+          console.error("Error al actualizar el usuario:", error);
+          throw error;
+        }
+      },
+
+      async  deleteItemsBySku(sku) {
+        try {
+          console.log("antesDeleteItem")
+          const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/items/${sku}`,{withCredentials:true});
           return ItemEliminado;
         } catch (error) {
           console.error("Error al actualizar el usuario:", error);
