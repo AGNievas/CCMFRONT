@@ -1,25 +1,31 @@
 <template>
   <v-container>
     <v-card>
-     
+
       <div v-if="!archivoCargado">
         <v-row class="d-flex flex-column align-center">
-          <v-btn @click="subirArchivo" class="mx-2 btn-blue">Subir Archivo</v-btn>
-          <p class="recuperar-link" @click="descargarPlantilla">Descargar Plantilla</p>
+          <v-btn @click="subirArchivo" class="my-2 mx-5 btn-blue btn-tamano">Subir Archivo</v-btn>
+          <v-btn @click="descargarArchivo(this.plantilla, 'plantilla')" class="my-2 mx-5 btn-blue btn-tamano">Descargar
+            Plantilla</v-btn>
         </v-row>
       </div>
 
-      
       <div v-if="archivoCargado && !archivoImportado">
-        <p class="recuperar-link" @click="descargarArchivo">{{ nombreArchivo }}</p>
-        <v-btn @click="importarArchivo" class="mx-2 btn-blue">Importar</v-btn>
-        <v-btn @click="cancelarArchivo" class="mx-2 btn-blue">Cancelar</v-btn>
+        <v-row class="d-flex flex-column align-center">
+          <p class="recuperar-link" @click="descargarArchivo(this.archivoADescargar)">{{ nombreArchivo }}</p>
+          <v-btn @click="importarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Importar</v-btn>
+          <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Cancelar</v-btn>
+        </v-row>
       </div>
-    
+
       <div v-if="archivoImportado">
-        <v-btn @click="descargarArchivo" class="mx-2 btn-blue">Descargar Archivo</v-btn>
-       
+        <v-row class="d-flex flex-column align-center">
+          <v-btn @click="descargarArchivo(this.archivoADescargar, 'informe')" class="my-2 mx-5 btn-blue btn-tamano">Descargar
+            Informe</v-btn>
+          <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Volver a la Carga</v-btn>
+        </v-row>
       </div>
+
     </v-card>
   </v-container>
 </template>
@@ -36,7 +42,12 @@ export default {
       nombreArchivo: "",
       archivo: null,
       archivoCsvEnviado: null,
-      archivoADescargar:null
+      archivoADescargar: null,
+      plantilla: [
+        ["sku", "descripcion", "tipo_insumo", "stock"],
+      ]
+        .map(e => e.join(","))
+        .join("\n")
     };
   },
   methods: {
@@ -49,78 +60,49 @@ export default {
         if (file) {
           this.nombreArchivo = file.name;
           this.archivo = file;
-
-          // Usando PapaParse para leer el archivo CSV
-
-          
           Papa.parse(file, {
-            header:true,
-            dynamicTyping:true,
+            header: true,
+            dynamicTyping: true,
             complete: (result) => {
               console.log("CSV Parsed Data:", result.data);
               this.archivoCargado = true;
-              this.archivoCsvEnviado= result.data
-              
+              this.archivoCsvEnviado = result.data
             },
-
-           
-            
             error: (error) => {
               console.error("Error al leer el archivo CSV:", error);
             },
           });
-         
-         
         }
-        console.log(this.archivo, input,"en subir archivos")
       };
       input.click();
     },
-    descargarPlantilla() {
-    
+    descargarArchivo(archivo, titulo) {
+      console.log(archivo)
+      const blob = new Blob([archivo], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', titulo + '.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
-    descargarArchivo() {
-   const blob = new Blob([this.archivoADescargar], { type: 'text/csv' });
-   const url = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', 'medicamentos.csv'); 
-  document.body.appendChild(link);
-  link.click();
-
-  // Limpiar el enlace temporal
-  document.body.removeChild(link);
-},
     async importarArchivo() {
-      console.log(this.archivoCsvEnviado)
-        this.archivoADescargar = await medicamentosService.cargaMasivaMedicamento(this.archivoCsvEnviado)
-       console.log(this.archivoADescargar, "archivo devuelto")
-
-      
+      this.archivoADescargar = await medicamentosService.cargaMasivaMedicamento(this.archivoCsvEnviado)
       this.archivoImportado = true;
     },
     cancelarArchivo() {
-      // Restablecer el estado y permitir cargar un nuevo archivo
       this.archivoCargado = false;
       this.archivoImportado = false;
       this.nombreArchivo = "";
       this.archivo = null;
-    },
-    descargarArchivoImportado() {
-      // Lógica para descargar el archivo CSV desde assets
-      const link = document.createElement("a");
-      link.href = require('@/assets/resultado.csv'); // Ruta al archivo CSV en assets
-      link.download = "resultado.csv"; // Nombre con el que se descargará el archivo
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link); // Remover el enlace del DOM después de la descarga
-    },
+    }
   },
 };
 </script>
 
 <style scoped>
-.v-container {
-  padding-top: 50px !important; 
+.btn-tamano {
+  min-width: 200px;
 }
 </style>
