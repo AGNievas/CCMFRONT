@@ -494,11 +494,13 @@ export default {
           );
           console.log("actualizar item", itemActualizar.id, this.editMed.sku, this.editMed.stock, this.area)
           await itemService.updateItem(itemActualizar.id, this.editMed.sku, this.editMed.stock)
-          await this.loadItemsMed();
+          
         }else{
           await medicamentosService.updateMedicamento(this.editMed.sku, this.editMed.descripcion, this.editMed.tipo_insumo);
-          await this.loadMedicamentos();
+         
         }
+        await this.loadItemsMed();
+        await this.loadMedicamentos();
         this.closeEditDialog();
       } catch (error) {
         console.error("Error al actualizar el medicamento:", error);
