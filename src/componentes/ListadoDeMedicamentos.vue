@@ -177,7 +177,7 @@
         <v-card-text>
           <v-form ref="editForm">
             <v-text-field v-model="editMed.sku" label="SKU" required readonly></v-text-field>
-            <v-text-field v-model="editMed.descripcion" label="Descripción" required></v-text-field>
+            <v-text-field v-model="editMed.descripcion" label="Descripción" required :readonly="this.area != 0"></v-text-field>
             <v-select
               v-model="editMed.tipo_insumo"
               :items="tipoInsumoOptions"
@@ -495,10 +495,10 @@ export default {
           console.log("actualizar item", itemActualizar.id, this.editMed.sku, this.editMed.stock, this.area)
           await itemService.updateItem(itemActualizar.id, this.editMed.sku, this.editMed.stock)
           await this.loadItemsMed();
+        }else{
+          await medicamentosService.updateMedicamento(this.editMed.sku, this.editMed.descripcion, this.editMed.tipo_insumo);
+          await this.loadMedicamentos();
         }
-        await medicamentosService.updateMedicamento(this.editMed.sku, this.editMed.descripcion, this.editMed.tipo_insumo);
-        
-        await this.loadMedicamentos();
         this.closeEditDialog();
       } catch (error) {
         console.error("Error al actualizar el medicamento:", error);
