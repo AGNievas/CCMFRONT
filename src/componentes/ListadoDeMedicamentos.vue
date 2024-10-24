@@ -27,7 +27,7 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn @click="openTransferDialog" class="mx-2 btn-blue">Transferir Stock</v-btn>
+        <v-btn v-if="false" @click="openTransferDialog" class="mx-2 btn-blue">Transferir Stock</v-btn>
         <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
@@ -424,6 +424,7 @@ export default {
       if (!exists) {
         try {
           await itemService.createItem(this.newMed.sku, this.newMed.descripcion, this.newMed.tipo_insumo, this.newMed.stock);
+          await this.loadItemsMed();
           await this.loadMedicamentos();
           this.closeAddDialog();
         } catch (error) {

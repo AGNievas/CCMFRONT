@@ -29,7 +29,7 @@
         <v-list-item>
           <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado De Medicamentos</RouterLink>
         </v-list-item>
-        <v-list-item>
+        <v-list-item v-if="false">
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
         <v-list-item>
