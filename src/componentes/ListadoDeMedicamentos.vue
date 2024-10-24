@@ -15,7 +15,7 @@
 
         <v-select
           v-model="area"
-          :items="areas"
+          :items="areasTodo"
           item-title="nombre"
           item-value="id"
           label="Area de Stock"
@@ -49,7 +49,6 @@
           <v-form ref="form">
             <!-- <v-text-field v-model="transfer.sku" label="SKU" required></v-text-field> -->
             <v-select
-              @click="loadMedicamentos"
               v-model="transfer.sku"
               :items="medicamentos"
               item-title="sku"
@@ -76,7 +75,7 @@
             ></v-select>
 
             <v-select
-              v-model="transfer.stockAreaDestino"
+              v-model="transfer.stockAreaIdDestino"
               :items="areas"
               item-title="nombre"
               item-value="id"
@@ -189,7 +188,7 @@ import ConfirmDialog from './ConfirmDialog.vue';
 import stockAreasIdService from "./servicios/stockAreaService.js";
 import itemService from "./servicios/itemService";
 import medicamentosService from "./servicios/medicamentosService.js";
-import transferenciaStockService from "./servicios/ordenTransferenciaService";
+import ordenTransferenciaService from "./servicios/ordenTransferenciaService.js";
 import { useGlobalStore } from "@/stores/global.js";
 
 
@@ -205,6 +204,7 @@ export default {
       search: '',
       medicamentos: [],
       areas: [],
+      areasTodo: [],
       itemsMed: [],
       medicamentosConStock: [],
       area: null,
@@ -223,6 +223,13 @@ export default {
       transferDialog: false,
       transferFormError: false,
       transferCantError: false,
+      transfer: {
+        sku: "",
+        cantidad: null,
+        stockAreaIdOrigen: "",
+        stockAreaIdDestino: "",
+        motivo: "",
+      },
 
       globalStore: useGlobalStore(),
     };
@@ -258,7 +265,6 @@ export default {
 
   methods: {
     onAreaChange(selectedArea) {
-      console.log("holaaaa")
       this.area = selectedArea; 
       if(this.area == 0){
         this.loadMedicamentos()
@@ -278,7 +284,8 @@ export default {
 
     async loadStockAreasId(){
       this.areas = await stockAreasIdService.getAllStockArea();
-      this.area = this.areas[0].id;
+      this.areasTodo = [{nombre: "Todo", id: 0}, ...this.areas];
+      this.area = this.areasTodo[0].id;
       this.onAreaChange(this.area)
     },
 
@@ -305,6 +312,7 @@ export default {
     },
 
     openTransferDialog(){
+      this.loadMedicamentos();
       this.transferDialog = true;
       this.resetTransferErrors();
       this.transfer = {
@@ -322,9 +330,11 @@ export default {
     },
 
     async transferMedicamento(){
-      this.transferFormError = false;
-      this.transferCantError = false;
-
+      this.resetTransferErrors();
+      // this.transferFormError = false;
+      // this.transferCantError = false;
+      console.log("sku ",this.transfer.sku," cant ",this.transfer.cantidad," orig ",this.transfer.stockAreaIdOrigen," dest ",this.transfer.stockAreaIdDestino," mot ",this.transfer.motivo)
+      console.log(this.transfer.stockAreaIdDestino)
       if(!this.transfer.sku ||
         !this.transfer.cantidad ||
         !this.transfer.stockAreaIdOrigen ||
@@ -335,33 +345,21 @@ export default {
           return;
         }
 
-      const itemExist = this.itemsMed.some(
-        (itemMed) => (itemMed.sku == this.transfer.sku) && (itemMed.stockAreaId == this.tranfer.stockAreaIdOrigen)
+      let itemExist = this.itemsMed.find(
+        (itemMed) => (itemMed.sku == this.transfer.sku) && (itemMed.stockAreaId == this.transfer.stockAreaIdOrigen)
       );
 
-      if(itemExist){
-        let itemMed = [];
-        this.itemsMed.forEach(item => {
-          if((item.sku == this.transfer.sku) && (item.stockAreaId == this.tranfer.stockAreaIdOrigen)){
-            itemMed = item;
-          }else{
-            this.transferCantError = true;
-          }
-        });
-        const cantidadSuficiente = this.transfer.cantidad <= itemMed.stock;
-        if(cantidadSuficiente){
-          
-          try {
-            await transferenciaStockService.createTransferencia(this.globalStore.getUsuarioId , this.transfer.sku, this.transfer.cantidad, this.transfer.stockAreaIdOrigen, this.transfer.stockAreaIdDestino, this.tranfer.motivo);
+      if(itemExist != null && itemExist.stock >= this.transfer.cantidad){
+        try {
+            await ordenTransferenciaService.createTransferencia(this.globalStore.getUsuarioId , this.transfer.sku, this.transfer.cantidad, this.transfer.stockAreaIdOrigen, this.transfer.stockAreaIdDestino, this.tranfer.motivo);
             this.closeTransferDialog();
           } catch (error) {
             console.error("Error al transferir stock: ", error);
           }
-
-        }else{
-          this.transferCantError = true;
-        }
+      }else{
+        this.transferCantError = true;
       }
+
     },
 
     openAddDialog() {
@@ -499,7 +497,7 @@ export default {
     },
 
     resetTransferErrors(){
-      this.transferError = false;
+      this.transferFormError = false;
       this.transferCantError = false;
     }
   }
