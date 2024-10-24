@@ -423,7 +423,8 @@ export default {
       if (!exists) {
         try {
           await itemService.createItem(this.newMed.sku, this.newMed.descripcion, this.newMed.tipo_insumo, this.newMed.stock);
-          await this.loadMedicamentos();
+          this.loadMedicamentos()
+          this.loadItemsMed()
           this.closeAddDialog();
         } catch (error) {
           console.error("Error al agregar el medicamento:", error);
