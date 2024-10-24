@@ -63,14 +63,13 @@ const itemService = {
         }
       },
       
-       async  updateItem(id,sku, stock,stockAreaId) {
+      async  updateItem(id,sku,stock) {
         try {
-         
-          const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, sku,stock,stockAreaId);
+          const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, {sku,stock}, {withCredentials:true});
           console.log("DespuesItemPuttResponse")
           return itemActualizado;
         } catch (error) {
-          console.error("Error al actualizar el usuario:", error);
+          console.error("Error al actualizar el item:", error);
           throw error;
         }
       },

@@ -185,6 +185,15 @@
               required
             ></v-select>
 
+            <v-text-field
+              v-if = "this.area != 0"
+              v-model.number="editMed.stock"
+              label="Stock"
+              required
+              type="number"
+              min="0"
+            ></v-text-field>
+
             <v-alert v-if="editFormError" type="error" dismissible>
               Todos los campos son obligatorios. Por favor, completa la información.
             </v-alert>
@@ -242,6 +251,12 @@ export default {
 
       editDialog: false,
       editFormError: false,
+      editMed: {
+        sku: "",
+        descripcion: "",
+        tipo_insumo: "Medicamento",
+        stock: null,
+      },
 
       deleteDialog: false,
       confirmDeleteSku: null,
@@ -357,8 +372,6 @@ export default {
 
     async transferMedicamento(){
       this.resetTransferErrors();
-      // this.transferFormError = false;
-      // this.transferCantError = false;
       console.log("sku ",this.transfer.sku," cant ",this.transfer.cantidad," orig ",this.transfer.stockAreaIdOrigen," dest ",this.transfer.stockAreaIdDestino," mot ",this.transfer.motivo)
       console.log(this.transfer.stockAreaIdDestino)
       if(!this.transfer.sku ||
@@ -437,7 +450,19 @@ export default {
 
     openEditDialog(medicamento) {
       this.editDialog = true;
-      this.editMed = { ...medicamento };
+      this.editMed = { 
+        sku: medicamento.sku,
+        descripcion: medicamento.descripcion,
+        tipo_insumo: medicamento.tipo_insumo,
+       };
+      if(this.area != 0){
+      let itemMed = this.itemsMed.find(
+        (itemMed) => (itemMed.sku == medicamento.sku) && (itemMed.stockAreaId == this.area)
+      );
+      this.editMed.tipo_insumo= medicamento.tipoInsumo,
+      this.editMed.stock = itemMed.stock;
+      }        
+
       this.resetEditErrors();
     },
 
@@ -449,6 +474,10 @@ export default {
     async updateMedicamento() {
       this.resetEditErrors();
 
+      if(this.area != 0 && !this.editMed.stock){
+        this.editFormError = true;
+        return;
+      }
       if (
         !this.editMed.sku ||
         !this.editMed.descripcion ||
@@ -457,9 +486,18 @@ export default {
         this.editFormError = true;
         return;
       }
-
+      ////////////////////////
       try {
+        if(this.area != 0){
+          let itemActualizar = this.itemsMed.find(
+            (itemMed) => (itemMed.sku == this.editMed.sku) && (itemMed.stockAreaId == this.area)
+          );
+          console.log("actualizar item", itemActualizar.id, this.editMed.sku, this.editMed.stock, this.area)
+          await itemService.updateItem(itemActualizar.id, this.editMed.sku, this.editMed.stock)
+          await this.loadItemsMed();
+        }
         await medicamentosService.updateMedicamento(this.editMed.sku, this.editMed.descripcion, this.editMed.tipo_insumo);
+        
         await this.loadMedicamentos();
         this.closeEditDialog();
       } catch (error) {
@@ -502,6 +540,7 @@ export default {
         sku: "",
         descripcion: "",
         tipo_insumo: "Medicamento",
+        stock: null,
       };
       this.resetEditErrors();
     },
