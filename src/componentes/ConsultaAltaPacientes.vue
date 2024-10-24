@@ -18,8 +18,8 @@
       </v-card-title>
 
       <!-- Usamos el componente Listado -->
-      <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" @edit="openEditarDialog" @delete="confirmDelete" />
-      
+      <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="verHistorialApliques" />
+
       <!-- Diálogos -->
       <PacienteDialog v-model="agregarDialog" :is-editing="false" @save="addPaciente" />
       <PacienteDialog v-model="editarDialog" :is-editing="true" :paciente="pacienteEdit" @save="editarPaciente" />
@@ -59,45 +59,43 @@ export default {
     };
   },
   computed: {
-
-    pacientesHeaders(){
+    pacientesHeaders() {
       return [
-        {text: 'DNI', value: 'dni'},
-        {text: 'Nombre', value: 'nombre'},
-        {text: 'Apellido', value: 'apellido'},
-        {text: 'Fecha Nacimiento', value: 'fechaNacimiento'},
-        {text: 'Genero', value: 'Genero'},
-      ]
+        { text: 'DNI', value: 'dni' },
+        { text: 'Nombre', value: 'nombre' },
+        { text: 'Apellido', value: 'apellido' },
+        { text: 'Genero', value: 'genero' },
+        { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
+        { text: 'Acciones', value: '' }
+      ];
     },
     pacientesFiltradosFormateados() {
-    return this.pacientes
-      .filter(paciente => {
-        const dniMatch = this.searchDni
-          ? paciente.dni.includes(this.searchDni)
-          : true;
-        const generoMatch =
-          this.searchGenero && this.searchGenero !== 'Indistinto'
-            ? paciente.genero === this.searchGenero
+      return this.pacientes
+        .filter(paciente => {
+          const dniMatch = this.searchDni
+            ? paciente.dni.includes(this.searchDni)
             : true;
-        return dniMatch && generoMatch;
-      })
-      .map(paciente => ({
-        id: paciente.id, // Asegúrate de mantener el ID
-        dni: paciente.dni,
-        nombre: paciente.nombre,
-        apellido: paciente.apellido,
-        genero: paciente.genero,
-        fechaNacimiento: this.formatearFecha(paciente.fechaNacimiento),
-      }));
-  },
-
+          const generoMatch =
+            this.searchGenero && this.searchGenero !== 'Indistinto'
+              ? paciente.genero === this.searchGenero
+              : true;
+          return dniMatch && generoMatch;
+        })
+        .map(paciente => ({
+          id: paciente.id, 
+          dni: paciente.dni,
+          nombre: paciente.nombre,
+          apellido: paciente.apellido,
+          genero: paciente.genero,
+          fechaNacimiento: this.formatearFecha(paciente.fechaNacimiento),
+        }));
+    },
   },
   async mounted() {
-   this.loadPacientes() ;
+    this.loadPacientes();
   },
   methods: {
-
-    async loadPacientes(){
+    async loadPacientes() {
       this.pacientes = await pacienteService.getAllPaciente();
     },
     formatearFecha(fecha) {
@@ -129,10 +127,7 @@ export default {
     },
     async editarPaciente(pacienteEditado) {
       try {
-        console.log(pacienteEditado,"front editar paciente")
-        const pacienteActualizado = await pacienteService.updatePaciente(
-          pacienteEditado
-        );
+        const pacienteActualizado = await pacienteService.updatePaciente(pacienteEditado);
         const index = this.pacientes.findIndex(p => p.id === pacienteActualizado.id);
         if (index !== -1) {
           this.pacientes.splice(index, 1, pacienteActualizado);
@@ -145,18 +140,20 @@ export default {
     },
     confirmDelete(id) {
       this.confirmDeleteId = id;
-      console.log(id, "confirmdelete")
       this.deleteDialog = true;
     },
     async deletePaciente() {
       try {
-        console.log(this.confirmDeleteId, "delete paciente")
         await pacienteService.deletePaciente(this.confirmDeleteId);
         this.pacientes = this.pacientes.filter(p => p.id !== this.confirmDeleteId);
         this.deleteDialog = false;
       } catch (error) {
         console.error('Error al eliminar paciente:', error);
       }
+    },
+    verHistorialApliques(paciente) {
+      // Redirigimos a la ruta de apliques con el ID del paciente
+      this.$router.push({ name: 'ListadoDeApliques', params: { pacienteId: paciente.id } });
     },
   },
 };

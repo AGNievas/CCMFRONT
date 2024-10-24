@@ -6,9 +6,9 @@ const stockAreaService = {
 
   async getAllStockArea() {
     try {
-      // console.log("llega aca?")
+      console.log("llega aca?")
       const response = await axiosInstance.get(`${URL}/`, { withCredentials: true });
-      // console.log(response.data.message.result)
+       console.log(response)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener stockArea:", error);

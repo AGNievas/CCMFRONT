@@ -11,7 +11,9 @@
 
           <v-text-field v-model="usuarioActual.cuil" label="Cuil" readonly></v-text-field>
 
-          <v-text-field v-model="usuarioActual.stockAreaId" label="Area" readonly></v-text-field>
+          <v-text-field v-model="usuarioActual.areaName" label="Area" readonly></v-text-field>
+
+       
 
           <v-btn @click="openEditPasswordDialog" class="btn-blue mx-2">Editar Contraseña</v-btn>
 
@@ -83,6 +85,7 @@
 </template>
 
 <script>
+import stockAreaService from "./servicios/stockAreaService.js";
 import usuariosService from "./servicios/usuariosService.js"; // Importa la función del servicio
 // import usuariosService from "./servicios/usuariosService.js";
 import { useGlobalStore } from "@/stores/global.js";
@@ -91,7 +94,7 @@ export default {
   name: 'InformacionUsuario',
   data() {
     return {
-
+      stockAreas:[],
       usuarioActual: {
         cuil: null,
         usuarioId: null,
@@ -99,7 +102,9 @@ export default {
         fullNameUsuario: null,
         rolId: null,
         esAdmin: false,
+        nombreArea:"",
       },
+      
       errorMessage:"",
       editPasswordDialog: false,
       currentPassword: "",
@@ -118,23 +123,36 @@ export default {
   },
   mounted() {
     this.iniciarUsuario()
+    this.loadStockAreas()
   },
+  
   methods: {
 
+    async loadStockAreas() {
+      console.log(this.stockAreas = await stockAreaService.getAllStockArea(),"hola?") ;
+    },
 
-    iniciarUsuario() {
+    getNombreArea(stockAreaId) {
+      const area = this.stockAreas.find(area => area.id === stockAreaId);
+      console.log(this.stockAreas,"areas")
+      return area ? area.nombre : 'Área no encontrada';
+    },
+
+    async iniciarUsuario() {
       const userLogueado = this.globalStore.getLogueado
       if (userLogueado) {
+        
         this.usuarioActual = {
           cuil: this.globalStore.getUsuarioCuil,
           usuarioId: this.globalStore.getUsuarioId,
-          stockAreaId: this.globalStore.getStockAreaId == 1 ? "Deposito General" : this.globalStore.getStockAreaId == 2 ? "Farmacia" : "Guardia",
+          stockAreaId: this.globalStore.getStockAreaId,
           fullNameUsuario: this.globalStore.getfullNameUsuario,
           rolId: this.globalStore.getRolId,
           esAdmin: this.rolId == 1 ? true : false,
+          nombreArea: this.getNombreArea(this.globalStore.getStockAreaId)
         };
       }
-
+      console.log(this.usuarioActual)
     },
     openEditPasswordDialog() {
       this.editPasswordDialog = true;

@@ -6,34 +6,32 @@
       hide-default-header
     >
       <template v-slot:thead>
-          <thead>
-            <tr>
-              <th class="table-header text-start" v-for="(value, key) in headers" :key="key">{{ value.text }}</th>
-            </tr>
-          </thead>
-        </template>
-      <!-- Filas de la tabla -->
+        <thead>
+          <tr>
+            <th class="table-header text-start" v-for="(value, key) in headers" :key="key">{{ value.text }}</th>
+          </tr>
+        </thead>
+      </template>
+      
       <template v-slot:item="{ item }">
         <tr>
           <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
           <td class="text-start acciones-cell">
-            <!-- Botón de editar -->
             <v-btn icon small color="#0E3746" @click="$emit('edit', item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <!-- Botón de eliminar -->
             <v-btn icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
-            <!-- Botón de restaurar contraseña solo si es admin y es listado de usuarios -->
+            <!-- Botón "Ver Historial Apliques" solo cuando NO es listado de apliques -->
             <v-btn
-              v-if="canRestorePassword"
+              v-if="!isListadoApliques"
               icon
               small
               color="blue"
-              @click="$emit('restorePassword', item)"
+              @click="$emit('ver-historial', item)"
             >
-              <v-icon>mdi-cached</v-icon>
+              <v-icon>mdi-history</v-icon>
             </v-btn>
           </td>
         </tr>
@@ -43,9 +41,6 @@
 </template>
 
 <script>
-// Importar el store global (ejemplo usando Vuex o Pinia, ajusta según tu implementación)
-import { useGlobalStore } from '@/stores/global'; // Ajusta según tu estructura
-
 export default {
   name: 'Tabla',
   props: {
@@ -59,13 +54,11 @@ export default {
     },
     isListadoUsuarios: {
       type: Boolean,
-      required: true, // Se necesita saber si el listado es de usuarios
+      required: true,
     },
-  },
-  computed: {
-    canRestorePassword() {
-      const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true; // Solo admin y listado de usuarios
+    isListadoApliques: {
+      type: Boolean,
+      default: false, // Nueva propiedad para manejar el listado de apliques
     },
   },
   methods: {

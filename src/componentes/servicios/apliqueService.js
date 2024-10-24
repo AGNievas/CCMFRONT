@@ -26,12 +26,13 @@ const apliqueService = {
     }
   },
 
-  async getApliqueByHistorialId(historialId) {
+  async getApliquesByPacienteId(pacienteId) {
     try {
-      const response = await axiosInstance.get(`${URL}/historial/${historialId}`, {
+      const response = await axiosInstance.get(`${URL}/paciente/${pacienteId}`, {
         withCredentials: true,
       });
-      return response.data.return;
+      console.log(response)
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Aplique:", error);
       return [];

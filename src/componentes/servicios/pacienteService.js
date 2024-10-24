@@ -96,6 +96,7 @@ const pacienteService = {
         `${URL}/${dni}`,
         { withCredentials: true }
       );
+      console.log(pacienteEliminado)
       return pacienteEliminado;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);

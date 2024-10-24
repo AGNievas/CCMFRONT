@@ -4,48 +4,53 @@
         :headers="headers"
         :data="filteredItems"
         :isListadoUsuarios="isListadoUsuarios" 
+        :isListadoApliques="isListadoApliques"
         @edit="$emit('edit', $event)"
         @delete="$emit('delete', $event)"
         @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
+        @ver-historial="$emit('ver-historial', $event)"
       />
     </div>
   </template>
   
   <script>
-  import Tabla from './Tabla.vue';
-  
-  export default {
-    name: 'Listado',
-    components: {
-      Tabla,
+import Tabla from './Tabla.vue';
+
+export default {
+  name: 'Listado',
+  components: {
+    Tabla,
+  },
+  props: {
+    search: {
+      type: Array,
+      required: true,
     },
-    props: {
-      search: {
-        type: Array,
-        required: true,
-      },
-      headers: {
-        type: Array,
-        required: true, // Recibimos los headers desde ListadoDeUsuarios
-      },
-      items: {
-        type: Array,
-        required: true,
-      },
-      showRestorePassword: {
-        type: Boolean,
-        default: false, // Por defecto no muestra el botón de restaurar contraseña
-      },
-      isListadoUsuarios: {
-        type: Boolean,
-        default: false, // Por defecto asumimos que no es un listado de usuarios
-      },
+    headers: {
+      type: Array,
+      required: true, 
     },
-    computed: {
-      filteredItems() {
-        return this.items; // Enviamos todos los campos, incluyendo el 'id'
-      },
+    items: {
+      type: Array,
+      required: true,
     },
-  };
-  </script>
-  
+    showRestorePassword: {
+      type: Boolean,
+      default: false,
+    },
+    isListadoUsuarios: {
+      type: Boolean,
+      default: false,
+    },
+    isListadoApliques: {
+      type: Boolean,
+      default: false, // Nueva propiedad para identificar si es el listado de apliques
+    },
+  },
+  computed: {
+    filteredItems() {
+      return this.items;
+    },
+  },
+};
+</script>
