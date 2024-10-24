@@ -17,10 +17,13 @@ const usuariosService = {
 
   async getUsuarioById(id) {
     try {
-      const response = await axiosInstance.get(`${URL}/${id}`, {
+      console.log(id, "servicio front")
+      const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
       });
-      return response.data;
+      console.log("aca")
+      console.log(response.data)
+      return response.data.message;
     } catch (error) {
       console.error(`Error al obtener el User id: ${id} `, error);
       throw error;

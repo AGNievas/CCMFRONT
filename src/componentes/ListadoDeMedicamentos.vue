@@ -34,6 +34,7 @@
       <Listado
         :items="filteredMedicamentosConStock"
         :headers="usuariosHeaders"
+        :isListadoMedicamentos="true"
         @edit="openEditDialog"
         @delete="confirmDelete"
       />

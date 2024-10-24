@@ -18,7 +18,7 @@
       </v-card-title>
 
       <!-- Usamos el componente Listado -->
-      <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="verHistorialApliques" />
+      <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes=true @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="verHistorialApliques" />
 
       <!-- Diálogos -->
       <PacienteDialog v-model="agregarDialog" :is-editing="false" @save="addPaciente" />

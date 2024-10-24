@@ -18,9 +18,8 @@ const rolService = {
 
   async getRolById(id) {
     try {
-      console.log("crearRolPostResponse")
-      const response = await axiosInstance.get(`${URL}/id/${id}`, { withCredentials: true });
-      console.log(response.data)
+            const response = await axiosInstance.get(`${URL}/id/${id}`, { withCredentials: true });
+    console.log(response)
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Rol:", error);

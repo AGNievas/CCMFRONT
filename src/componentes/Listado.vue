@@ -5,6 +5,8 @@
         :data="filteredItems"
         :isListadoUsuarios="isListadoUsuarios" 
         :isListadoApliques="isListadoApliques"
+        :isListadoPacientes="isListadoPacientes"
+        :isListadoMedicamentos="isListadoMedicamentos"
         @edit="$emit('edit', $event)"
         @delete="$emit('delete', $event)"
         @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
@@ -44,7 +46,15 @@ export default {
     },
     isListadoApliques: {
       type: Boolean,
-      default: false, // Nueva propiedad para identificar si es el listado de apliques
+      default: false, 
+    },
+    isListadoPacientes: {
+      type: Boolean,
+      default: false, 
+    },
+    isListadoMedicamentos: {
+      type: Boolean,
+      default: false, 
     },
   },
   computed: {

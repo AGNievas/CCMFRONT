@@ -53,7 +53,8 @@ const itemService = {
       async  createItem(sku, descripcion, tipo_insumo, stock) {
         try {
           const stockAreaId = DEPOSITO_GENERAL;
-          const response = await axiosInstance.post(`${URL}`,{sku, descripcion, tipo_insumo, stock, stockAreaId},{withCredentials:true});
+          console.log(sku, descripcion, tipo_insumo, stock, "crear item front")
+          const response = await axiosInstance.post(API_URL ,{sku, descripcion, tipo_insumo, stock, stockAreaId},{withCredentials:true});
           console.log("DespcrearItemPostResponse",response)
           return response.data.return;
         } catch (error) {
@@ -65,7 +66,7 @@ const itemService = {
        async  updateItem(id,sku, stock,stockAreaId) {
         try {
          
-          const { data: itemActualizado } = await axiosInstance.put(`${URL}/${id}`, sku,stock,stockAreaId);
+          const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, sku,stock,stockAreaId);
           console.log("DespuesItemPuttResponse")
           return itemActualizado;
         } catch (error) {
