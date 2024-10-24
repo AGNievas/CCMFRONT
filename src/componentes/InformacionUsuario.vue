@@ -143,7 +143,7 @@ export default {
           console.log(this.usuarioActual.usuarioId)
           const usuarioNombre = await usuariosService.getUsuarioById(this.usuarioActual.usuarioId)
           this.usuarioActual.fullNameUsuario = usuarioNombre.fullName
-          
+          console.log("oa")
           const areaResponse = await stockAreaService.getStockAreaById(this.usuarioActual.stockAreaId);
           this.usuarioActual.nombreArea = areaResponse.nombre;
           console.log(areaResponse.nombre)
