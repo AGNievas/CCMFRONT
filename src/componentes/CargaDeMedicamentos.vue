@@ -77,7 +77,6 @@ export default {
       input.click();
     },
     descargarArchivo(archivo, titulo) {
-      console.log(archivo)
       const blob = new Blob([archivo], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
