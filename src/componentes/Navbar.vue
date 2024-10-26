@@ -2,16 +2,16 @@
   <div>
     <v-app-bar :elevation="2" class="navbar">
       <template v-slot:prepend>
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon v-if="this.globalStore.getLogueado" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
       <v-app-bar-title class="headline">Control y Carga de Medicamentos</v-app-bar-title>
       <template v-slot:append>
         <RouterLink v-if="this.globalStore.getLogueado" :to="{ name: 'InformacionUsuario' }">
           <v-btn icon="mdi-account-circle" class="navbar-icon"></v-btn>
         </RouterLink>
-        <v-btn icon @click="logout" class="navbar-icon">
+        <v-btn v-if="this.globalStore.getLogueado" icon @click="logout" class="navbar-icon">
           <v-icon v-if="this.globalStore.getLogueado">mdi-export</v-icon>
-          <v-icon v-else>mdi-account</v-icon>
+          <!-- <v-icon v-else>mdi-account</v-icon> -->
         </v-btn>
       </template>
     </v-app-bar>
@@ -29,7 +29,7 @@
         <v-list-item>
           <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado De Medicamentos</RouterLink>
         </v-list-item>
-        <v-list-item v-if="false">
+        <v-list-item >
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
         <v-list-item>

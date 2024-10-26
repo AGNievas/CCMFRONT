@@ -56,20 +56,20 @@ const pacienteService = {
 
   async createPaciente(paciente) {
     try {
-      console.log(paciente,"crearpacienteservie")
-      const {dni, nombre, apellido, fechaNacimiento, genero} = paciente;
-      
+      console.log(paciente, "crearpacienteservie");
+      const { dni, nombre, apellido, fechaNacimiento, genero } = paciente;
+  
       const response = await axiosInstance.post(
         `${URL}`,
         { dni, nombre, apellido, fechaNacimiento, genero },
         { withCredentials: true }
       );
-      console.log(response, "servicio front post backend")
-      console.log(response.data.success, "Creo con exito?")
-      return response.data.success;
+  
+      return response.data;
     } catch (error) {
-      console.error("Error al obtener Paciente:", error);
-      return [];
+      console.error("Error al agregar paciente:", error);
+      // Propagar el error completo para acceder al mensaje
+      throw error;
     }
   },
 

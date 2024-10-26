@@ -101,11 +101,11 @@ export default {
 
     canVerEdit(){
       const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos || this.isListadoPacientes || this.isListadoApliques
+      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId<=2 || this.isListadoPacientes || this.isListadoApliques
     },
     canVerDelete(){
       const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos || this.isListadoPacientes || this.isListadoApliques
+      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId<=2 || this.isListadoPacientes || this.isListadoApliques
     }
   },
   methods: {
