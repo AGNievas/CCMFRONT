@@ -12,13 +12,24 @@
           single-line
           class="rounded-search-bar"
         ></v-text-field>
-        <v-select v-model="searchGenero" :items="generos" label="Género"></v-select>
+        <v-select v-model="searchGenero" 
+        :items="generos" 
+        label="Género"
+        density="compact" 
+        class="mx-2" 
+        variant="solo"
+        hide-details></v-select>
         <v-spacer></v-spacer>
         <v-btn @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <!-- Usamos el componente Listado -->
-      <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes=true @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="verHistorialApliques" />
+      <Listado :items="pacientesFiltradosFormateados" 
+      :headers="pacientesHeaders" 
+      :isListadoPacientes=true 
+      @edit="openEditarDialog" 
+      @delete="confirmDelete" 
+      @ver-historial="verHistorialApliques" />
 
       <!-- Diálogos -->
       <PacienteDialog
@@ -85,31 +96,6 @@ export default {
         { text: 'Acciones', value: '' }
       ];
     },
-    // pacientesFiltradosFormateados() {
-    //   return this.pacientes
-    //     .filter(paciente => {
-    //       const dniMatch = this.searchDni
-    //         ? paciente.dni.includes(this.searchDni)
-    //         : true;
-    //       const generoMatch =
-    //         this.searchGenero && this.searchGenero !== 'Indistinto'
-    //           ? paciente.genero === this.searchGenero
-    //           : true;
-    //       return dniMatch && generoMatch;
-    //     })
-    //     .map(paciente => ({
-    //       id: paciente.id, 
-    //       dni: paciente.dni,
-    //       nombre: paciente.nombre,
-    //       apellido: paciente.apellido,
-    //       genero: paciente.genero,
-    //       edad: this.calcularEdad(paciente.fechaNacimiento),
-    //       fechaNacimiento: this.formatearFecha(paciente.fechaNacimiento),
-          
-    //     }));
-    // },
-
-// Mapea y formatea la lista de pacientes filtrados
 
 pacientesFiltradosFormateados() {
     const pacientesFiltrados = this.filtrarPacientes();

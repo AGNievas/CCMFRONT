@@ -8,6 +8,7 @@ import InformacionUsuario from "./componentes/InformacionUsuario.vue";
 import ConsultaAltaPacientes from "./componentes/ConsultaAltaPacientes.vue";
 import ListadoDeUsuarios from "./componentes/ListadoDeUsuarios.vue";
 import ListadoApliques from "./componentes/ListadoApliques.vue";
+import ListadoDeTransferencias from "./componentes/ListadoDeTransferencias.vue";
 const routes = [
   { path: "/", redirect: "/login" },
   { path: "/login", name: "Login", component: Login , meta: { title: "Iniciar Sesión"} },
@@ -18,6 +19,7 @@ const routes = [
   { path: "/informacionUsuario", name: "InformacionUsuario", component: InformacionUsuario , meta: { title: "Información del Usuario"} },
   { path: "/consultaAltaPacientes", name: "ConsultaAltaPacientes", component: ConsultaAltaPacientes, meta: { title: "Consultar Paciente"} },
   { path: "/listadoDeUsuarios", name: "ListadoDeUsuarios", component: ListadoDeUsuarios , meta: { title: "Listado de Usuarios"} },
+  { path: "/listadoDeTransferencias", name: "ListadoDeTransferencias", component: ListadoDeTransferencias , meta: { title: "Listado de Transferencias"} },
   {
     path: '/apliques/:pacienteId',
     name: 'ListadoDeApliques',
