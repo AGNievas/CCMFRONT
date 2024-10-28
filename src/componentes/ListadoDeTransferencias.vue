@@ -47,6 +47,7 @@ import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import TransferenciaDialog from './TransferenciaDialog.vue';
 import transferenciaStockService from './servicios/transferenciaStockService.js';
+import ordenTransferenciaService from './servicios/ordenTransferenciaService.js';
 import stockAreaService from './servicios/stockAreaService.js';
 
 export default {
@@ -78,14 +79,14 @@ export default {
         { text: '', value: 'acciones', sortable: false },
       ];
     },
-    transferenciasFiltradasParaVista() {
-      return this.transferencias
-        .filter(trans => trans.sku.toString().includes(this.search) || trans.motivo.toLowerCase().includes(this.search.toLowerCase()))
-        .map(trans => ({
-          ...trans,
-          nombreAreaOrigen: this.getNombreArea(trans.stockAreaIdOrigen),
-          nombreAreaDestino: this.getNombreArea(trans.stockAreaIdDestino),
-        }));
+     transferenciasFiltradasParaVista() {
+    return (this.transferencias || []) // esta puesto para que no tire error mientras transferencias esta como undefined
+      .filter(trans => trans.sku.toString().includes(this.search))
+      .map(trans => ({
+        ...trans,
+        nombreAreaOrigen: this.getNombreArea(trans.stockAreaIdOrigen),
+        nombreAreaDestino: this.getNombreArea(trans.stockAreaIdDestino),
+      }));
     },
   },
   async mounted() {
@@ -120,9 +121,9 @@ export default {
     async saveTransferencia(transferencia) {
       try {
         if (this.isEditing) {
-          await transferenciaStockService.updateTransferencia(transferencia);
+          await transferenciaStockService.updateTransferenciaStock(transferencia);
         } else {
-          await transferenciaStockService.createTransferencia(transferencia);
+          await ordenTransferenciaService.createTransferencia(transferencia);
         }
         await this.loadTransferencias();
         this.dialog = false;
@@ -132,7 +133,7 @@ export default {
     },
     async deleteTransferencia() {
       try {
-        await transferenciaStockService.deleteTransferencia(this.selectedTransferencia.id);
+        await transferenciaStockService.deleteTransferenciaStock(this.selectedTransferencia.id);
         await this.loadTransferencias();
         this.deleteDialog = false;
       } catch (error) {
