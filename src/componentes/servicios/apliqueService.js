@@ -3,7 +3,6 @@ import axiosInstance from "@/axios.js";
 const URL = "/aplique";
 
 const apliqueService = {
-
   async getAllAplique() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
@@ -28,10 +27,13 @@ const apliqueService = {
 
   async getApliquesByPacienteId(pacienteId) {
     try {
-      const response = await axiosInstance.get(`${URL}/paciente/${pacienteId}`, {
-        withCredentials: true,
-      });
-      console.log(response)
+      const response = await axiosInstance.get(
+        `${URL}/paciente/${pacienteId}`,
+        {
+          withCredentials: true,
+        }
+      );
+
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Aplique:", error);
@@ -51,40 +53,41 @@ const apliqueService = {
     }
   },
 
-  async createAplique(dni, sku, cantidad, aplicante, stockAreaId) {
+  async createAplique(pacienteId, nuevoAplique) {
     try {
+      const { sku, cantidad, aplicante, stockAreaId, fechaAplicacion } =
+        nuevoAplique;
+
       const response = await axiosInstance.post(
         `${URL}`,
-        { dni, sku, cantidad, aplicante, stockAreaId },
+        { pacienteId, sku, cantidad, aplicante, stockAreaId, fechaAplicacion },
         { withCredentials: true }
       );
 
-      return response.data.return;
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Aplique:", error);
       return [];
     }
   },
 
-  async updateAplique(id, dni,
-    sku,
-    cantidad,
-    aplicante,
-    fechaAplicacion) {
+  async updateAplique(pacienteId, aplique) {
     try {
-      const { data: ApliqueActualizado } = await axiosInstance.put(
+      const { sku, aplicante, stockAreaId, fechaAplicacion, id } = aplique;
+
+      const response = await axiosInstance.put(
         `${URL}/${id}`,
         {
-          dni,
+          pacienteId,
           sku,
-          cantidad,
           aplicante,
-          fechaAplicacion
+          stockAreaId,
+          fechaAplicacion,
         },
         { withCredentials: true }
       );
 
-      return ApliqueActualizado;
+      return response.data.message;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
       throw error;

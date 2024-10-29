@@ -34,7 +34,7 @@
             >
               <v-icon>mdi-cached</v-icon>
             </v-btn>
-
+            <v-spacer></v-spacer>
             <v-btn
               v-if="canVerHistorial"
               icon
@@ -42,9 +42,19 @@
               color="blue"
               @click="$emit('ver-historial', item)"
             >
-            
-              <v-icon>mdi-history</v-icon>
-            </v-btn>
+            <v-icon>mdi-file-document-outline</v-icon>
+            <v-spacer></v-spacer>
+             </v-btn>
+            <v-btn
+              v-if="canCreateAplique"
+              icon
+              small
+              color="green"
+              @click="$emit('crear-aplique', item)"
+            >
+            <v-icon>mdi-pill</v-icon>
+              </v-btn>
+            <v-spacer></v-spacer>
           </td>
         </tr>
       </template>
@@ -82,6 +92,14 @@ export default {
       type: Boolean,
       default: false, 
     },
+    
+  },
+
+  data(){
+    return {
+      ROL_ID_USER : 3,
+      globalStore : useGlobalStore()
+    }
   },
 
   mounted(){
@@ -94,6 +112,10 @@ export default {
       return this.isListadoUsuarios && globalStore.getEsAdmin == true; // Solo admin y listado de usuarios
     },
 
+    canCreateAplique(){
+     
+      return this.isListadoPacientes && this.globalStore.rolId!=this.ROL_ID_USER
+    },
     canVerHistorial() {
       
       return this.isListadoPacientes; 
@@ -110,14 +132,16 @@ export default {
   },
   methods: {
     visibleColumns(item) {
-      const visibleData = {};
-      Object.keys(item).forEach(key => {
-        if (key !== 'id') {
-          visibleData[key] = item[key];
-        }
-      });
-      return visibleData;
-    },
+    if (!item) return {}; // Verifica que item esté definido, si no lo está, retorna un objeto vacío.
+    
+    const visibleData = {};
+    Object.keys(item).forEach(key => {
+      if (key !== 'id') {
+        visibleData[key] = item[key];
+      }
+    });
+    return visibleData;
+  },
   },
 };
 </script>

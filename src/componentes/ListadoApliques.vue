@@ -1,57 +1,75 @@
 <template>
   <div>
-    <v-card class="mx-auto" max-width="800">
-      <v-card-title>
-        Historial de Apliques para Paciente {{ pacienteId }}
+    <v-card class="custom-container">
+      <v-card-title class="d-flex align-center pe-2">
+        Historial Apliques {{ pacienteNombreCompleto }}
         <v-spacer></v-spacer>
-        <v-btn @click="openApliqueDialog" class="mx-2 btn-blue">Agregar Aplique</v-btn>
+        <v-btn @click="openAgregarApliqueDialog" class="mx-2 btn-blue">Agregar Aplique</v-btn>
+        <v-btn icon @click="$emit('close')">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
 
-      <!-- Componente reutilizado para mostrar la lista de apliques -->
-      <Listado :items="apliques" :headers="apliquesHeaders" isListadoApliques @edit="editAplique" @delete="confirmDeleteAplique" />
+      <!-- Componente Listado para mostrar los apliques del paciente -->
+      <Listado :items="apliques" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
+        @delete="confirmDeleteAplique" />
 
-      <!-- Diálogo para agregar/editar apliques -->
-      <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit" @save="saveAplique" />
+      <!-- Diálogo de agregar/editar aplique -->
+      <v-dialog v-model="apliqueDialogVisible" max-width="500px">
+        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
+          :paciente-id="pacienteId" :areas="stockAreas" :usuarios="usuarios" @save="saveAplique" />
+      </v-dialog>
 
-      <!-- Diálogo de confirmación para eliminar apliques -->
-      <ConfirmDialog
-        v-model="confirmDeleteDialog"
-        title="Confirmar Eliminación"
-        text="¿Estás seguro de que deseas eliminar este aplique?"
-        @confirm="deleteAplique"
-      />
+      <!-- Diálogo de confirmación para eliminar aplique -->
+      <ConfirmDialog v-model="confirmDeleteDialog" title="Confirmar Eliminación"
+        text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deleteAplique" />
     </v-card>
   </div>
 </template>
 
 <script>
-import ConfirmDialog from './ConfirmDialog.vue';
-import ApliqueDialog from './ApliqueDialog.vue';
 import Listado from './Listado.vue';
-import apliqueService from './servicios/apliqueService'; // Servicio para los apliques
+import ApliqueDialog from './ApliqueDialog.vue';
+import ConfirmDialog from './ConfirmDialog.vue';
+import apliqueService from './servicios/apliqueService.js';
+import stockAreaService from './servicios/stockAreaService';
+import usuariosService from './servicios/usuariosService';
+import { useGlobalStore } from '@/stores/global';
+import { formatearFecha } from '@/utils/formatearFecha';
+import PacienteService from './servicios/pacienteService';
+import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
 export default {
   props: {
     pacienteId: {
       type: String,
-      required: true, // Paciente seleccionado desde los params de la URL
+      required: true,
     },
+    modelValue: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
-    ConfirmDialog,
-    ApliqueDialog,
     Listado,
+    ApliqueDialog,
+    ConfirmDialog,
   },
   data() {
     return {
+      localVisible: this.modelValue,
       apliquesHeaders: [
+        { text: 'Aplicante', value: 'aplicanteNombre' },
         { text: 'SKU', value: 'sku' },
         { text: 'Cantidad', value: 'cantidad' },
-        { text: 'Aplicante', value: 'aplicante' },
-        { text: 'Fecha', value: 'fecha' },
-        { text: 'Acciones', value: 'acciones' },
+        { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
+        { text: 'Área', value: 'stockAreaNombre' },
+        { text: 'Acciones', value: '' },
       ],
-      apliques: [], // Apliques del paciente
+      pacienteNombreCompleto: '',
+      apliques: [],
+      stockAreas: [],
+      usuarios: [],
       apliqueDialogVisible: false,
       isEditing: false,
       apliqueToEdit: null,
@@ -60,31 +78,113 @@ export default {
     };
   },
   async mounted() {
+    await this.loadStockAreas();
+    await this.loadUsuarios();
     await this.loadApliques();
+    if (this.pacienteId) {
+      this.loadPacienteNombreCompleto();
+    }
+  },
+  watch: {
+    pacienteId: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.loadApliques();
+          this.loadPacienteNombreCompleto();
+        }
+      }
+    },
+    modelValue(val) {
+      this.localVisible = val;
+    },
+    localVisible(val) {
+      this.$emit('update:modelValue', val);
+    }
   },
   methods: {
+    async loadPacienteNombreCompleto() {
+      try {
+        const paciente = await PacienteService.getPacienteById(this.pacienteId);
+        this.pacienteNombreCompleto = `${paciente.nombre} ${paciente.apellido}`;
+      } catch (error) {
+        console.error('Error al cargar nombre completo del paciente:', error);
+      }
+    },
+
     async loadApliques() {
       try {
-       
-        this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId);
+        const apliquesRaw = await apliqueService.getApliquesByPacienteId(this.pacienteId);
+        this.apliques = this.mapApliques(apliquesRaw);
+
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
     },
-    openApliqueDialog() {
-      this.isEditing = false;
-      this.apliqueToEdit = null;
-      this.apliqueDialogVisible = true;
+
+    mapApliques(apliquesRaw) {
+      return apliquesRaw.map(aplique => {
+        const stockArea = this.stockAreas.find(area => area.id === aplique.stockAreaId);
+        const usuario = this.usuarios.find(user => user.id === aplique.aplicante);
+
+        return {
+          id: aplique.id, // Asegúrate de que el ID esté presente para identificar el aplique
+          aplicanteNombre: usuario ? usuario.fullName : 'Desconocido',
+          sku: aplique.sku,
+          cantidad: aplique.cantidad,
+          fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
+          stockAreaNombre: stockArea ? stockArea.nombre : 'Desconocido',
+
+        };
+      });
     },
-    editAplique(aplique) {
+
+    async loadStockAreas() {
+      this.stockAreas = await stockAreaService.getAllStockArea();
+    },
+
+    async loadUsuarios() {
+      const globalStore = useGlobalStore();
+      const stockAreaId = globalStore.stockAreaId;
+      this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(stockAreaId);
+    },
+
+    openAgregarApliqueDialog() {
+      this.isEditing = false;
+      this.apliqueToEdit = null; // Restablece aplique para agregar uno nuevo
+      this.apliqueDialogVisible = true; // Muestra el diálogo de aplique
+    },
+
+    openEditarApliqueDialog(aplique) {
       this.isEditing = true;
       this.apliqueToEdit = { ...aplique };
-      this.apliqueDialogVisible = true;
+
+      this.apliqueDialogVisible = true; // Muestra el diálogo en modo edición
     },
+
+    async saveAplique(nuevoAplique) {
+      try {
+        const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId, nuevoAplique);
+        if (this.isEditing) {
+          const index = this.apliques.findIndex(a => a.id === resultado.id);
+          if (index !== -1) {
+            this.apliques.splice(index, 1, resultado);
+          }
+        } else {
+          this.apliques.push(resultado);
+        }
+        this.apliqueDialogVisible = false;
+      } catch (error) {
+        console.error('Error al guardar aplique:', error);
+      }
+      this.loadApliques();
+    },
+
     confirmDeleteAplique(apliqueId) {
       this.apliqueIdToDelete = apliqueId;
       this.confirmDeleteDialog = true;
     },
+
     async deleteAplique() {
       try {
         await apliqueService.deleteAplique(this.apliqueIdToDelete);
@@ -94,19 +194,6 @@ export default {
         console.error('Error al eliminar aplique:', error);
       }
     },
-    async saveAplique(aplique) {
-      try {
-        if (this.isEditing) {
-          await apliqueService.updateAplique(aplique);
-        } else {
-          const apliqueGuardado = await apliqueService.createAplique(this.pacienteId, aplique);
-          this.apliques.push(apliqueGuardado);
-        }
-        this.apliqueDialogVisible = false;
-      } catch (error) {
-        console.error('Error al guardar aplique:', error);
-      }
-    },
-  },
+  }
 };
 </script>

@@ -35,7 +35,8 @@ const pacienteService = {
       const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
       });
-      return response.data.return;
+      console.log(response)
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
       return [];

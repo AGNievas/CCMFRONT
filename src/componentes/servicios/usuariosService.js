@@ -14,6 +14,19 @@ const usuariosService = {
       return [];
     }
   },
+  async getAllUsuariosByStockAreaId(stockAreaId) {
+    try {
+      console.log(stockAreaId, "servico front id area")
+      const response = await axiosInstance.get(`${URL}/areas/${stockAreaId}`, { withCredentials: true });
+      console.log("usuariosService", response.data.return
+        
+      )
+      return response.data.return;
+    } catch (error) {
+      console.error("Error al obtener Users:", error);
+      return [];
+    }
+  },
 
   async getUsuarioById(id) {
     try {

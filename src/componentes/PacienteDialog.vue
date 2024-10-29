@@ -103,7 +103,7 @@ export default {
       return (
         this.pacienteLocal.nombre &&
         this.pacienteLocal.apellido &&
-        this.pacienteLocal.dni &&
+        
         this.pacienteLocal.fechaNacimiento &&
         this.pacienteLocal.genero
       );
@@ -161,7 +161,10 @@ export default {
       this.pacienteLocal.fechaNacimiento = fecha;
     },
     validateDni() {
-      this.dniError = !validarDni(this.pacienteLocal.dni);
+      if(this.pacienteLocal.dni!=0 && !this.isEditing){
+        this.dniError = !validarDni(this.pacienteLocal.dni);
+      }
+      
     },
     validateNombre() {
       this.nombreError = !validarNombre(this.pacienteLocal.nombre);
