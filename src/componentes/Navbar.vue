@@ -40,6 +40,9 @@
         <v-list-item>
           <RouterLink to="/listadoDeTransferencias" class="drawer-item-title">Listado De Transferencias</RouterLink>
         </v-list-item>
+        <v-list-item>
+          <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado De Orden Transferencias</RouterLink>
+        </v-list-item>
 
       </v-list>
     </v-navigation-drawer>

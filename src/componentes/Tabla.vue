@@ -148,27 +148,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.table-header {
-  font-size: 15px; /* Tamaño de letra para los headers */
-  font-weight: bold;
-}
-
-.text-start {
-  font-size: 13px;
-}
-
-.acciones-cell {
-  display:flex;
-  align-items:center;
-  gap: 10px; /* Espacio mínimo entre botones */
-  font-size: 15px; /* Tamaño de letra para la celda de acciones */
-}
-
-/* Tamaño de los iconos dentro de los botones */
-.v-btn > .v-icon {
-  font-size: 10px; /* Tamaño más pequeño para los íconos */
-
-}
-</style>
