@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
       <Tabla
         :headers="headers"
         :data="filteredItems"

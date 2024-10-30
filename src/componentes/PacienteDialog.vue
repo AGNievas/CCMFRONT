@@ -45,6 +45,7 @@
           <v-text-field
             v-model="pacienteLocal.fechaNacimiento"
             label="Fecha de Nacimiento (YYYY-MM-DD)"
+            type="date"
             required
             @input="formatearFechaNacimiento"
             @keypress="soloNumeros"

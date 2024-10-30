@@ -51,7 +51,7 @@ const ordenTransferenciaService = {
 
 
 
-  async createTransferencia(usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
+  async createOrdenTransferencia(usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
     try {console.log(usuarioId)
       console.log("AntescrearOrdenPostResponse")
       const response = await axiosInstance.post(`${URL}`, { usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo}, { withCredentials: true });
@@ -82,7 +82,7 @@ const ordenTransferenciaService = {
     }
   },
 
-  async deleteTransferenciaStock(id) {
+  async deleteOrdenTransferencia(id) {
     try {
       const { data: ordenTransferenciaEliminado } = await axiosInstance.delete(
         `${URL}/${id}`,

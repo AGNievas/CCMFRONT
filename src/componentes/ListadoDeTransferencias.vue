@@ -23,6 +23,13 @@
         @delete="confirmDelete"
       />
 
+      <TransferenciaDialog
+        v-model="dialog"
+        :is-editing="isEditing"
+        :transferencia="selectedTransferencia"
+        :areas="stockAreas"
+        @save="saveTransferencia"
+      />
       <!-- Diálogos de confirmación y edición/agregado -->
       <ConfirmDialog
         v-model="deleteDialog"
@@ -31,13 +38,7 @@
         @confirm="deleteTransferencia"
       />
 
-      <TransferenciaDialog
-        v-model="dialog"
-        :is-editing="isEditing"
-        :transferencia="selectedTransferencia"
-        :areas="stockAreas"
-        @save="saveTransferencia"
-      />
+    
     </v-card>
   </div>
 </template>
@@ -130,15 +131,18 @@ export default {
       } catch (error) {
         console.error('Error al guardar la transferencia:', error);
       }
+      await this.loadTransferencias();
     },
     async deleteTransferencia() {
       try {
         await transferenciaStockService.deleteTransferenciaStock(this.selectedTransferencia.id);
-        await this.loadTransferencias();
+        
         this.deleteDialog = false;
       } catch (error) {
         console.error('Error al eliminar la transferencia:', error);
       }
+
+      await this.loadTransferencias();
     },
   },
 };

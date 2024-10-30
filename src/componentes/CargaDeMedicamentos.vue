@@ -1,5 +1,5 @@
-<template>
-  <v-container>
+<template >
+  <v-container v-if="globalStore.getRolId<=2">
     <v-card>
 
       <div v-if="!archivoCargado">
@@ -33,10 +33,12 @@
 <script>
 import Papa from "papaparse";
 import medicamentosService from "./servicios/medicamentosService";
+import { useGlobalStore } from "@/stores/global";
 export default {
   name: "CargaDeMedicamentos",
   data() {
     return {
+      globalStore: useGlobalStore(),
       archivoCargado: false,
       archivoImportado: false,
       nombreArchivo: "",
@@ -49,6 +51,7 @@ export default {
         .map(e => e.join(","))
         .join("\n")
     };
+    
   },
   methods: {
     subirArchivo() {

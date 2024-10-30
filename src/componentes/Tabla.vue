@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <v-data-table
       :headers="headers"
       :items="data"
@@ -8,7 +8,7 @@
       <template v-slot:thead>
         <thead>
           <tr>
-            <th class="table-header text-start" v-for="(value, key) in headers" :key="key">{{ value.text }}</th>
+            <th class="table-header" v-for="(value, key) in headers" :key="key">{{ value.text }}</th>
           </tr>
         </thead>
       </template>
@@ -16,7 +16,7 @@
       <template v-slot:item="{ item }">
         <tr>
           <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
-          <td class="text-start acciones-cell">
+          <td class="text-start acciones-cell" style="">
             <v-btn v-if="canVerEdit" icon small color="#0E3746" @click="$emit('edit', item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
@@ -34,7 +34,7 @@
             >
               <v-icon>mdi-cached</v-icon>
             </v-btn>
-            <v-spacer></v-spacer>
+            
             <v-btn
               v-if="canVerHistorial"
               icon
@@ -43,7 +43,7 @@
               @click="$emit('ver-historial', item)"
             >
             <v-icon>mdi-file-document-outline</v-icon>
-            <v-spacer></v-spacer>
+            
              </v-btn>
             <v-btn
               v-if="canCreateAplique"
@@ -54,7 +54,7 @@
             >
             <v-icon>mdi-pill</v-icon>
               </v-btn>
-            <v-spacer></v-spacer>
+        
           </td>
         </tr>
       </template>
@@ -123,11 +123,11 @@ export default {
 
     canVerEdit(){
       const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId<=2 || this.isListadoPacientes || this.isListadoApliques
+      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId!=this.ROL_ID_USER || this.isListadoPacientes&& globalStore.rolId!=this.ROL_ID_USER || this.isListadoApliques && globalStore.rolId!=this.ROL_ID_USER
     },
     canVerDelete(){
       const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId<=2 || this.isListadoPacientes || this.isListadoApliques
+      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId<=2 ||this.isListadoPacientes&& globalStore.rolId!=this.ROL_ID_USER || this.isListadoApliques && globalStore.rolId!=this.ROL_ID_USER
     }
   },
   methods: {
@@ -145,3 +145,27 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table-header {
+  font-size: 15px; /* Tamaño de letra para los headers */
+  font-weight: bold;
+}
+
+.text-start {
+  font-size: 13px;
+}
+
+.acciones-cell {
+  display:flex;
+  align-items:center;
+  gap: 10px; /* Espacio mínimo entre botones */
+  font-size: 15px; /* Tamaño de letra para la celda de acciones */
+}
+
+/* Tamaño de los iconos dentro de los botones */
+.v-btn > .v-icon {
+  font-size: 10px; /* Tamaño más pequeño para los íconos */
+
+}
+</style>

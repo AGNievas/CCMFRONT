@@ -8,7 +8,7 @@
         <v-select v-model="searchGenero" :items="generos" label="Género" density="compact" class="mx-2" variant="solo"
           hide-details></v-select>
         <v-spacer></v-spacer>
-        <v-btn @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
+        <v-btn v-if="globalStore.rolId<=2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <!-- Usamos el componente Listado -->
@@ -30,13 +30,14 @@
     :paciente-id="selectedPacienteId" 
     :areas="stockAreas"
     :usuarios="usuarios" 
+    :medicamentos="medicamentos"
     @save="saveApliqueFromDialog" 
   />
 </v-dialog>
 
       <!-- Modal para Ver Historial de Apliques -->
       <v-dialog v-model="listadoApliquesVisible" max-width="800px">
-        <ListadoApliques :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
+        <ListadoApliques :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos"
           @close="listadoApliquesVisible = false" />
       </v-dialog>
 
@@ -59,6 +60,7 @@ import { useGlobalStore } from '@/stores/global';
 import stockAreaService from './servicios/stockAreaService';
 import usuariosService from './servicios/usuariosService';
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
+import itemService from './servicios/itemService';
 export default {
   components: {
     Listado,
@@ -71,7 +73,7 @@ export default {
     return {
       searchDni: '',
       searchGenero: '',
-      generos: ['Indistinto', 'Masculino', 'Femenino', 'No binario'],
+      generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
       // Lista completa de pacientes
       agregarDialog: false,
       editarDialog: false,
@@ -86,6 +88,8 @@ export default {
       stockAreas: [], // Suponiendo que ya están cargadas en data()
       usuarios: [],
       pacientes: [],
+      medicamentos: [],
+      globalStore: useGlobalStore()
     };
   },
   computed: {
@@ -112,6 +116,7 @@ export default {
     this.loadPacientes();
     await this.loadStockAreas();
     await this.loadUsuarios();
+    await this.loadMedicamentos();
 
   },
   methods: {
@@ -119,10 +124,15 @@ export default {
       this.stockAreas = await stockAreaService.getAllStockArea();
     },
 
+    async loadMedicamentos(){
+      const  response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getStockAreaId)
+      this.medicamentos= response.return
+      console.log(this.medicamentos, "LOAD MEDS " )
+    },
     async loadUsuarios() {
-      const globalStore = useGlobalStore();
-      const stockAreaId = globalStore.stockAreaId;
-      this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(stockAreaId);
+      this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(this.globalStore.stockAreaId);
+      console.log(this.usuarios)
+
     },
     formatearPacientes(pacientesFiltrados) {
       return pacientesFiltrados.map(paciente => ({
@@ -144,7 +154,7 @@ export default {
           paciente.apellido.toLowerCase().includes(this.searchDni.toLowerCase())
           : true;
         const generoMatch =
-          this.searchGenero && this.searchGenero !== 'Indistinto'
+          this.searchGenero && this.searchGenero !== 'Todos'
             ? paciente.genero === this.searchGenero
             : true;
         return dniApellidoMatch && generoMatch;

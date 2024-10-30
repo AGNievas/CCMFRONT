@@ -1,10 +1,11 @@
 <template>
   <div>
+    
     <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
         Historial Apliques {{ pacienteNombreCompleto }}
         <v-spacer></v-spacer>
-        <v-btn @click="openAgregarApliqueDialog" class="mx-2 btn-blue">Agregar Aplique</v-btn>
+        <v-btn v-if="globalStore.rolId<=2" @click="openAgregarApliqueDialog" class="mx-2 btn-blue">Agregar Aplique</v-btn>
         <v-btn icon @click="$emit('close')">
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -17,13 +18,14 @@
       <!-- Diálogo de agregar/editar aplique -->
       <v-dialog v-model="apliqueDialogVisible" max-width="500px">
         <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
-          :paciente-id="pacienteId" :areas="stockAreas" :usuarios="usuarios" @save="saveAplique" />
+          :paciente-id="pacienteId" :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveAplique" />
       </v-dialog>
 
       <!-- Diálogo de confirmación para eliminar aplique -->
       <ConfirmDialog v-model="confirmDeleteDialog" title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deleteAplique" />
     </v-card>
+   
   </div>
 </template>
 
@@ -48,12 +50,14 @@ export default {
     modelValue: {
       type: Boolean,
       default: false
-    }
+    },
+    medicamentos: Array,
   },
   components: {
     Listado,
     ApliqueDialog,
     ConfirmDialog,
+    
   },
   data() {
     return {
@@ -61,6 +65,7 @@ export default {
       apliquesHeaders: [
         { text: 'Aplicante', value: 'aplicanteNombre' },
         { text: 'SKU', value: 'sku' },
+        { text: 'Descripcion', value: 'descripcion' },
         { text: 'Cantidad', value: 'cantidad' },
         { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
         { text: 'Área', value: 'stockAreaNombre' },
@@ -75,6 +80,7 @@ export default {
       apliqueToEdit: null,
       confirmDeleteDialog: false,
       apliqueIdToDelete: null,
+      globalStore: useGlobalStore(),
     };
   },
   async mounted() {
@@ -95,6 +101,7 @@ export default {
         }
       }
     },
+    
     modelValue(val) {
       this.localVisible = val;
     },
@@ -126,11 +133,12 @@ export default {
       return apliquesRaw.map(aplique => {
         const stockArea = this.stockAreas.find(area => area.id === aplique.stockAreaId);
         const usuario = this.usuarios.find(user => user.id === aplique.aplicante);
-
+        const medicamento = this.medicamentos.find(medicamento => medicamento.sku === aplique.sku)
         return {
           id: aplique.id, // Asegúrate de que el ID esté presente para identificar el aplique
           aplicanteNombre: usuario ? usuario.fullName : 'Desconocido',
           sku: aplique.sku,
+          descripcion : medicamento.descripcion,
           cantidad: aplique.cantidad,
           fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
           stockAreaNombre: stockArea ? stockArea.nombre : 'Desconocido',
@@ -144,8 +152,8 @@ export default {
     },
 
     async loadUsuarios() {
-      const globalStore = useGlobalStore();
-      const stockAreaId = globalStore.stockAreaId;
+      
+      const stockAreaId = this.globalStore.stockAreaId;
       this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(stockAreaId);
     },
 

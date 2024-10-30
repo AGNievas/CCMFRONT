@@ -16,4 +16,7 @@ export async function saveApliqueHelper(isEditing, pacienteId, nuevoAplique) {
     console.error('Error al guardar aplique:', error);
     throw error;
   }
+
+  
 }
+

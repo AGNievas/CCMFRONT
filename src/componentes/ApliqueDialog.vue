@@ -1,8 +1,27 @@
 <template>
+
   <v-card>
     <v-card-title>{{ isEditing ? 'Editar Aplique' : 'Agregar Aplique' }}</v-card-title>
     <v-card-text>
-      <v-text-field v-if="!isEditing" v-model="apliqueLocal.sku" label="SKU" required ></v-text-field>
+      <v-text-field
+    v-if="!isEditing"
+    v-model="apliqueLocal.sku"
+    label="SKU"
+    required
+    type="number"
+  ></v-text-field>
+
+  <v-select
+    v-if="!isEditing"
+    v-model="apliqueLocal.descripcion"
+    :items="medicamentos"
+    item-title="descripcion"
+    item-value="id"
+    label="Medicamento"
+    required
+  ></v-select>
+
+
       <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1" required></v-text-field>
       <v-select
         v-model="apliqueLocal.aplicante"
@@ -36,6 +55,8 @@
 </template>
 
 <script>
+
+
 export default {
   props: {
     modelValue: {
@@ -46,6 +67,7 @@ export default {
     aplique: Object,
     areas: Array,
     usuarios: Array,
+    medicamentos: Array,
     pacienteId: {
       type: String,
       required: true,
@@ -56,6 +78,7 @@ export default {
       dialogVisible: this.modelValue,
       apliqueLocal: {
         sku: '',
+        descripcion:'',
         cantidad: '',
         aplicante: '',
         stockAreaId: '',
@@ -66,13 +89,19 @@ export default {
   },
   computed: {
     isFormValid() {
-      return (
+      if(!this.isEditing){
+        return (
+        this.apliqueLocal.descripcion &&
         this.apliqueLocal.sku &&
         this.apliqueLocal.cantidad &&
         this.apliqueLocal.aplicante &&
         this.apliqueLocal.stockAreaId &&
         this.apliqueLocal.fechaAplicacion
       );
+      } else {
+        return this.apliqueLocal.aplicante && this.apliqueLocal.fechaAplicacion
+      }
+      
     },
   },
   watch: {
@@ -81,6 +110,24 @@ export default {
     },
     dialogVisible(val) {
       this.$emit('update:modelValue', val);
+    },
+    'apliqueLocal.sku'(newSku) {
+      const medicamento = this.medicamentos.find(med => med.sku == newSku);
+      console.log(medicamento,newSku, "sku")
+      if (medicamento) {
+        this.apliqueLocal.descripcion = medicamento.descripcion;
+      } else {
+        this.apliqueLocal.descripcion = '';
+      }
+    },
+    'apliqueLocal.descripcion'(newDescripcion) {
+      const medicamento = this.medicamentos.find(med => med.descripcion == newDescripcion);
+      console.log(medicamento, newDescripcion, "descripcion")
+      if (medicamento) {
+        this.apliqueLocal.sku = medicamento.sku;
+      } else {
+        this.apliqueLocal.sku = '';
+      }
     },
     aplique: {
     immediate: true,
@@ -98,11 +145,13 @@ export default {
   methods: {
     save() {
       this.$emit('save', this.apliqueLocal);
+      console.log(this.apliqueLocal, "aplique Local")
       this.closeDialog();
     },
     resetApliqueLocal() {
       this.apliqueLocal = {
         sku: '',
+        descripcion: '',
         cantidad: '',
         aplicante: '',
         stockAreaId: '',

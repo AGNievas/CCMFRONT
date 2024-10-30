@@ -9,6 +9,7 @@ import ConsultaAltaPacientes from "./componentes/ConsultaAltaPacientes.vue";
 import ListadoDeUsuarios from "./componentes/ListadoDeUsuarios.vue";
 import ListadoApliques from "./componentes/ListadoApliques.vue";
 import ListadoDeTransferencias from "./componentes/ListadoDeTransferencias.vue";
+import ListadoOrdenTransferencia from "./componentes/ListadoOrdenTransferencia.vue";
 const routes = [
   { path: "/", redirect: "/login" },
   { path: "/login", name: "Login", component: Login , meta: { title: "Iniciar Sesión"} },
@@ -20,17 +21,14 @@ const routes = [
   { path: "/consultaAltaPacientes", name: "ConsultaAltaPacientes", component: ConsultaAltaPacientes, meta: { title: "Consultar Paciente"} },
   { path: "/listadoDeUsuarios", name: "ListadoDeUsuarios", component: ListadoDeUsuarios , meta: { title: "Listado de Usuarios"} },
   { path: "/listadoDeTransferencias", name: "ListadoDeTransferencias", component: ListadoDeTransferencias , meta: { title: "Listado de Transferencias"} },
+  { path: "/listadoDeOrdenesTransferencias", name: "ListadoDeOrdenesTransferencias", component: ListadoOrdenTransferencia , meta: { title: "Listado de Ordenes de Transferencias"} },
   {
     path: '/apliques/:pacienteId',
     name: 'ListadoDeApliques',
     component: ListadoApliques, // Ruta para el historial de apliques
     props: true, // Para pasar el ID del paciente como prop
   },
-  {
-    path: "/",
-    component: () => import("./componentes/Layout.vue"),
-    children: [],
-  },
+ 
 
   { path: "/:pathMatch(.)", redirect: "/login" },
 ];
