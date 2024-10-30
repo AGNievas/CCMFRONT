@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
+      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
         <v-text-field
           v-model="search"
           density="compact"
@@ -27,8 +27,8 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn @click="openTransferDialog" class="mx-2 btn-blue">Transferir Stock</v-btn>
-        <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
+        <v-btn @click="openTransferDialog" class=" btn-blue">Transferir Stock</v-btn>
+        <v-btn @click="openAddDialog" class=" btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
       <Listado
@@ -224,14 +224,7 @@ export default {
       this.loadMedicamentos();
       this.area = this.areasTodo[0]
       this.transferDialog = true;
-      this.transferCantError = false;
-      this.transfer = {
-        sku: "",
-        cantidad: null,
-        stockAreaIdOrigen: "",
-        stockAreaIdDestino: "",
-        motivo: "",
-      }
+      this.resetTransferForm()
     },
 
     closeTransferDialog(){

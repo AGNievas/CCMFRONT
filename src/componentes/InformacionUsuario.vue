@@ -1,11 +1,11 @@
 <template>
-  <v-container class="v-container">
-    <v-card flat>
+  <v-container >
+    <v-card >
       <v-card-title class="d-flex align-center">
-        <h2>Información del Usuario</h2>
+        <h3>Información del Usuario</h3>
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="text-center">
         <div v-if="usuarioActual" class="user-details">
           <v-text-field v-model="usuarioActual.fullNameUsuario" label="Nombre" readonly></v-text-field>
 
@@ -27,33 +27,34 @@
               <v-card-text>
                 <v-form ref="form" v-model="formValid">
                   <!-- Contraseña Actual -->
-                  <v-text-field v-model="currentPassword" :type="showCurrentPassword ? 'text' : 'password'"
-                    label="Contraseña Actual" required>
-                    <template v-slot:append>
-                      <v-icon @click="toggleShowCurrentPassword">
-                        {{ showCurrentPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-                      </v-icon>
-                    </template>
+                  <v-text-field 
+                  v-model="currentPassword" 
+                  :type="showCurrentPassword ? 'text' : 'password'"
+                  label="Contraseña Actual" 
+                  required
+                  :append-inner-icon="showCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append-inner="toggleShowCurrentPassword"
+                  >
                   </v-text-field>
 
                   <!-- Nueva Contraseña -->
-                  <v-text-field v-model="newPassword" :type="showNewPassword ? 'text' : 'password'"
-                    label="Nueva Contraseña" required>
-                    <template v-slot:append>
-                      <v-icon @click="toggleShowNewPassword">
-                        {{ showNewPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-                      </v-icon>
-                    </template>
+                  <v-text-field v-model="newPassword" 
+                  :type="showNewPassword ? 'text' : 'password'"
+                  label="Nueva Contraseña" 
+                  required
+                  :append-inner-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append-inner="toggleShowNewPassword"
+                  >
                   </v-text-field>
 
                   <!-- Repetir Nueva Contraseña -->
-                  <v-text-field v-model="repeatNewPassword" :type="showRepeatNewPassword ? 'text' : 'password'"
-                    label="Repetir Nueva Contraseña" required>
-                    <template v-slot:append>
-                      <v-icon @click="toggleShowRepeatNewPassword">
-                        {{ showRepeatNewPassword ? 'mdi-eye-off' : 'mdi-eye' }}
-                      </v-icon>
-                    </template>
+                  <v-text-field v-model="repeatNewPassword" 
+                  :type="showRepeatNewPassword ? 'text' : 'password'"
+                  label="Repetir Nueva Contraseña" 
+                  required
+                  :append-inner-icon="showRepeatNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append-inner="toggleShowRepeatNewPassword"
+                  >
                   </v-text-field>
 
                   <!-- Mostrar errores si faltan campos o las contraseñas no coinciden -->
@@ -213,8 +214,8 @@ export default {
 </script>
 
 <style scoped>
-.v-container {
+/* .v-container { 
   max-width: 900px !important;
   padding: 20px !important;
-}
+}*/
 </style>

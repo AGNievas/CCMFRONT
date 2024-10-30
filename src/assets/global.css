@@ -34,8 +34,18 @@
     text-transform: none;
     background-color: #0E3746;
     color: white;
-    margin-right: 5px;
 }
+
+.btn-icon{
+    /* padding: 0 !important;  */
+    margin: 3px !important;
+    /* width: 50px !important; 
+    height: 50px !important; 
+    border-radius: 50% !important; */
+}
+/* .v-icon-btn{
+    font-size: 16px !important;
+} */
 
 .v-data-table{
     border-radius: 16px;
@@ -84,7 +94,10 @@
 
 
 .v-card-title {
-    font-size: 24px;
+    font-size: 24px !important;
+    padding-left: 0px !important; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
+    padding-right: 0px !important; 
+
 }
 
 .drawer {
@@ -135,3 +148,28 @@
     border-radius: 8px;
     margin-bottom: 20px;
 }
+
+.responsive-card-title {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten a la pantalla */
+    gap: 8px; /* Espacio entre elementos */
+    padding-left: 0px; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
+    padding-right: 0px; /* Asegura también la alineación en el lado derecho */
+  }
+  
+  @media (max-width: 600px) {
+    .responsive-card-title {
+      flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+      align-items: stretch; /* Asegura que los elementos ocupen el ancho completo */
+    }
+  
+    .responsive-card-title .v-text-field,
+    .responsive-card-title .v-select,
+    .responsive-card-title .v-btn {
+      width: 100%; /* Asegura que cada elemento ocupe el 100% del ancho disponible */
+    }
+  }
+
+
+
+

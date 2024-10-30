@@ -1,14 +1,14 @@
 <template>
   <div>
-    <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
+    <v-card class="custom-container ">
+      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
         <v-text-field v-model="searchDni" density="compact" label="Buscar por DNI o Apellido"
           prepend-inner-icon="mdi-magnify" variant="solo" hide-details single-line
           class="rounded-search-bar"></v-text-field>
-        <v-select v-model="searchGenero" :items="generos" label="Género" density="compact" class="mx-2" variant="solo"
+        <v-select v-model="searchGenero" :items="generos" label="Género" density="compact"  variant="solo"
           hide-details></v-select>
         <v-spacer></v-spacer>
-        <v-btn @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
+        <v-btn @click="openAgregarDialog" class=" btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <!-- Usamos el componente Listado -->
