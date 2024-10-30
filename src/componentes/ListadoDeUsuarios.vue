@@ -16,7 +16,7 @@
         <v-btn @click="openAddUserDialog" class="btn-blue">Agregar Usuario</v-btn>
       </v-card-title>
 
-      <!-- Usamos el componente Listado con showRestorePassword activado -->
+      
       <Listado
         :items="usuariosFiltradosParaVista"
         :headers="usuariosHeaders"
@@ -28,7 +28,7 @@
       />
     </v-card>
 
-    <!-- Confirmar Eliminación -->
+  
     <ConfirmDialog
       v-model="deleteDialog"
       title="Confirmar Eliminación"
@@ -36,7 +36,6 @@
       @confirm="deleteUsuario"
     />
 
-    <!-- Confirmar Restauración de Contraseña -->
     <ConfirmDialog
       v-model="restoreDialog"
       title="Restaurar Contraseña"
@@ -97,7 +96,7 @@ export default {
     };
   },
   computed: {
-    // Generar dinámicamente los headers
+   
     usuariosHeaders() {
       return [
         { text: 'CUIL', value: 'cuil' },
@@ -127,9 +126,9 @@ export default {
       return this.usuariosConArea.map(usuario => ({
         cuil: usuario.cuil,
         fullName: usuario.fullName,
-        rolName: this.getNombreRol(usuario.rolId), // Asegúrate de que este campo se llama 'rolName'
-        nombreArea: this.getNombreArea(usuario.stockAreaId), // Asegúrate de que este campo se llama 'nombreArea'
-        id: usuario.id, // id oculto pero necesario para las acciones
+        rolName: this.getNombreRol(usuario.rolId), 
+        nombreArea: this.getNombreArea(usuario.stockAreaId), 
+        id: usuario.id, 
   }));
 },
   },
@@ -148,7 +147,7 @@ export default {
 
     async loadUsuarios() {
   this.usuarios = await usuariosService.getAllUsuarios();
-  console.log('Usuarios cargados:', this.usuarios); // Verifica si los usuarios están llegando aquí
+  console.log('Usuarios cargados:', this.usuarios); 
 },
 
     async loadStockAreas() {

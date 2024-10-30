@@ -77,7 +77,7 @@ export default {
     modelValue: Boolean,
     isEditing: Boolean,
     paciente: Object,
-    errorMensaje: String, // Nueva prop para recibir el mensaje de error
+    errorMensaje: String,
   },
   data() {
     return {
@@ -100,8 +100,7 @@ export default {
 
   computed: {
     isFormValid() {
-      // Solo verificar si los campos requeridos están completos
-      return (
+        return (
         this.pacienteLocal.nombre &&
         this.pacienteLocal.apellido &&
         
@@ -115,10 +114,10 @@ export default {
       immediate: true,
       handler(newPaciente) {
         if (this.isEditing && newPaciente) {
-          // Al editar, cargar los datos del paciente
+        
           this.pacienteLocal = { ...newPaciente };
         } else {
-          // Al agregar, asegurarse de que el formulario esté vacío
+         
           this.resetPacienteLocal();
         }
       },
@@ -153,11 +152,11 @@ export default {
       }
     },
     formatearFechaNacimiento() {
-      let fecha = this.pacienteLocal.fechaNacimiento.replace(/\D/g, ''); // Elimina cualquier carácter que no sea número
+      let fecha = this.pacienteLocal.fechaNacimiento.replace(/\D/g, ''); 
       if (fecha.length > 4 && fecha.length <= 6) {
-        fecha = `${fecha.slice(0, 4)}-${fecha.slice(4)}`; // YYYY-MM
+        fecha = `${fecha.slice(0, 4)}-${fecha.slice(4)}`; 
       } else if (fecha.length > 6) {
-        fecha = `${fecha.slice(0, 4)}-${fecha.slice(4, 6)}-${fecha.slice(6)}`; // YYYY-MM-DD
+        fecha = `${fecha.slice(0, 4)}-${fecha.slice(4, 6)}-${fecha.slice(6)}`; 
       }
       this.pacienteLocal.fechaNacimiento = fecha;
     },
@@ -182,13 +181,13 @@ export default {
     closeDialog() {
       this.localVisible = false;
       this.resetValidation();
-      // Solo reseteamos el formulario al cerrar si no hay mensaje de error
+     
       if (!this.errorMensaje) {
         this.resetPacienteLocal();
       }
     },
     clearError() {
-      this.$emit('update:errorMensaje', ''); // Emitir evento para limpiar el mensaje de error
+      this.$emit('update:errorMensaje', '');
     },
     resetValidation() {
       this.nombreError = false;
@@ -207,10 +206,10 @@ export default {
       this.validateGenero();
 
       if (this.dniError || this.nombreError || this.apellidoError || this.fechaNacimientoError || this.generoError) {
-        return; // No procedemos si hay errores
+        return; 
       }
 
-      // Emitir el evento para guardar
+      
       this.$emit('save', this.pacienteLocal);
     },
   },

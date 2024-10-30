@@ -36,50 +36,50 @@ import  parsearCuil  from '@/utils/parsearCuil';
 
 export default {
   props: {
-    modelValue: Boolean, // Para controlar la visibilidad del diálogo
-    isEditing: Boolean, // Para saber si estamos en modo edición o creación
-    usuario: Object, // Objeto usuario que se pasa desde el componente padre
-    roles: Array, // Lista de roles disponibles
-    areas: Array, // Lista de áreas disponibles
+    modelValue: Boolean, 
+    isEditing: Boolean, 
+    usuario: Object,
+    roles: Array, 
+    areas: Array, 
     formError: Boolean
   },
   data() {
     return {
-      localVisible: this.modelValue, // Sincroniza la visibilidad localmente
-      localUsuario: this.createLocalUsuario() // Inicializa el usuario local
+      localVisible: this.modelValue, 
+      localUsuario: this.createLocalUsuario() 
     };
   },
   methods: {
-    // Método para formatear el CUIL
+    
     formatearCuil(cuil) {
       return parsearCuil.formatearCuil(cuil);
     },
-    // Crear una copia local del objeto usuario
+    
     createLocalUsuario() {
-      return { ...this.usuario }; // Copia del usuario para trabajar localmente
+      return { ...this.usuario }; 
     },
-    // Método para confirmar y guardar los cambios
+   
     saveChanges() {
-      this.$emit('save', { ...this.localUsuario }); // Envía el objeto usuario actualizado al componente padre
+      this.$emit('save', { ...this.localUsuario }); 
     },
-    // Método para cerrar el diálogo
+  
     closeDialog() {
-      this.localVisible = false; // Cierra el diálogo localmente
-      this.$emit('update:modelValue', false); // Notifica al padre para que cierre el diálogo
+      this.localVisible = false; 
+      this.$emit('update:modelValue', false);
     }
   },
   watch: {
-    // Observa los cambios en la prop modelValue para sincronizar la visibilidad
+    
     modelValue(val) {
-      this.localVisible = val; // Sincroniza la visibilidad con el valor del padre
+      this.localVisible = val; 
     },
-    // Observa los cambios en la prop usuario para actualizar la copia local
+    
     usuario: {
       handler(newVal) {
-        this.localUsuario = { ...newVal }; // Actualiza la copia local del usuario
+        this.localUsuario = { ...newVal };
       },
-      immediate: true, // Ejecuta inmediatamente para inicializar localUsuario
-      deep: true // Observa cambios profundos en el objeto usuario
+      immediate: true, 
+      deep: true 
     }
   }
 };

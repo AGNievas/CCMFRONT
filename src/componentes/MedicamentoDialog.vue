@@ -94,8 +94,7 @@ export default {
 
     confirmAction() {
       this.formError = false;
-      // this.skuErrorLocal = false;
-
+      
       if((this.isEditing && this.area != 0 && !this.localMedicamento.stock) || (!this.isEditing && !this.localMedicamento.stock) ){
         this.formError = true;
         return;

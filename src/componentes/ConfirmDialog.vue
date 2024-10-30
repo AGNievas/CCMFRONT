@@ -38,7 +38,7 @@ export default {
       this.localVisible = val;
     },
     localVisible(val) {
-      this.$emit('update:modelValue', val); // Emitimos para cerrar o abrir el diálogo
+      this.$emit('update:modelValue', val); 
     }
   },
   methods: {

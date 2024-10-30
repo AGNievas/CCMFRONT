@@ -74,7 +74,7 @@ export default {
       searchDni: '',
       searchGenero: '',
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
-      // Lista completa de pacientes
+    
       agregarDialog: false,
       editarDialog: false,
       isEditing: false,
@@ -84,8 +84,8 @@ export default {
       apliqueDialogVisible: false,
       listadoApliquesVisible: false,
       selectedPacienteId: null,
-      errorMensaje: '', // Estado para el mensaje de error
-      stockAreas: [], // Suponiendo que ya están cargadas en data()
+      errorMensaje: '', 
+      stockAreas: [], 
       usuarios: [],
       pacientes: [],
       medicamentos: [],
@@ -146,7 +146,7 @@ export default {
       }));
     },
 
-    // Filtra la lista de pacientes
+   
     filtrarPacientes() {
       return this.pacientes.filter(paciente => {
         const dniApellidoMatch = this.searchDni
@@ -179,14 +179,14 @@ export default {
         const pacienteCreado = await pacienteService.createPaciente(nuevoPaciente);
         if (pacienteCreado) {
           this.pacientes.push(pacienteCreado);
-          this.agregarDialog = false; // Cerrar el diálogo solo si el paciente fue creado con éxito
-          this.errorMensaje = ''; // Limpiar mensaje de error al crear correctamente
+          this.agregarDialog = false;
+          this.errorMensaje = ''; 
         }
       } catch (error) {
-        // Capturar y mostrar el mensaje de error específico del backend
+      
         this.errorMensaje = error.response?.data?.message || 'Error al agregar el paciente.';
         console.error('Error al agregar paciente:', error);
-        this.agregarDialog = true; // Mantener el diálogo abierto si hay error
+        this.agregarDialog = true;
       }
       this.loadPacientes();
     }
@@ -199,20 +199,20 @@ export default {
         if (index !== -1) {
           this.pacientes.splice(index, 1, pacienteActualizado);
         }
-        this.editarDialog = false; // Cerrar el diálogo solo si el paciente fue actualizado con éxito
-        this.errorMensaje = ''; // Limpiar mensaje de error al editar correctamente
+        this.editarDialog = false;
+        this.errorMensaje = ''; 
       } catch (error) {
-        // Manejar el error si ya existe un paciente con el mismo DNI
+        
         this.errorMensaje = error.response?.data?.message || 'Error al actualizar el paciente.';
         console.error('Error al actualizar paciente:', error);
-        this.editarDialog = true; // Mantener el diálogo abierto si hay error
+        this.editarDialog = true;
       }
       this.loadPacientes();
     }
     ,
 
     openApliqueDialog(pacienteId) {
-      this.selectedPacienteId = pacienteId; // Asegurarse de que sea un string
+      this.selectedPacienteId = pacienteId; 
       this.isEditing = false;
       this.apliqueDialogVisible = true;
     },
@@ -223,7 +223,7 @@ export default {
     },
     handleSaveAplique() {
       this.apliqueDialogVisible = false;
-      // Lógica adicional si es necesario
+      
     }
 
     ,
@@ -244,20 +244,20 @@ export default {
     }
     ,
     saveApliqueFromListado(nuevoAplique) {
-      // Llama a la función saveAplique del ListadoApliques
+      
       this.$refs.listadoApliques.saveAplique(nuevoAplique);
       this.apliqueDialogVisible = false;
     },
 
     openAgregarDialog() {
-      this.$refs.pacienteDialog.resetPacienteLocal(); // Llama al método de reseteo del componente hijo
-      this.pacienteEdit = {}; // Limpiar el objeto paciente editado
-      this.errorMensaje = ''; // Limpiar mensaje de error al abrir el diálogo
-      this.agregarDialog = true; // Abrir el diálogo para agregar un paciente
+      this.$refs.pacienteDialog.resetPacienteLocal(); 
+      this.pacienteEdit = {}; 
+      this.errorMensaje = ''; 
+      this.agregarDialog = true; 
     },
     openEditarDialog(paciente) {
       this.pacienteEdit = { ...paciente };
-      this.errorMensaje = ''; // Limpiar mensaje de error al abrir el diálogo
+      this.errorMensaje = ''; 
       this.editarDialog = true;
     },
     confirmDelete(id) {

@@ -81,7 +81,7 @@ export default {
       ];
     },
      transferenciasFiltradasParaVista() {
-    return (this.transferencias || []) // esta puesto para que no tire error mientras transferencias esta como undefined
+    return (this.transferencias || []) 
       .filter(trans => trans.sku.toString().includes(this.search))
       .map(trans => ({
         ...trans,

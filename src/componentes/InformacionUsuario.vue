@@ -88,7 +88,7 @@
 
 <script>
 import stockAreaService from "./servicios/stockAreaService.js";
-import usuariosService from "./servicios/usuariosService.js"; // Importamos el servicio para los roles
+import usuariosService from "./servicios/usuariosService.js"; 
 import { useGlobalStore } from "@/stores/global.js";
 import rolService from "./servicios/rolService.js";
 export default {
@@ -141,16 +141,11 @@ export default {
         };
 
         try {
-          console.log(this.usuarioActual.usuarioId)
           const usuarioNombre = await usuariosService.getUsuarioById(this.usuarioActual.usuarioId)
           this.usuarioActual.fullNameUsuario = usuarioNombre.fullName
-          console.log("oa")
           const areaResponse = await stockAreaService.getStockAreaById(this.usuarioActual.stockAreaId);
           this.usuarioActual.nombreArea = areaResponse.nombre;
-          console.log(areaResponse.nombre)
-          // Obtener el nombre del rol
           const rolResponse = await rolService.getRolById(this.usuarioActual.rolId);
-          console.log(rolResponse,"aca'?")
           this.usuarioActual.rolName = rolResponse.name;
         } catch (error) {
           console.error("Error al cargar el área o rol del usuario", error);
@@ -214,8 +209,5 @@ export default {
 </script>
 
 <style scoped>
-/* .v-container { 
-  max-width: 900px !important;
-  padding: 20px !important;
-}*/
+
 </style>

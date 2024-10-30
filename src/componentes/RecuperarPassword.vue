@@ -40,7 +40,7 @@ export default {
   name: "RecuperarPassword",
   data() {
     return {
-      mail: "vwilches@buenosaires.gob.ar", // Correo por defecto
+      mail: "vwilches@buenosaires.gob.ar", 
     };
   },
 };

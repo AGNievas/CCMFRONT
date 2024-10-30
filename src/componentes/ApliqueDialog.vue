@@ -133,10 +133,10 @@ export default {
     immediate: true,
     handler(newAplique) {
       if (this.isEditing && newAplique) {
-        // Copia todos los valores del aplique al objeto apliqueLocal, incluyendo el id
+        
         this.apliqueLocal = { id: newAplique.id, ...newAplique };
       } else {
-        // Si no estamos editando, resetea apliqueLocal para el modo agregar
+       
         this.resetApliqueLocal();
       }
     },

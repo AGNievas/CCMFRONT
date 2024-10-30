@@ -84,7 +84,7 @@
         ];
       },
       ordenTransferenciasFiltradasParaVista() {
-      return (this.ordenesTransferencias || []) // esta puesto para que no tire error mientras transferencias esta como undefined
+      return (this.ordenesTransferencias || []) 
         .filter(orden => orden.sku.toString().includes(this.search))
         .map(orden => ({
           ...orden,

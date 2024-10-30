@@ -77,10 +77,6 @@ export default {
     },
 
     async login() {
-      // if (!this.validateForm()) {
-      //   this.error = "Por favor, corrige los errores antes de continuar.";
-      //   return;
-      // }
       this.validateForm()
 
       try {

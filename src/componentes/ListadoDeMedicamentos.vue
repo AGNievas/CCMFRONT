@@ -27,7 +27,7 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn @click="openTransferDialog" class=" btn-blue">Transferir Stock</v-btn>
+        <!-- <v-btn @click="openTransferDialog" class=" btn-blue">Transferir Stock</v-btn> -->
         <v-btn @click="openAddDialog" class=" btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
@@ -165,7 +165,7 @@ export default {
     filteredMedicamentosConStock() {
       const searchTerm = this.search.toLowerCase();
       return this.medicamentosConStock.filter(medicamento => {
-        const skuMatch = String(medicamento.sku).includes(searchTerm); // Convierte sku a string para poder buscar
+        const skuMatch = String(medicamento.sku).includes(searchTerm); 
         const descripcionMatch = medicamento.descripcion.toLowerCase().includes(searchTerm);
         return skuMatch || descripcionMatch;
       });

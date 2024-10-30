@@ -135,7 +135,7 @@ export default {
         const usuario = this.usuarios.find(user => user.id === aplique.aplicante);
         const medicamento = this.medicamentos.find(medicamento => medicamento.sku === aplique.sku)
         return {
-          id: aplique.id, // Asegúrate de que el ID esté presente para identificar el aplique
+          id: aplique.id, 
           aplicanteNombre: usuario ? usuario.fullName : 'Desconocido',
           sku: aplique.sku,
           descripcion : medicamento.descripcion,
@@ -159,15 +159,15 @@ export default {
 
     openAgregarApliqueDialog() {
       this.isEditing = false;
-      this.apliqueToEdit = null; // Restablece aplique para agregar uno nuevo
-      this.apliqueDialogVisible = true; // Muestra el diálogo de aplique
+      this.apliqueToEdit = null; 
+      this.apliqueDialogVisible = true; 
     },
 
     openEditarApliqueDialog(aplique) {
       this.isEditing = true;
       this.apliqueToEdit = { ...aplique };
 
-      this.apliqueDialogVisible = true; // Muestra el diálogo en modo edición
+      this.apliqueDialogVisible = true; 
     },
 
     async saveAplique(nuevoAplique) {

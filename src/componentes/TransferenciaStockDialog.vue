@@ -1,5 +1,5 @@
 <template>
-  <!-- Pop-up para transferencia de stock  -->
+ 
     <v-dialog v-model="localDialogVisible" persistent max-width="600px">
       <v-card>
         <v-card-title>
@@ -76,7 +76,7 @@ export default{
     cantidadError: Boolean,
     medicamentos: Array,
     areas: Array,
-    //errors
+    
   },
   emits: ['confirm', 'closeDialog'],
   data(){
