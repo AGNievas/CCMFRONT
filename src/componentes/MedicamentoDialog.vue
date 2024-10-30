@@ -88,12 +88,13 @@ export default {
   methods: {
     closeDialog() {
       this.formError = false;
+      this.skuErrorLocal = false;
       this.$emit('closeDialog');
     },
 
     confirmAction() {
       this.formError = false;
-      this.skuErrorLocal = false;
+      // this.skuErrorLocal = false;
 
       if((this.isEditing && this.area != 0 && !this.localMedicamento.stock) || (!this.isEditing && !this.localMedicamento.stock) ){
         this.formError = true;
@@ -119,8 +120,11 @@ export default {
         this.skuErrorLocal = false;
       }
     },
-    skuError(val){
-      this.skuErrorLocal = val;
+    skuError: {
+      handler(newValue) {
+        this.skuErrorLocal = newValue;
+      },
+      immediate: true,
     },
     medicamento: {
       handler(newValue) {
