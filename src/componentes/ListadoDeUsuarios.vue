@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
+      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
         <v-text-field
           v-model="search"
           density="compact"
@@ -13,7 +13,7 @@
           class="rounded-search-bar"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn @click="openAddUserDialog" class="mx-2 btn-blue">Agregar Usuario</v-btn>
+        <v-btn @click="openAddUserDialog" class="btn-blue">Agregar Usuario</v-btn>
       </v-card-title>
 
       <!-- Usamos el componente Listado con showRestorePassword activado -->

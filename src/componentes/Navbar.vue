@@ -4,7 +4,9 @@
       <template v-slot:prepend>
         <v-app-bar-nav-icon v-if="this.globalStore.getLogueado" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
-      <v-app-bar-title class="headline">Control y Carga de Medicamentos</v-app-bar-title>
+      <v-app-bar-title class="headline">
+      <RouterLink to="/home" class="drawer-item-title">Control y Carga de Medicamentos</RouterLink>
+      </v-app-bar-title>
       <template v-slot:append>
         <RouterLink v-if="this.globalStore.getLogueado" :to="{ name: 'InformacionUsuario' }">
           <v-btn icon="mdi-account-circle" class="navbar-icon"></v-btn>
@@ -20,9 +22,9 @@
     <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
-        <v-list-item>
+        <!-- <v-list-item>
           <RouterLink to="/home" class="drawer-item-title">Inicio</RouterLink>
-        </v-list-item>
+        </v-list-item> -->
         <v-list-item>
           <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
         </v-list-item>

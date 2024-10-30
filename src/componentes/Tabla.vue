@@ -16,16 +16,17 @@
       <template v-slot:item="{ item }">
         <tr>
           <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
-          <td class="text-start acciones-cell" style="">
-            <v-btn v-if="canVerEdit" icon small color="#0E3746" @click="$emit('edit', item)">
+          <td class="text-start acciones-cell">
+            <v-btn class="btn-icon" v-if="canVerEdit" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku)">
+            <v-btn class="btn-icon" v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
             <!-- Botón "Ver Historial Apliques" solo cuando NO es listado de apliques -->
            
             <v-btn
+              class="btn-icon"
               v-if="canRestorePassword"
               icon
               small
@@ -36,6 +37,7 @@
             </v-btn>
             
             <v-btn
+              class="btn-icon"
               v-if="canVerHistorial"
               icon
               small
@@ -46,6 +48,7 @@
             
              </v-btn>
             <v-btn
+              class="btn-icon"
               v-if="canCreateAplique"
               icon
               small

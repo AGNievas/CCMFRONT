@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
+      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
         <v-text-field
           v-model="search"
           density="compact"
@@ -27,8 +27,8 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn v-if="false" @click="openTransferDialog" class="mx-2 btn-blue">Transferir Stock</v-btn>
-        <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
+        <v-btn @click="openTransferDialog" class=" btn-blue">Transferir Stock</v-btn>
+        <v-btn @click="openAddDialog" class=" btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
       <Listado
@@ -40,71 +40,6 @@
       />
     </v-card>
 
-     <!-- Pop-up para transferencia de stock  -->
-    <v-dialog v-model="transferDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Transferir Stock</span>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="form">
-            <!-- <v-text-field v-model="transfer.sku" label="SKU" required></v-text-field> -->
-            <v-select
-              v-model="transfer.sku"
-              :items="medicamentos"
-              item-title="sku"
-              item-value="sku"
-              label="Sku"
-              required
-            ></v-select>
-
-            <v-text-field
-              v-model.number="transfer.cantidad"
-              label="Cantidad"
-              required
-              type="number"
-              min="1"
-            ></v-text-field>
-
-            <v-select
-              v-model="transfer.stockAreaIdOrigen"
-              :items="areas"
-              item-title="nombre"
-              item-value="id"
-              label="Origen"
-              required
-            ></v-select>
-
-            <v-select
-              v-model="transfer.stockAreaIdDestino"
-              :items="areas"
-              item-title="nombre"
-              item-value="id"
-              label="Destino"
-              required
-            ></v-select>
-
-            <v-text-field v-model="transfer.motivo" label="Motivo" required></v-text-field>
-
-            <v-alert v-if="transferFormError" type="error" dismissible>
-              Todos los campos son obligatorios. Por favor, completa la información.
-            </v-alert>
-
-            <v-alert v-if="transferCantError" type="error" dismissible>
-              Cantidad no disponible para transferir.
-            </v-alert>
-
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeTransferDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="transferMedicamento">Agregar</v-btn>
-        </v-card-actions> 
-      </v-card>
-    </v-dialog>
-
     <ConfirmDialog
       v-model="deleteDialog"
       title="Confirmar Eliminación"
@@ -112,121 +47,57 @@
       @confirm="deleteMedicamento"
     />
 
-    <!-- Pop-up para agregar medicamento -->
-    <v-dialog v-model="addDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Agregar Nuevo Medicamento</span>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="form">
-            <v-text-field v-model="newMed.sku" label="SKU" required></v-text-field>
-            <v-text-field v-model="newMed.descripcion" label="Descripción" required></v-text-field>
+    <MedicamentoDialog
+      :dialogVisible="this.addDialog"
+      :isEditing="false"
+      :area = this.area
+      :tipoInsumoOptions= this.tipoInsumoOptions
+      :medicamento= this.newMed
+      :skuError= skuError
+      @closeDialog="closeAddDialog"
+      @confirm="addMedicamento"
+    />
 
-            <v-select
-              v-model="newMed.tipo_insumo"
-              :items="tipoInsumoOptions"
-              label="Tipo de Medicamento"
-              required
+    <MedicamentoDialog
+      :dialogVisible="this.editDialog"
+      :isEditing="true"
+      :area = this.area
+      :tipoInsumoOptions= this.tipoInsumoOptions
+      :medicamento= this.editMed
+      @closeDialog="closeEditDialog"
+      @confirm="updateMedicamento"
+    />
 
-            ></v-select>
-
-            <!-- stock -->
-            <v-text-field
-              v-model.number="newMed.stock"
-              label="Stock"
-              required
-              type="number"
-              min="0"
-            ></v-text-field>
-
-            <!-- areaid -->
-            <!-- <v-select
-              v-model="newMed.area"
-              :items="areas"
-              item-title="nombre"
-              item-value="id"
-              label="Area"
-              required
-            ></v-select> -->
-
-            <v-alert v-if="formError" type="error" dismissible>
-              Todos los campos son obligatorios. Por favor, completa la información.
-            </v-alert>
-
-            <v-alert v-if="skuError" type="error" dismissible>
-              El SKU ya existe. Por favor, elige otro.
-            </v-alert>
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeAddDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="addMedicamento">Agregar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- Pop-up para editar medicamento -->
-    <v-dialog v-model="editDialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Editar Medicamento</span>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="editForm">
-            <v-text-field v-model="editMed.sku" label="SKU" required readonly></v-text-field>
-            <v-text-field v-model="editMed.descripcion" label="Descripción" required :readonly="this.area != 0"></v-text-field>
-            <v-select
-              v-model="editMed.tipo_insumo"
-              :items="tipoInsumoOptions"
-              label="Tipo de Medicamento"
-              required
-            ></v-select>
-
-            <v-text-field
-              v-if = "this.area != 0"
-              v-model.number="editMed.stock"
-              label="Stock"
-              required
-              type="number"
-              min="0"
-            ></v-text-field>
-
-            <v-alert v-if="editFormError" type="error" dismissible>
-              Todos los campos son obligatorios. Por favor, completa la información.
-            </v-alert>
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="btn-blue" text @click="closeEditDialog">Cancelar</v-btn>
-          <v-btn class="btn-blue" text @click="updateMedicamento">Actualizar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
-
+    <TransferenciaStockDialog
+      :dialogVisible="this.transferDialog"
+      :transferencia= this.transfer
+      :cantidadError= transferCantError
+      :medicamentos= this.medicamentos
+      :areas= this.areas
+      @closeDialog="closeTransferDialog"
+      @confirm="transferMedicamento"
+    />
+  </div> 
 </template>
 
 <script>
 import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
+import MedicamentoDialog from './MedicamentoDialog.vue';
+import TransferenciaStockDialog from "./TransferenciaStockDialog.vue";
 import stockAreasIdService from "./servicios/stockAreaService.js";
 import itemService from "./servicios/itemService";
 import medicamentosService from "./servicios/medicamentosService.js";
 import ordenTransferenciaService from "./servicios/ordenTransferenciaService.js";
 import { useGlobalStore } from "@/stores/global.js";
 
-
-
 export default {
   name: "ListadoDeMedicamentos",
   components: {
     Listado,
-    ConfirmDialog
+    ConfirmDialog,
+    MedicamentoDialog,
+    TransferenciaStockDialog,
     },
   data() {
     return {
@@ -241,7 +112,6 @@ export default {
       
       addDialog: false,
       skuError: false,
-      formError: false,
       newMed: {
         sku: "",
         descripcion: "",
@@ -250,7 +120,6 @@ export default {
       },
 
       editDialog: false,
-      editFormError: false,
       editMed: {
         sku: "",
         descripcion: "",
@@ -262,7 +131,6 @@ export default {
       confirmDeleteSku: null,
 
       transferDialog: false,
-      transferFormError: false,
       transferCantError: false,
       transfer: {
         sku: "",
@@ -354,15 +222,9 @@ export default {
 
     openTransferDialog(){
       this.loadMedicamentos();
+      this.area = this.areasTodo[0]
       this.transferDialog = true;
-      this.resetTransferErrors();
-      this.transfer = {
-        sku: "",
-        cantidad: null,
-        stockAreaIdOrigen: "",
-        stockAreaIdDestino: "",
-        motivo: "",
-      }
+      this.resetTransferForm()
     },
 
     closeTransferDialog(){
@@ -370,27 +232,16 @@ export default {
       this.resetTransferForm();
     },
 
-    async transferMedicamento(){
-      this.resetTransferErrors();
-      console.log("sku ",this.transfer.sku," cant ",this.transfer.cantidad," orig ",this.transfer.stockAreaIdOrigen," dest ",this.transfer.stockAreaIdDestino," mot ",this.transfer.motivo)
-      console.log(this.transfer.stockAreaIdDestino)
-      if(!this.transfer.sku ||
-        !this.transfer.cantidad ||
-        !this.transfer.stockAreaIdOrigen ||
-        !this.transfer.stockAreaIdDestino ||
-        !this.transfer.motivo
-        ) {
-          this.transferFormError = true;
-          return;
-        }
+    async transferMedicamento({transferenciaEmitida}){
+      this.transferCantError = false;
 
       let itemExist = this.itemsMed.find(
-        (itemMed) => (itemMed.sku == this.transfer.sku) && (itemMed.stockAreaId == this.transfer.stockAreaIdOrigen)
+        (itemMed) => (itemMed.sku == transferenciaEmitida.sku) && (itemMed.stockAreaId == transferenciaEmitida.stockAreaIdOrigen)
       );
 
-      if(itemExist != null && itemExist.stock >= this.transfer.cantidad){
+      if(itemExist != null && itemExist.stock >= transferenciaEmitida.cantidad){
         try {
-            await ordenTransferenciaService.createTransferencia(this.globalStore.getUsuarioId , this.transfer.sku, this.transfer.cantidad, this.transfer.stockAreaIdOrigen, this.transfer.stockAreaIdDestino, this.transfer.motivo);
+            await ordenTransferenciaService.createTransferencia(this.globalStore.getUsuarioId , transferenciaEmitida.sku, transferenciaEmitida.cantidad, transferenciaEmitida.stockAreaIdOrigen, transferenciaEmitida.stockAreaIdDestino, transferenciaEmitida.motivo);
             this.closeTransferDialog();
           } catch (error) {
             console.error("Error al transferir stock: ", error);
@@ -403,13 +254,7 @@ export default {
 
     openAddDialog() {
       this.addDialog = true;
-      this.resetErrors();
-      this.newMed = {
-        sku: "",
-        descripcion: "",
-        tipo_insumo: "Medicamento",
-        stock: null,
-      };
+      this.resetForm();
     },
 
     closeAddDialog() {
@@ -417,27 +262,18 @@ export default {
       this.resetForm();
     },
 
-    async addMedicamento() {
-      this.resetErrors();
-
-      if (
-        !this.newMed.sku ||
-        !this.newMed.descripcion ||
-        !this.newMed.tipo_insumo ||
-        !this.newMed.stock
-      ) {
-        this.formError = true;
-        return;
-      }
+    async addMedicamento({medicamentoEmitido}) {
+      this.skuError = false;
 
       const exists = this.medicamentos.some(
-        (medicamento) => medicamento.sku == this.newMed.sku
+        (medicamento) => medicamento.sku == medicamentoEmitido.sku
       );
 
       if (!exists) {
         try {
-          await itemService.createItem(this.newMed.sku, this.newMed.descripcion, this.newMed.tipo_insumo, this.newMed.stock);
+          await itemService.createItem(medicamentoEmitido.sku, medicamentoEmitido.descripcion, medicamentoEmitido.tipo_insumo, medicamentoEmitido.stock);
           await this.loadItemsMed();
+          this.area = 0;
           await this.loadMedicamentos();
           this.closeAddDialog();
         } catch (error) {
@@ -462,8 +298,6 @@ export default {
       this.editMed.tipo_insumo= medicamento.tipoInsumo,
       this.editMed.stock = itemMed.stock;
       }        
-
-      this.resetEditErrors();
     },
 
     closeEditDialog() {
@@ -471,36 +305,21 @@ export default {
       this.resetEditForm();
     },
 
-    async updateMedicamento() {
-      this.resetEditErrors();
-
-      if(this.area != 0 && !this.editMed.stock){
-        this.editFormError = true;
-        return;
-      }
-      if (
-        !this.editMed.sku ||
-        !this.editMed.descripcion ||
-        !this.editMed.tipo_insumo 
-      ) {
-        this.editFormError = true;
-        return;
-      }
-      ////////////////////////
+    async updateMedicamento({medicamentoEmitido}) {
       try {
+        
         if(this.area != 0){
           let itemActualizar = this.itemsMed.find(
-            (itemMed) => (itemMed.sku == this.editMed.sku) && (itemMed.stockAreaId == this.area)
+            (itemMed) => (itemMed.sku == medicamentoEmitido.sku) && (itemMed.stockAreaId == this.area)
           );
-          console.log("actualizar item", itemActualizar.id, this.editMed.sku, this.editMed.stock, this.area)
-          await itemService.updateItem(itemActualizar.id, this.editMed.sku, this.editMed.stock)
-          
+          await itemService.updateItem(itemActualizar.id, medicamentoEmitido.sku, medicamentoEmitido.stock)
+          await this.loadItemsMed();
+          await this.loadMedicamentosByAreaId(this.area)
         }else{
-          await medicamentosService.updateMedicamento(this.editMed.sku, this.editMed.descripcion, this.editMed.tipo_insumo);
-         
+          await medicamentosService.updateMedicamento(medicamentoEmitido.sku, medicamentoEmitido.descripcion, medicamentoEmitido.tipo_insumo);
+          await this.loadMedicamentos();
         }
-        await this.loadItemsMed();
-        await this.loadMedicamentos();
+        
         this.closeEditDialog();
       } catch (error) {
         console.error("Error al actualizar el medicamento:", error);
@@ -548,7 +367,7 @@ export default {
         tipo_insumo: "Medicamento",
         stock: null,
       };
-      this.resetErrors();
+      this.skuError = false;
     },
 
     resetEditForm() {
@@ -558,7 +377,6 @@ export default {
         tipo_insumo: "Medicamento",
         stock: null,
       };
-      this.resetEditErrors();
     },
 
     resetTransferForm(){
@@ -569,22 +387,8 @@ export default {
         stockAreaIdDestino: "",
         motivo: "",
       };
-      this.resetTransferErrors();
-    },
-
-    resetErrors() {
-      this.skuError = false;
-      this.formError = false;
-    },
-
-    resetEditErrors() {
-      this.editFormError = false;
-    },
-
-    resetTransferErrors(){
-      this.transferFormError = false;
       this.transferCantError = false;
-    }
+    },
   }
 };
 </script>

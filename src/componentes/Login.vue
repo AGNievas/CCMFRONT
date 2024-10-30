@@ -1,27 +1,31 @@
 <template>
-  <div>
-
     <v-container>
       <v-card>
         <v-card-text class="text-center">
           <v-form @submit.prevent="login">
             <v-text-field v-model="formData.cuil" placeholder="CUIL" label="CUIL" required type="text"
-              :error-messages="cuilErrors" style="border: none; box-shadow: none;"
+              :error-messages="cuilErrors"
               @input="formData.cuil = formatearCuil(formData.cuil)"></v-text-field>
-            <v-text-field v-model="formData.password" label="Password" required type="password"
-              :error-messages="passwordErrors" style="border: none; box-shadow: none;"></v-text-field>
+            <v-text-field 
+            v-model="formData.password" 
+            label="Password" 
+            required 
+            :type="showPassword ? 'text' : 'password'"
+            :error-messages="passwordErrors"
+            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="toggleShowPassword"
+            ></v-text-field>
 
             <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
           </v-form>
           <br>
 
-          <v-card-text v-if="error" style="color: red; font-weight: bold;">{{ error }}</v-card-text>
-          <!-- <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error }}</v-alert> -->
+          <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error }}</v-alert>
           <RouterLink to="/recuperarPassword" class="recuperar-link">recuperar contraseña</RouterLink>
         </v-card-text>
       </v-card>
     </v-container>
-  </div>
+  
 </template>
 
 <script>
@@ -39,9 +43,13 @@ export default {
       cuilErrors: [],
       passwordErrors: [],
       globalStore: useGlobalStore(),
+      showPassword: false,
     };
   },
   methods: {
+    toggleShowPassword() {
+      this.showPassword = !this.showPassword;
+    },
     validateForm() {
       this.cuilErrors = [];
       this.passwordErrors = [];
@@ -69,10 +77,11 @@ export default {
     },
 
     async login() {
-      if (!this.validateForm()) {
-        this.error = "Por favor, corrige los errores antes de continuar.";
-        return;
-      }
+      // if (!this.validateForm()) {
+      //   this.error = "Por favor, corrige los errores antes de continuar.";
+      //   return;
+      // }
+      this.validateForm()
 
       try {
         const { cuil, password } = this.formData;
@@ -92,7 +101,12 @@ export default {
       } catch (error) {
         this.error = error;
       }
+      if(!this.formData.cuil || !this.formData.password){
+        this.error = "Complete los campos para continuar.";
+      }
     },
+
+    
 
     resetearFormulario() {
       this.formData = {
@@ -105,16 +119,10 @@ export default {
 </script>
 
 <style scoped>
-.custom-alert {
-  max-height: 60px;
-  overflow-y: auto;
-  margin-bottom: 10px;
-}
 
-
-v-card-text {
+/* v-card-text {
   min-height: 150px;
-}
+} */
 
 .btn-blue {
   margin-top: 20px;
