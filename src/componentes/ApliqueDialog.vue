@@ -113,7 +113,7 @@ export default {
     },
     'apliqueLocal.sku'(newSku) {
       const medicamento = this.medicamentos.find(med => med.sku == newSku);
-      console.log(medicamento,newSku, "sku")
+     
       if (medicamento) {
         this.apliqueLocal.descripcion = medicamento.descripcion;
       } else {
@@ -122,7 +122,7 @@ export default {
     },
     'apliqueLocal.descripcion'(newDescripcion) {
       const medicamento = this.medicamentos.find(med => med.descripcion == newDescripcion);
-      console.log(medicamento, newDescripcion, "descripcion")
+      
       if (medicamento) {
         this.apliqueLocal.sku = medicamento.sku;
       } else {
@@ -145,7 +145,7 @@ export default {
   methods: {
     save() {
       this.$emit('save', this.apliqueLocal);
-      console.log(this.apliqueLocal, "aplique Local")
+     
       this.closeDialog();
     },
     resetApliqueLocal() {

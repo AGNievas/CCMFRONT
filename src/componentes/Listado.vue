@@ -7,6 +7,7 @@
         :isListadoApliques="isListadoApliques"
         :isListadoPacientes="isListadoPacientes"
         :isListadoMedicamentos="isListadoMedicamentos"
+        :isListadoOrdenTransferencia="isListadoOrdenTransferencia"
         @edit="$emit('edit', $event)"
         @delete="$emit('delete', $event)"
         @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
@@ -56,6 +57,10 @@ export default {
     isListadoMedicamentos: {
       type: Boolean,
       default: false, 
+    },
+    isListadoOrdenTransferencia:{
+      type:Boolean,
+      default: false,
     },
   },
   computed: {

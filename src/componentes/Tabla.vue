@@ -95,6 +95,11 @@ export default {
       type: Boolean,
       default: false, 
     },
+    isListadoOrdenTransferencia:{
+      type:Boolean,
+      default: false,
+    },
+
     
   },
 
@@ -103,10 +108,6 @@ export default {
       ROL_ID_USER : 3,
       globalStore : useGlobalStore()
     }
-  },
-
-  mounted(){
-    console.log(this.isListadoPacientes,"es apliqe")
   },
 
   computed: {
@@ -126,11 +127,11 @@ export default {
 
     canVerEdit(){
       const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId!=this.ROL_ID_USER || this.isListadoPacientes&& globalStore.rolId!=this.ROL_ID_USER || this.isListadoApliques && globalStore.rolId!=this.ROL_ID_USER
+      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId!=this.ROL_ID_USER || this.isListadoPacientes&& globalStore.rolId!=this.ROL_ID_USER || this.isListadoApliques && globalStore.rolId!=this.ROL_ID_USER || this.isListadoOrdenTransferencia && globalStore.getEsAdmin 
     },
     canVerDelete(){
       const globalStore = useGlobalStore();
-      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId<=2 ||this.isListadoPacientes&& globalStore.rolId!=this.ROL_ID_USER || this.isListadoApliques && globalStore.rolId!=this.ROL_ID_USER
+      return this.isListadoUsuarios && globalStore.getEsAdmin == true || this.isListadoMedicamentos && globalStore.rolId!=this.ROL_ID_USER ||this.isListadoPacientes&& globalStore.rolId!=this.ROL_ID_USER || this.isListadoApliques && globalStore.rolId!=this.ROL_ID_USER  || this.isListadoOrdenTransferencia && globalStore.getEsAdmin 
     }
   },
   methods: {

@@ -19,6 +19,7 @@
       <Listado
         :items="ordenesTransferencias"
         :headers="ordenTransferenciaHeaders"
+        :isListadoOrdenTransferencia="true"
         @edit="openEditDialog"
         @delete="confirmDelete"
       />
@@ -28,6 +29,7 @@
         :is-editing="isEditing"
         :ordenTransferencia="selectedOrdenTransferencia"
         :areas="stockAreas"
+        :errorMessage="errorMessage"
         @save="saveTransferencia"
       />
 
@@ -47,7 +49,7 @@ import ConfirmDialog from './ConfirmDialog.vue';
 import OrdenTransferenciaDialog from './OrdenTransferenciaDialog.vue';
 import ordenTransferenciaService from './servicios/ordenTransferenciaService.js';
 import stockAreaService from './servicios/stockAreaService.js';
-
+import { useGlobalStore } from '@/stores/global';
 export default {
   components: {
     Listado,
@@ -63,6 +65,8 @@ export default {
       isEditing: false,
       deleteDialog: false,
       selectedOrdenTransferencia: {},
+      globalStore: useGlobalStore(),
+      errorMessage:'',
     };
   },
   computed: {
@@ -80,6 +84,7 @@ export default {
   async mounted() {
     await this.loadOrdenesTransferencias();
     await this.loadStockAreas();
+    
   },
   methods: {
     async loadOrdenesTransferencias() {
@@ -104,23 +109,24 @@ export default {
     },
 
 
-   async saveTransferencia(orden) {
+    async saveTransferencia(orden) {
   try {
-    console.log("Orden recibida en saveTransferencia:", orden);
-
     const { items, ...ordenData } = orden;
-    console.log("Items:", items, "Orden Data:", ordenData);
 
     if (this.isEditing) {
       await ordenTransferenciaService.updateOrdenTransferencia(ordenData);
     } else {
       await ordenTransferenciaService.createOrdenTransferencia(ordenData, items);
     }
-    
+
+    // Cerrar diálogo solo si no hay errores
     this.dialog = false;
+    this.errorMessage = ''; // Limpiar el mensaje de error en caso de éxito
     await this.loadOrdenesTransferencias();
   } catch (error) {
     console.error('Error al guardar la transferencia:', error);
+    
+    this.errorMessage = error|| 'Error al guardar la orden de transferencia';
   }
 }
 ,
