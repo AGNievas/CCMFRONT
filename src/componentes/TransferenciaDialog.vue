@@ -1,44 +1,13 @@
 <template>
-  <v-dialog v-model="localVisible" persistent max-width="600px">
+  <v-dialog v-model="localVisible" persistent max-width="400px">
     <v-card>
       <v-card-title>
-        <span class="headline">{{ isEditing ? 'Editar Transferencia' : 'Agregar Nueva Transferencia' }}</span>
+        <span class="headline">Agregar Item</span>
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-text-field 
-            v-model="localTransferencia.sku" 
-            label="SKU" 
-            required 
-            type="number"
-          />
-          <v-text-field 
-            v-model="localTransferencia.cantidad" 
-            label="Cantidad" 
-            required 
-            type="number"
-          />
-          <v-select 
-            v-model="localTransferencia.stockAreaIdOrigen" 
-            :items="areas" 
-            item-title="nombre" 
-            item-value="id" 
-            label="Área Origen" 
-            required
-          />
-          <v-select 
-            v-model="localTransferencia.stockAreaIdDestino" 
-            :items="areas" 
-            item-title="nombre" 
-            item-value="id" 
-            label="Área Destino" 
-            required
-          />
-          <v-text-field 
-            v-model="localTransferencia.motivo" 
-            label="Motivo" 
-            required
-          />
+          <v-text-field v-model="localTransferencia.sku" label="SKU" required type="number" />
+          <v-text-field v-model="localTransferencia.cantidad" label="Cantidad" required type="number" />
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -54,20 +23,14 @@
 export default {
   props: {
     modelValue: Boolean,
-    isEditing: Boolean,
-    transferencia: Object,
-    areas: Array,
   },
   data() {
     return {
       localVisible: this.modelValue,
-      localTransferencia: this.createLocalTransferencia(),
+      localTransferencia: { sku: '', cantidad: '' },
     };
   },
   methods: {
-    createLocalTransferencia() {
-      return { ...this.transferencia };
-    },
     saveChanges() {
       this.$emit('save', { ...this.localTransferencia });
       this.closeDialog();
@@ -80,13 +43,6 @@ export default {
   watch: {
     modelValue(val) {
       this.localVisible = val;
-    },
-    transferencia: {
-      handler(newVal) {
-        this.localTransferencia = { ...newVal };
-      },
-      immediate: true,
-      deep: true,
     },
   },
 };

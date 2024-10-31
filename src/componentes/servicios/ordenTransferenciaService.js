@@ -5,8 +5,10 @@ const URL = "/orden-transferencia";
 const ordenTransferenciaService = {
   async getAllOrdenTransferencia() {
     try {
+      console.log("servicio OrdenTransferencia");
       const response = await axiosInstance.get(URL, { withCredentials: true });
-      return response.data.return;
+      console.log(response, "response");
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
       return [];
@@ -15,9 +17,12 @@ const ordenTransferenciaService = {
 
   async getOrdenTransferenciaById(ordenTransferenciaId) {
     try {
-      const response = await axiosInstance.get(`${URL}/id/${ordenTransferenciaId}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${URL}/id/${ordenTransferenciaId}`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
@@ -49,29 +54,46 @@ const ordenTransferenciaService = {
     }
   },
 
-
-
-  async createOrdenTransferencia(usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
-    try {console.log(usuarioId)
-      console.log("AntescrearOrdenPostResponse")
-      const response = await axiosInstance.post(`${URL}`, { usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo}, { withCredentials: true });
-      console.log("DespcrearOrdenPostResponse", response.data.return)
+  async createOrdenTransferencia(ordenTransferencia, listaItems) {
+    try {
+      console.log("orden", ordenTransferencia, "items",listaItems)
+      const { stockAreaIdOrigen, stockAreaIdDestino, motivo } = ordenTransferencia;
+  
+      const response = await axiosInstance.post(
+        `${URL}`, 
+        { stockAreaIdOrigen, stockAreaIdDestino, motivo, listaItems },
+        { withCredentials: true }
+      );
+  
       return response.data.return;
     } catch (error) {
-      console.error("Error al obtener Users:", error);
-      return [];
+      console.error("Error al crear Orden de Transferencia:", error);
+      throw new Error("No se pudo crear la Orden de Transferencia");
     }
   },
+  
 
-
-
-  async updateOrdenTransferencia(id,
-    usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
+  async updateOrdenTransferencia(
+    id,
+    usuarioId,
+    sku,
+    cantidad,
+    stockAreaIdOrigen,
+    stockAreaIdDestino,
+    motivo
+  ) {
     try {
       const { data: ordenTransferenciaActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
-        { id,
-            usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo},
+        {
+          id,
+          usuarioId,
+          sku,
+          cantidad,
+          stockAreaIdOrigen,
+          stockAreaIdDestino,
+          motivo,
+        },
         { withCredentials: true }
       );
 
