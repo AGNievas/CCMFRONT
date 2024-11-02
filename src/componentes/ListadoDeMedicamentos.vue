@@ -1,7 +1,6 @@
 <template>
-  <div>
     <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
+      <v-card-title class="d-flex align-center pe-2">
         <v-text-field
           v-model="search"
           density="compact"
@@ -76,8 +75,7 @@
       :areas= this.areas
       @closeDialog="closeTransferDialog"
       @confirm="transferMedicamento"
-    />
-  </div> 
+    /> 
 </template>
 
 <script>

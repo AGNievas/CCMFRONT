@@ -1,11 +1,7 @@
 <template>
-  <div class="home-container">
-    <div class="background-image"></div>
-    <div class="content">
-      
-      <h1></h1>
-    </div>
-  </div>
+  <div class="home-container background-image">
+
+  </div> 
 </template>
 
 <script>

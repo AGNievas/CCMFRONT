@@ -1,170 +1,181 @@
 .custom-container {
-    max-width: 90%;
-    margin: 50px auto;
-    display: block !important;
+  max-width: 90%;
+  margin: 50px auto;
+  display: block !important;
 }
 
 .v-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding-top: 150px; 
+  max-width: 500px;
+  margin: 0 auto;
+  /* padding-top: 150px;  */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .v-card {
-    padding: 40px 20px;
-    border-radius: 16px;
-    background-color: white;
-    border: 1px solid #d9dcd1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 40px 20px;
+  border-radius: 16px;
+  background-color: white;
+  border: 1px solid #d9dcd1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
 }  
 
 .table-header {
-    background-color: #E5E5E5;
-    text-transform: uppercase;
-    /* font-weight: bold !important; */
+  background-color: #E5E5E5;
+  text-transform: uppercase;
+  /* font-weight: bold !important; */
 }
 
 .acciones-cell {
-    width: 200px;
-    max-width: 200px;
-    text-align: center;
-}
+  width: 250px;
+  max-width: 250px;
+  text-align: center !important;}
 
 .btn-blue {
-    text-transform: none;
-    background-color: #0E3746;
-    color: white;
-    margin-right: 5px;
+  text-transform: none;
+  background-color: #0E3746;
+  color: white;
+  /* margin-right: 5px; */
 }
 
 .btn-icon{
-    /* padding: 0 !important;  */
-    margin: 3px !important;
-    /* width: 50px !important; 
-    height: 50px !important; 
-    border-radius: 50% !important; */
+  margin: 3px !important;
 }
-/* .v-icon-btn{
-    font-size: 16px !important;
-} */
+
 .v-data-table{
-    border-radius: 16px;
+  border-radius: 16px;
+  text-transform: uppercase;
 }
 
 .home-container {
-    position: relative;
-    height: 100vh;
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    overflow: hidden;
+  position: relative;
+  height: 100vh;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  overflow: hidden;
 }
 
 .background-image {
-    background-image: url('@/assets/logo.png'); 
-    background-size: contain; 
-    background-repeat: no-repeat; 
-    background-position: center; 
-    width: 300px;
-    height: 300px; 
-    opacity: 0.3; 
-    position: fixed; 
-    z-index: 1; 
-    left: 50%;
-    top: 50%; 
-    transform: translate(-50%, -50%);
+  background-image: url('@/assets/logo.png'); 
+  background-size: contain; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  width: 300px;
+  height: 300px; 
+  opacity: 0.3; 
+  position: fixed; 
+  z-index: 1; 
+  left: 50%;
+  top: 50%; 
+  transform: translate(-50%, -50%);
 }
 
 .content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    color: #0E3746; 
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #0E3746; 
 }
 
 .navbar {
-    background-color: #A3DEC3 !important;
-    position: initial !important;
-    text-align: center;
+  background-color: #A3DEC3 !important;
+  position: initial !important;
+  text-align: center;
 }
 
 .navbar-icon {
-    color: #0E3746;
+  color: #0E3746;
 }
 
-
 .v-card-title {
-    font-size: 24px;
-    font-size: 24px !important;
-    padding-left: 0px !important; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
-    padding-right: 0px !important; 
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten a la pantalla */
+  gap: 8px; /* Espacio entre elementos */
+  justify-content: center;
+  text-align: center;
+
 }
 
 .drawer {
-    background-color: #A3DEC3;
-    text-align: center;
+  background-color: #A3DEC3;
+  text-align: center;
 }
 
 .headline {
-    font-weight: bold;
-    color: #0E3746;
+  font-weight: bold;
+  color: #0E3746;
+  /* text-align: center;
+  align-items: center; */
 }
 
 .drawer-item-title {
-    color: #0E3746;
-    text-decoration: none;
+  color: #0E3746;
+  text-decoration: none;
 }
 
 .recuperar-link {
-    display: block;
-    font-size: 14px;
-    color: #5c4dff;
-    text-decoration: none;
-    cursor: pointer;
-    margin: 20px auto 20px;
+  display: block;
+  font-size: 14px;
+  color: #5c4dff;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 20px auto 20px;
 }
 
 .lock-icon {
-    font-size: 48px;
-    color: #333;
-    margin-bottom: 20px;
+  font-size: 48px;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .recuperar-title {
-    font-weight: bold;
-    font-size: 20px;
-    color: #333;
-    margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .recuperar-text {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 30px;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
 }
 
 .mail-field {
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
-.responsive-card-title {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se ajusten a la pantalla */
-    gap: 8px; /* Espacio entre elementos */
-    padding-left: 0px; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
-    padding-right: 0px; /* Asegura también la alineación en el lado derecho */
-  }
+
   
-  @media (max-width: 600px) {
-    .responsive-card-title {
-      flex-direction: column; /* Cambia a columna en pantallas pequeñas */
-      align-items: stretch; /* Asegura que los elementos ocupen el ancho completo */
-    }
-  
-    .responsive-card-title .v-text-field,
-    .responsive-card-title .v-select,
-    .responsive-card-title .v-btn {
-      width: 100%; /* Asegura que cada elemento ocupe el 100% del ancho disponible */
-    }
+@media (max-width: 600px) {
+  .v-card-title {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+    /* align-items: stretch; Asegura que los elementos ocupen el ancho completo */
+    padding-right: 4% !important;
+    padding-left: 0px !important; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
   }
+
+  .v-app-bar-title {
+    font-size:medium;
+        
+  }
+  .v-toolbar__content > .v-toolbar-title{
+    margin-inline-start: 0px;
+  }
+
+  .v-btn--icon.v-btn--density-default {
+    width: calc(var(--v-btn-height) + 0px);
+  }
+    
+  .v-card-title .v-text-field,
+  .v-card-title .v-select,
+  .v-card-title .v-btn {
+    width: 100%; /* Asegura que cada elemento ocupe el 100% del ancho disponible */
+  }
+}

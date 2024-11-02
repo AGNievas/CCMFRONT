@@ -69,7 +69,7 @@ export default {
         { text: 'Cantidad', value: 'cantidad' },
         { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
         { text: 'Área', value: 'stockAreaNombre' },
-        { text: 'Acciones', value: '' },
+        { text: '', value: '' },
       ],
       pacienteNombreCompleto: '',
       apliques: [],

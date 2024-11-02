@@ -1,12 +1,20 @@
 <template>
   <div>
     <v-card class="custom-container ">
-      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
+      <v-card-title class="d-flex align-center pe-2">
         <v-text-field v-model="searchDni" density="compact" label="Buscar por DNI o Apellido"
           prepend-inner-icon="mdi-magnify" variant="solo" hide-details single-line
           class="rounded-search-bar"></v-text-field>
-        <v-select v-model="searchGenero" :items="generos" label="Género" density="compact"  variant="solo"
-          hide-details></v-select>
+        
+        <v-select 
+          v-model="searchGenero" 
+          :items="generos" 
+          label="Género" 
+          density="compact"  
+          variant="solo"
+          hide-details
+        ></v-select>
+
         <v-spacer></v-spacer>
         <v-btn v-if="globalStore.rolId<=2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
@@ -36,7 +44,7 @@
 </v-dialog>
 
       <!-- Modal para Ver Historial de Apliques -->
-      <v-dialog v-model="listadoApliquesVisible" max-width="800px">
+      <v-dialog v-model="listadoApliquesVisible" max-width="1200px">
         <ListadoApliques :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos"
           @close="listadoApliquesVisible = false" />
       </v-dialog>
@@ -72,7 +80,7 @@ export default {
   data() {
     return {
       searchDni: '',
-      searchGenero: '',
+      searchGenero: 'Todos',
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
     
       agregarDialog: false,
@@ -101,7 +109,7 @@ export default {
         { text: 'Genero', value: 'genero' },
         { text: 'Edad', value: 'edad' },
         { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
-        { text: 'Acciones', value: '' }
+        { text: '', value: '' }
       ];
     },
 

@@ -1,5 +1,4 @@
 <template>
-  <div >
     <v-data-table
       :headers="headers"
       :items="data"
@@ -62,7 +61,6 @@
         </tr>
       </template>
     </v-data-table>
-  </div>
 </template>
 
 <script>
@@ -149,3 +147,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+
+
+</style>

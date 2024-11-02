@@ -1,11 +1,14 @@
 <template>
-  <div>
-    <v-btn @click="$emit('add-item')" class="btn-blue">Agregar Item</v-btn>
+  <v-card class="custom-container">
+    <v-card-title class="d-flex align-center pe-2">
+      <v-spacer></v-spacer>
+      <v-btn @click="$emit('add-item')" class="btn-blue">Agregar Item</v-btn>
+    </v-card-title>  
     <Listado
       :items="items"
       :headers="transferenciasHeaders"
     />
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -23,7 +26,7 @@ export default {
       return [
         { text: 'SKU', value: 'sku' },
         { text: 'Cantidad', value: 'cantidad' },
-        { text: '', value: 'acciones', sortable: false },
+        { text: '', value: '', sortable: false },
       ];
     },
   },
