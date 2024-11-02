@@ -19,6 +19,7 @@
 
       <div v-if="archivoImportado">
         <v-row class="d-flex flex-column align-center">
+          <p> Se han cargado con exito {{cargadosConExito()}} medicamentos</p>
           <v-btn @click="descargarArchivo(this.archivoADescargar, 'informe')" class="my-2 mx-5 btn-blue btn-tamano">Descargar
             Informe</v-btn>
           <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Volver a la Carga</v-btn>
@@ -97,6 +98,9 @@ export default {
       this.archivoImportado = false;
       this.nombreArchivo = "";
       this.archivo = null;
+    },
+    cargadosConExito(){
+      return 
     }
   },
 };

@@ -49,6 +49,7 @@
 } */
 .v-data-table{
     border-radius: 16px;
+    text-transform: uppercase;
 }
 
 .home-container {
