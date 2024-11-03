@@ -26,7 +26,7 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <!-- <v-btn @click="openTransferDialog" class=" btn-blue">Transferir Stock</v-btn> -->
+        <v-btn @click="openTransferDialog" class=" btn-blue">Transferir Stock</v-btn>
         <v-btn @click="openAddDialog" class=" btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
@@ -150,12 +150,17 @@ export default {
 
   computed: {
 
+    stockHeaderText() {
+      const areaSeleccionada = this.areasTodo.find(area => area.id === this.area);
+      return `STOCK - ${areaSeleccionada ? areaSeleccionada.nombre : ''}`;
+    },
+
     usuariosHeaders() {
       return [
         { text: 'SKU', value: 'sku' },
         { text: 'DESCRIPCIÓN', value: 'descripcion' },
         { text: 'TIPO DE INSUMO', value: 'tipo_insumo' },
-        { text: 'STOCK', value: 'cantidad' },
+        { text: this.stockHeaderText, value: 'cantidad' },
         { text: '', value: 'acciones', sortable: false },
       ];
     },
