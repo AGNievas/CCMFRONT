@@ -49,7 +49,7 @@
           @close="listadoApliquesVisible = false" />
       </v-dialog>
 
-      <ConfirmDialog v-model="deleteDialog" title="Confirmar Eliminación"
+      <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar este paciente?" @confirm="deletePaciente" />
     </v-card>
   </div>

@@ -35,6 +35,7 @@
 
       <ConfirmDialog
         v-model="deleteDialog"
+        :isDelete="true"
         title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar esta transferencia?"
         @confirm="deleteTransferencia"

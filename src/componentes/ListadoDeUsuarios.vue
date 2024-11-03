@@ -31,6 +31,7 @@
   
     <ConfirmDialog
       v-model="deleteDialog"
+      :isDelete="true"
       title="Confirmar Eliminación"
       text="¿Estás seguro de que deseas eliminar este usuario?"
       @confirm="deleteUsuario"
