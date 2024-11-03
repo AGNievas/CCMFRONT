@@ -27,6 +27,7 @@
 .table-header {
   background-color: #E5E5E5;
   text-transform: uppercase;
+  white-space: nowrap;
   /* font-weight: bold !important; */
 }
 
@@ -49,6 +50,7 @@
 .v-data-table{
   border-radius: 16px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .home-container {
@@ -171,7 +173,12 @@
 
   .v-btn--icon.v-btn--density-default {
     width: calc(var(--v-btn-height) + 0px);
+    height: calc(var(--v-btn-height) + 0px);
   }
+
+  .v-btn .v-icon {
+    --v-icon-size-multiplier: 0.8571428571;
+}
     
   .v-card-title .v-text-field,
   .v-card-title .v-select,
