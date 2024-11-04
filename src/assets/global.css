@@ -163,6 +163,8 @@
     padding-left: 0px !important; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
   }
 
+  
+
   .v-app-bar-title {
     font-size:medium;
         
@@ -184,5 +186,6 @@
   .v-card-title .v-select,
   .v-card-title .v-btn {
     width: 100%; /* Asegura que cada elemento ocupe el 100% del ancho disponible */
+    margin-bottom: 15px;
   }
 }
