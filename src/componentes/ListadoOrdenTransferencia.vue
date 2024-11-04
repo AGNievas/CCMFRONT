@@ -36,8 +36,7 @@
 
       <v-dialog v-model="itemsDialogVisible"  max-width="800px">
         <ListadoDeTransferencias :isViewMode="true" 
-  :items="selectedItems" 
-  
+  :items="selectedItems"
   @close="itemsDialogVisible = false" 
 />
 </v-dialog>

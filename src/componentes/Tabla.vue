@@ -42,7 +42,12 @@
           </v-btn>
           <v-btn class="btn-icon" v-if="canCreateAplique" icon small color="green" @click="$emit('crear-aplique', item)">
             <v-icon>mdi-pill</v-icon>
+
+            
           </v-btn>
+          <v-btn class="btn-icon" v-if="canVerDetail" icon @click="$emit('ver-items', item.id)">
+  <v-icon>mdi-eye</v-icon>
+</v-btn>
         </td>
       </tr>
     </template>
@@ -85,6 +90,9 @@ export default {
     },
 
 
+  },
+  mounted(){
+    console.log("es orden transferencia?",this.isListadoOrdenTransferencia)
   },
 
   data() {

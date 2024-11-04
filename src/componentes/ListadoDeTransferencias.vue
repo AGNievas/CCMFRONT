@@ -4,6 +4,7 @@
       <v-spacer></v-spacer>
       <v-btn v-if="!isViewMode" @click="$emit('add-item')" class="btn-blue">Agregar Item</v-btn>
     </v-card-title>  
+    
     <Listado
       :items="items"
       :headers="transferenciasHeaders"
