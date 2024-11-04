@@ -94,13 +94,11 @@ export default {
         }));
         this.globalStore.setUsuario(cuil, usuarioId, stockAreaId, fullNameUsuario, rolId, rolId == 1, true)
         this.$router.push('/home');
-        console.log(this.globalStore.getRolId, "El rol id",)
+        
         const areas = await stockAreaService.getAllStockArea();
     const usuarios = await usuariosService.getAllUsuarios();
     this.globalStore.cargarAreasYUser(areas, usuarios);
 
-    console.log("Áreas en globalStore:", this.globalStore.getAreas);
-    console.log("Usuarios en globalStore:", this.globalStore.getUsuarios);
         this.resetearFormulario();
       } catch (error) {
         this.error = error;

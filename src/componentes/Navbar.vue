@@ -80,7 +80,7 @@ export default {
   },
 
   updated() {
-    console.log(this.isSessionActive)
+    
     this.isSessionActive = sessionStorage.length > 1
 
   }

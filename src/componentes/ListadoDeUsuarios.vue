@@ -137,18 +137,17 @@ export default {
     this.loadUsuarios();
     this.loadStockAreas();
     this.loadRols();
-    console.log('Headers enviados a Tabla:', this.usuariosHeaders);
-    console.log('Datos enviados a Listado:', this.usuariosFiltradosParaVista);
+ 
   },
   methods: {
     async loadRols() {
       this.roles = await rolService.getAllRol();
-      console.log('Roles:', this.roles);
+  
     },
 
     async loadUsuarios() {
   this.usuarios = await usuariosService.getAllUsuarios();
-  console.log('Usuarios cargados:', this.usuarios); 
+
 },
 
     async loadStockAreas() {
@@ -176,7 +175,7 @@ export default {
 
     confirmDelete(id) {
       this.confirmDeleteId = id;
-      console.log("id deleteeeee", id)
+      
       this.deleteDialog = true;
     },
 

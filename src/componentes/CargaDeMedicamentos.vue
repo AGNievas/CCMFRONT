@@ -67,7 +67,7 @@ export default {
             header: true,
             dynamicTyping: true,
             complete: (result) => {
-              console.log("CSV Parsed Data:", result.data);
+              
               this.archivoCargado = true;
               this.archivoCsvEnviado = result.data
             },

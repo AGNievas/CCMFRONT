@@ -27,9 +27,7 @@ export default {
     Listado,
   },
 
-  mounted(){
-    console.log(this.orderNumber,"numero orden")
-  },
+  
   computed: {
     transferenciasHeaders() {
       return [

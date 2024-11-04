@@ -94,10 +94,7 @@ export default {
     },
 
   },
-  mounted(){
-    console.log("es orden transferencia?",this.isListadoOrdenTransferencia)
-  },
-
+ 
   data() {
     return {
       ROL_ID_USER: 3,

@@ -128,7 +128,9 @@ export default {
   try {
      const ordenSeleccionada = this.ordenesTransferencias.find(orden => orden.id === ordenId);
     this.selectedOrderNumber = ordenSeleccionada ? ordenSeleccionada.id : null;
- const items = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
+
+ 
+    const items = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
     this.selectedItems = items.map(item => ({
       sku: item.sku,      
       cantidad: item.cantidad 

@@ -5,18 +5,12 @@
         <v-text-field v-model="searchDni" density="compact" label="Buscar por DNI o Apellido"
           prepend-inner-icon="mdi-magnify" variant="solo" hide-details single-line
           class="rounded-search-bar"></v-text-field>
-        
-        <v-select 
-          v-model="searchGenero" 
-          :items="generos" 
-          label="Género" 
-          density="compact"  
-          variant="solo"
-          hide-details
-        ></v-select>
+
+        <v-select v-model="searchGenero" :items="generos" label="Género" density="compact" variant="solo"
+          hide-details></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn v-if="globalStore.rolId<=2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
+        <v-btn v-if="globalStore.rolId <= 2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <!-- Usamos el componente Listado -->
@@ -31,22 +25,15 @@
       <PacienteDialog v-model="editarDialog" :is-editing="true" :paciente="pacienteEdit" @save="editarPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
-        <v-dialog v-model="apliqueDialogVisible" max-width="600px">
-  <ApliqueDialog 
-    v-model="apliqueDialogVisible" 
-    :is-editing="isEditing" 
-    :paciente-id="selectedPacienteId" 
-    :areas="stockAreas"
-    :usuarios="usuarios" 
-    :medicamentos="medicamentos"
-    @save="saveApliqueFromDialog" 
-  />
-</v-dialog>
+      <v-dialog v-model="apliqueDialogVisible" max-width="600px">
+        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :paciente-id="selectedPacienteId"
+          :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" />
+      </v-dialog>
 
       <!-- Modal para Ver Historial de Apliques -->
       <v-dialog v-model="listadoApliquesVisible" max-width="1200px">
-        <ListadoApliques :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos"
-          @close="listadoApliquesVisible = false" />
+        <ListadoApliques :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
+          :medicamentos="medicamentos" @close="listadoApliquesVisible = false" />
       </v-dialog>
 
       <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
@@ -82,7 +69,7 @@ export default {
       searchDni: '',
       searchGenero: 'Todos',
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
-    
+
       agregarDialog: false,
       editarDialog: false,
       isEditing: false,
@@ -92,8 +79,8 @@ export default {
       apliqueDialogVisible: false,
       listadoApliquesVisible: false,
       selectedPacienteId: null,
-      errorMensaje: '', 
-      stockAreas: [], 
+      errorMensaje: '',
+      stockAreas: [],
       usuarios: [],
       pacientes: [],
       medicamentos: [],
@@ -127,41 +114,30 @@ export default {
 
   },
   watch: {
-  // Observa cambios en las áreas y usuarios de globalStore
-  'globalStore.getAreas': {
-    handler(newAreas) {
-      if (newAreas.length) {
-        this.stockAreas = newAreas;
-      }
+    // Observa cambios en las áreas y usuarios de globalStore
+    'globalStore.getAreas': {
+      handler(newAreas) {
+        if (newAreas.length) {
+          this.stockAreas = newAreas;
+        }
+      },
+      immediate: true,
     },
-    immediate: true,
-  },
-  'globalStore.getUsuarios': {
-    handler(newUsuarios) {
-      if (newUsuarios.length) {
-        this.usuarios = newUsuarios;
-      }
+    'globalStore.getUsuarios': {
+      handler(newUsuarios) {
+        if (newUsuarios.length) {
+          this.usuarios = newUsuarios;
+        }
+      },
+      immediate: true,
     },
-    immediate: true,
   },
-},
   methods: {
-
-  //   verificarDatosGlobalStore() {
-    
-  //   if (this.globalStore.getAreas.length && this.globalStore.getUsuarios.length) {
-  //     this.stockAreas = this.globalStore.getAreas;
-  //     this.usuarios = this.globalStore.getUsuarios;
-  //   }
-  // },
-   
-
-    async loadMedicamentos(){
-      const  response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getStockAreaId)
-      this.medicamentos= response.return
-      console.log(this.medicamentos, "LOAD MEDS " )
+    async loadMedicamentos() {
+      const response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getStockAreaId)
+      this.medicamentos = response.return
     },
-   
+
     formatearPacientes(pacientesFiltrados) {
       return pacientesFiltrados.map(paciente => ({
         id: paciente.id,
@@ -174,7 +150,7 @@ export default {
       }));
     },
 
-   
+
     filtrarPacientes() {
       return this.pacientes.filter(paciente => {
         const dniApellidoMatch = this.searchDni
@@ -208,10 +184,10 @@ export default {
         if (pacienteCreado) {
           this.pacientes.push(pacienteCreado);
           this.agregarDialog = false;
-          this.errorMensaje = ''; 
+          this.errorMensaje = '';
         }
       } catch (error) {
-      
+
         this.errorMensaje = error.response?.data?.message || 'Error al agregar el paciente.';
         console.error('Error al agregar paciente:', error);
         this.agregarDialog = true;
@@ -228,9 +204,9 @@ export default {
           this.pacientes.splice(index, 1, pacienteActualizado);
         }
         this.editarDialog = false;
-        this.errorMensaje = ''; 
+        this.errorMensaje = '';
       } catch (error) {
-        
+
         this.errorMensaje = error.response?.data?.message || 'Error al actualizar el paciente.';
         console.error('Error al actualizar paciente:', error);
         this.editarDialog = true;
@@ -240,7 +216,7 @@ export default {
     ,
 
     openApliqueDialog(pacienteId) {
-      this.selectedPacienteId = pacienteId; 
+      this.selectedPacienteId = pacienteId;
       this.isEditing = false;
       this.apliqueDialogVisible = true;
     },
@@ -251,7 +227,7 @@ export default {
     },
     handleSaveAplique() {
       this.apliqueDialogVisible = false;
-      
+
     }
 
     ,
@@ -272,20 +248,20 @@ export default {
     }
     ,
     saveApliqueFromListado(nuevoAplique) {
-      
+
       this.$refs.listadoApliques.saveAplique(nuevoAplique);
       this.apliqueDialogVisible = false;
     },
 
     openAgregarDialog() {
-      this.$refs.pacienteDialog.resetPacienteLocal(); 
-      this.pacienteEdit = {}; 
-      this.errorMensaje = ''; 
-      this.agregarDialog = true; 
+      this.$refs.pacienteDialog.resetPacienteLocal();
+      this.pacienteEdit = {};
+      this.errorMensaje = '';
+      this.agregarDialog = true;
     },
     openEditarDialog(paciente) {
       this.pacienteEdit = { ...paciente };
-      this.errorMensaje = ''; 
+      this.errorMensaje = '';
       this.editarDialog = true;
     },
     confirmDelete(id) {
