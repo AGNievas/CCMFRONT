@@ -1,8 +1,0 @@
-[
-    {"stock": 20, "sku": "123", "stockAreaId": "1"},
-    {"stock": 30, "sku": "123", "stockAreaId": "3"},
-    {"stock": 15, "sku": "125", "stockAreaId": "2"},
-    {"stock": 35, "sku": "125", "stockAreaId": "1"},
-    {"stock": 26, "sku": "129", "stockAreaId": "2"},
-    {"stock": 28, "sku": "131", "stockAreaId": "4"}
-]

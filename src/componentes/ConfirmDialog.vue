@@ -6,7 +6,8 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
-        <v-btn class="btn-blue" text @click="confirmAction">Confirmar</v-btn>
+        <v-btn v-if="this.localIsDelete" style="background-color: red" class="btn-blue" text @click="confirmAction">Eliminar</v-btn>
+        <v-btn v-else class="btn-blue" text @click="confirmAction">Confirmar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -15,6 +16,7 @@
 <script>
 export default {
   props: {
+    isDelete: Boolean,
     modelValue: {
       type: Boolean,
       default: true
@@ -30,7 +32,8 @@ export default {
   },
   data() {
     return {
-      localVisible: this.modelValue
+      localVisible: this.modelValue,
+      localIsDelete : this.isDelete
     };
   },
   watch: {

@@ -22,7 +22,7 @@
       </v-dialog>
 
       <!-- Diálogo de confirmación para eliminar aplique -->
-      <ConfirmDialog v-model="confirmDeleteDialog" title="Confirmar Eliminación"
+      <ConfirmDialog :isDelete="true" v-model="confirmDeleteDialog" title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deleteAplique" />
     </v-card>
    
@@ -69,7 +69,7 @@ export default {
         { text: 'Cantidad', value: 'cantidad' },
         { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
         { text: 'Área', value: 'stockAreaNombre' },
-        { text: 'Acciones', value: '' },
+        { text: '', value: '' },
       ],
       pacienteNombreCompleto: '',
       apliques: [],

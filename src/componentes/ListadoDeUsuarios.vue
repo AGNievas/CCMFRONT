@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2 responsive-card-title">
+      <v-card-title class="d-flex align-center pe-2">
         <v-text-field
           v-model="search"
           density="compact"
@@ -31,6 +31,7 @@
   
     <ConfirmDialog
       v-model="deleteDialog"
+      :isDelete="true"
       title="Confirmar Eliminación"
       text="¿Estás seguro de que deseas eliminar este usuario?"
       @confirm="deleteUsuario"

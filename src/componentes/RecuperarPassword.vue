@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <!-- <div> -->
     <!-- Manteniendo la navbar original con el color de fondo personalizado -->
     <!-- <v-app-bar :elevation="2" class="navbar">
       <v-app-bar-title class="headline">Recuperar Contraseña</v-app-bar-title>
@@ -32,7 +32,7 @@
         </v-card-text>
       </v-card>
     </v-container>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
