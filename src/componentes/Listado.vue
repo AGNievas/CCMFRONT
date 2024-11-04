@@ -13,6 +13,7 @@
         @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
         @ver-historial="$emit('ver-historial', $event)"
         @crear-aplique="$emit('crear-aplique', $event)"
+        @ver-items="$emit('ver-items', $event)"
       />
     </div>
   </template>

@@ -84,7 +84,7 @@
 import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import MedicamentoDialog from './MedicamentoDialog.vue';
-import TransferenciaStockDialog from "./TransferenciaStockDialog.vue";
+
 import stockAreasIdService from "./servicios/stockAreaService.js";
 import itemService from "./servicios/itemService";
 import medicamentosService from "./servicios/medicamentosService.js";
@@ -97,7 +97,7 @@ export default {
     Listado,
     ConfirmDialog,
     MedicamentoDialog,
-    TransferenciaStockDialog,
+   
     },
   data() {
     return {

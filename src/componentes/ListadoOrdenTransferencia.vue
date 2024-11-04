@@ -17,12 +17,13 @@
       </v-card-title>
 
       <Listado
-        :items="ordenesTransferencias"
-        :headers="ordenTransferenciaHeaders"
-        :isListadoOrdenTransferencia="true"
-        @edit="openEditDialog"
-        @delete="confirmDelete"
-      />
+  :items="ordenesTransferencias"
+  :headers="ordenTransferenciaHeaders"
+  :isListadoOrdenTransferencia="true"
+  @edit="openEditDialog"
+  @delete="confirmDelete"
+  @ver-items="openItemsDialog"
+/>
 
       <OrdenTransferenciaDialog
         v-model="dialog"
@@ -32,6 +33,18 @@
         :errorMessage="errorMessage"
         @save="saveTransferencia"
       />
+
+      <v-dialog v-model="itemsDialogVisible"  max-width="800px">
+        <ListadoDeTransferencias :isViewMode="true" 
+  :items="selectedItems" 
+  
+  @close="itemsDialogVisible = false" 
+/>
+</v-dialog>
+
+
+
+  
 
       <ConfirmDialog
         v-model="deleteDialog"
@@ -50,17 +63,26 @@ import OrdenTransferenciaDialog from './OrdenTransferenciaDialog.vue';
 import ordenTransferenciaService from './servicios/ordenTransferenciaService.js';
 import stockAreaService from './servicios/stockAreaService.js';
 import { useGlobalStore } from '@/stores/global';
+
+import transferenciaStockService from './servicios/transferenciaStockService';
+import ListadoDeTransferencias from './ListadoDeTransferencias.vue';
+
 export default {
   components: {
     Listado,
     ConfirmDialog,
     OrdenTransferenciaDialog,
+    
+    ListadoDeTransferencias
   },
   data() {
     return {
       search: '',
       ordenesTransferencias: [],
       stockAreas: [],
+      itemsDialogVisible: false,
+      selectedItems: [],
+      isViewModeEnabled: true,
       dialog: false,
       isEditing: false,
       deleteDialog: false,
@@ -87,6 +109,7 @@ export default {
     
   },
   methods: {
+    
     async loadOrdenesTransferencias() {
       this.ordenesTransferencias = await ordenTransferenciaService.getAllOrdenTransferencia();
     },
@@ -97,6 +120,16 @@ export default {
       this.selectedOrdenTransferencia = { items: [] };
       this.isEditing = false;
       this.dialog = true;
+    },
+    async openItemsDialog(ordenId) {
+      try {
+       
+        this.selectedItems = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
+        console.log(this.selectedItems)
+        this.itemsDialogVisible = true; 
+      } catch (error) {
+        console.error("Error al cargar los items de la orden:", error);
+      }
     },
     openEditDialog(orden) {
       this.selectedOrdenTransferencia = { ...orden };

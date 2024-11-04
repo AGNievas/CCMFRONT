@@ -57,8 +57,8 @@ import { formatearFecha } from '@/utils/formatearFecha';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
-import stockAreaService from './servicios/stockAreaService';
-import usuariosService from './servicios/usuariosService';
+
+
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 import itemService from './servicios/itemService';
 export default {
@@ -114,26 +114,46 @@ export default {
   },
   async mounted() {
     this.loadPacientes();
-    await this.loadStockAreas();
-    await this.loadUsuarios();
+    await this.verificarDatosGlobalStore();
     await this.loadMedicamentos();
 
   },
-  methods: {
-    async loadStockAreas() {
-      this.stockAreas = await stockAreaService.getAllStockArea();
+  watch: {
+  // Observa cambios en las áreas y usuarios de globalStore
+  'globalStore.getAreas': {
+    handler(newAreas) {
+      if (newAreas.length) {
+        this.stockAreas = newAreas;
+      }
     },
+    immediate: true,
+  },
+  'globalStore.getUsuarios': {
+    handler(newUsuarios) {
+      if (newUsuarios.length) {
+        this.usuarios = newUsuarios;
+      }
+    },
+    immediate: true,
+  },
+},
+  methods: {
+
+    verificarDatosGlobalStore() {
+    
+    if (this.globalStore.getAreas.length && this.globalStore.getUsuarios.length) {
+      this.stockAreas = this.globalStore.getAreas;
+      this.usuarios = this.globalStore.getUsuarios;
+    }
+  },
+   
 
     async loadMedicamentos(){
       const  response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getStockAreaId)
       this.medicamentos= response.return
       console.log(this.medicamentos, "LOAD MEDS " )
     },
-    async loadUsuarios() {
-      this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(this.globalStore.stockAreaId);
-      console.log(this.usuarios)
-
-    },
+   
     formatearPacientes(pacientesFiltrados) {
       return pacientesFiltrados.map(paciente => ({
         id: paciente.id,

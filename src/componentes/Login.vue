@@ -32,6 +32,8 @@
 import loginService from "./servicios/loginService";
 import { useGlobalStore } from "@/stores/global";
 import  parsearCuil  from '@/utils/parsearCuil';
+import stockAreaService from "./servicios/stockAreaService";
+import usuariosService from "./servicios/usuariosService";
 export default {
   data() {
     return {
@@ -93,6 +95,12 @@ export default {
         this.globalStore.setUsuario(cuil, usuarioId, stockAreaId, fullNameUsuario, rolId, rolId == 1, true)
         this.$router.push('/home');
         console.log(this.globalStore.getRolId, "El rol id",)
+        const areas = await stockAreaService.getAllStockArea();
+    const usuarios = await usuariosService.getAllUsuarios();
+    this.globalStore.cargarAreasYUser(areas, usuarios);
+
+    console.log("Áreas en globalStore:", this.globalStore.getAreas);
+    console.log("Usuarios en globalStore:", this.globalStore.getUsuarios);
         this.resetearFormulario();
       } catch (error) {
         this.error = error;

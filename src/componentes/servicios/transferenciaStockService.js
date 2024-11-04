@@ -15,10 +15,12 @@ const transferenciaStockService = {
 
   async getTransferenciasStockByOrdenId(ordenTransferenciaId) {
     try {
+      console.log(ordenTransferenciaId)
       const response = await axiosInstance.get(`${URL}/orden/${ordenTransferenciaId}`, {
         withCredentials: true,
       });
-      return response.data.return;
+      console.log(response)
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
       return [];

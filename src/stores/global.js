@@ -10,6 +10,8 @@ export const useGlobalStore = defineStore('global', {
         rolId: null,
         esAdmin: false,
         logueado: false,
+        areas: [],
+        usuarios: [],
     }),
     actions: {
         setUsuario(cuil, usuarioId, stockAreaId, fullNameUsuario, rolId, esAdmin, logueado) {
@@ -23,6 +25,12 @@ export const useGlobalStore = defineStore('global', {
             this.logueado = logueado
         }
         ,
+        cargarAreasYUser(areas, usuarios){
+            this.areas = areas
+            this.usuarios= usuarios
+            console.log("usuarios al loguear: ",this.usuarios, "areas al loguear: ", this.areas)
+        },
+
         logout() {
             this.cuil = null
             this.usuarioId = null
@@ -35,13 +43,15 @@ export const useGlobalStore = defineStore('global', {
         }
     },
     getters: {
-        getUsuarioCuil: state => state.cuil,
-        getUsuarioId: state => state.usuarioId,
-        getStockAreaId: state => state.stockAreaId,
-        getStockAreaName: state=> state.stockAreaName,
-        getfullNameUsuario: state => state.fullNameUsuario,
-        getRolId: state => state.rolId,
-        getEsAdmin: state => state.esAdmin,
-        getLogueado: state => state.logueado
-    }
+        getUsuarioCuil: (state) => state.cuil,
+        getUsuarioId: (state) => state.usuarioId,
+        getStockAreaId: (state) => state.stockAreaId,
+        getStockAreaName: (state) => state.stockAreaName,
+        getFullNameUsuario: (state) => state.fullNameUsuario,
+        getRolId: (state) => state.rolId,
+        getEsAdmin: (state) => state.esAdmin,
+        getLogueado: (state) => state.logueado,
+        getAreas: (state) => state.areas,
+        getUsuarios: (state) => state.usuarios,
+      }
 })

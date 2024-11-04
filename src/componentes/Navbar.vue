@@ -22,9 +22,7 @@
     <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
-        <!-- <v-list-item>
-          <RouterLink to="/home" class="drawer-item-title">Inicio</RouterLink>
-        </v-list-item> -->
+      
         <v-list-item>
           <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
         </v-list-item>
@@ -36,9 +34,6 @@
         </v-list-item>
         <v-list-item>
           <RouterLink to="/listadoDeUsuarios" class="drawer-item-title">Listado De Usuarios</RouterLink>
-        </v-list-item>
-        <v-list-item>
-          <RouterLink to="/listadoDeTransferencias" class="drawer-item-title">Listado De Transferencias</RouterLink>
         </v-list-item>
         <v-list-item>
           <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado De Orden Transferencias</RouterLink>

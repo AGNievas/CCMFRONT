@@ -67,7 +67,7 @@ const ordenTransferenciaService = {
       console.log(response,"OOOOOOOOOOOOOOOOOOOOOOOOOOO")
       return response;
     } catch (error) {
-      console.error("Error al crear Orden de Transferencia:", error);
+      console.error("Al crear Orden de Transferencia:", error);
       throw new Error(error.response.data.message);
     }
   },
