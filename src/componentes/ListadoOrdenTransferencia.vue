@@ -34,11 +34,13 @@
         @save="saveTransferencia"
       />
 
-      <v-dialog v-model="itemsDialogVisible"  max-width="800px">
-        <ListadoDeTransferencias :isViewMode="true" 
-  :items="selectedItems"
-  @close="itemsDialogVisible = false" 
-/>
+      <v-dialog v-model="itemsDialogVisible" max-width="800px">
+  <ListadoDeTransferencias 
+    :isViewMode="true" 
+    :items="selectedItems"
+    :orderNumber="selectedOrderNumber"  
+    @close="itemsDialogVisible = false" 
+  />
 </v-dialog>
 
 
@@ -82,6 +84,7 @@ export default {
       stockAreas: [],
       itemsDialogVisible: false,
       selectedItems: [],
+      selectedOrderNumber: null,
       isViewModeEnabled: true,
       dialog: false,
       isEditing: false,
@@ -122,15 +125,20 @@ export default {
       this.dialog = true;
     },
     async openItemsDialog(ordenId) {
-      try {
-       
-        this.selectedItems = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
-        console.log(this.selectedItems)
-        this.itemsDialogVisible = true; 
-      } catch (error) {
-        console.error("Error al cargar los items de la orden:", error);
-      }
-    },
+  try {
+     const ordenSeleccionada = this.ordenesTransferencias.find(orden => orden.id === ordenId);
+    this.selectedOrderNumber = ordenSeleccionada ? ordenSeleccionada.id : null;
+ const items = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
+    this.selectedItems = items.map(item => ({
+      sku: item.sku,      
+      cantidad: item.cantidad 
+    }));
+
+    this.itemsDialogVisible = true;
+  } catch (error) {
+    console.error("Error al cargar los items de la orden:", error);
+  }
+},
     openEditDialog(orden) {
       this.selectedOrdenTransferencia = { ...orden };
       this.isEditing = true;

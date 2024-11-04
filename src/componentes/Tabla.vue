@@ -31,7 +31,7 @@
           <v-btn class="btn-icon" v-if="canVerEdit" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn class="btn-icon" v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku)">
+          <v-btn class="btn-icon" v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
           <v-btn class="btn-icon" v-if="canRestorePassword" icon small color="blue" @click="$emit('restorePassword', item)">
@@ -88,7 +88,10 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    isEditable: {
+      type: Boolean,
+      default: false,
+    },
 
   },
   mounted(){
@@ -138,7 +141,7 @@ export default {
              (this.isListadoMedicamentos && this.globalStore.rolId !== this.ROL_ID_USER) ||
              (this.isListadoPacientes && this.globalStore.rolId !== this.ROL_ID_USER) ||
              (this.isListadoApliques && this.globalStore.rolId !== this.ROL_ID_USER) ||
-             (this.isListadoOrdenTransferencia && this.globalStore.getEsAdmin);
+             (this.isListadoOrdenTransferencia && this.globalStore.getEsAdmin) || this.isEditable;
     },
 
     canVerDelete() {
@@ -151,7 +154,7 @@ export default {
       if (!item) return {};
       const visibleData = {};
       Object.keys(item).forEach((key) => {
-        if (key !== 'id') {
+        if (key !== 'id' ) {
           visibleData[key] = item[key];
         }
       });

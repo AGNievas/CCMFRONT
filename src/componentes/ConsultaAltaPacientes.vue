@@ -122,7 +122,7 @@ export default {
   },
   async mounted() {
     this.loadPacientes();
-    await this.verificarDatosGlobalStore();
+    //  this.verificarDatosGlobalStore();
     await this.loadMedicamentos();
 
   },
@@ -147,13 +147,13 @@ export default {
 },
   methods: {
 
-    verificarDatosGlobalStore() {
+  //   verificarDatosGlobalStore() {
     
-    if (this.globalStore.getAreas.length && this.globalStore.getUsuarios.length) {
-      this.stockAreas = this.globalStore.getAreas;
-      this.usuarios = this.globalStore.getUsuarios;
-    }
-  },
+  //   if (this.globalStore.getAreas.length && this.globalStore.getUsuarios.length) {
+  //     this.stockAreas = this.globalStore.getAreas;
+  //     this.usuarios = this.globalStore.getUsuarios;
+  //   }
+  // },
    
 
     async loadMedicamentos(){

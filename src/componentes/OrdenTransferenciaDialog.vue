@@ -5,12 +5,11 @@
         <span class="headline">{{ isEditing ? 'Editar Orden de Transferencia' : 'Agregar Nueva Orden de Transferencia' }}</span>
       </v-card-title>
       <v-card-text>
-        <!-- Alerta de error -->
         <v-alert
           v-if="localErrorMessage"
           type="error"
           dismissible
-          @input="localErrorMessage = ''" 
+          @input="localErrorMessage = ''"
         >
           {{ localErrorMessage }}
         </v-alert>
@@ -40,14 +39,18 @@
           />
           <ListadoDeTransferencias
             :items="localOrdenTransferencia.items"
+            :item="selectedItem"
             @add-item="openAddItemDialog"
+            @edit-item="openEditItemDialog"
+            @delete-item="deleteItem"
           />
         </v-form>
       </v-card-text>
 
       <TransferenciaDialog
         v-model="itemDialogVisible"
-        @save="addItem"
+        :item="selectedItem"
+        @save="saveItem"
       />
 
       <v-card-actions>
@@ -85,16 +88,18 @@ export default {
   data() {
     return {
       localVisible: this.modelValue,
-      localOrdenTransferencia: { ...this.ordenTransferencia },
+      localOrdenTransferencia: JSON.parse(JSON.stringify(this.ordenTransferencia)), // Copia profunda
       itemDialogVisible: false,
+      selectedItemIndex: null,
+      selectedItem: null,
       userAreaName: '',
       globalStore: useGlobalStore(),
-      localErrorMessage: '',  // Usar copia local para el mensaje de error
+      localErrorMessage: '',
     };
   },
   computed: {
     areaOrigenLabel() {
-      return !this.globalStore.getEsAdmin ? this.userAreaName : "Área Origen";
+      return !this.globalStore.getEsAdmin ? this.userAreaName : 'Área Origen';
     },
     isFormValid() {
       const { stockAreaIdOrigen, stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
@@ -113,19 +118,34 @@ export default {
       }
     },
     saveChanges() {
-      this.$emit('save', { ...this.localOrdenTransferencia });
-      
+      this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); // Evita referencias reactivas
     },
     closeDialog() {
       this.localVisible = false;
-      this.localErrorMessage = '';  // Limpia el mensaje de error al cerrar
+      this.localErrorMessage = '';
       this.$emit('update:modelValue', false);
     },
     openAddItemDialog() {
+      this.selectedItem = null;
       this.itemDialogVisible = true;
     },
-    addItem(item) {
-      this.localOrdenTransferencia.items = [...this.localOrdenTransferencia.items, item];
+    openEditItemDialog(item) {
+      this.selectedItemIndex = this.localOrdenTransferencia.items.findIndex(i => i.id === item.id);
+      this.selectedItem = { ...item };
+      this.itemDialogVisible = true;
+    },
+    deleteItem(index) {
+      if (index !== -1) {
+        this.localOrdenTransferencia.items.splice(index, 1);
+      }
+    },
+    saveItem(item) {
+      if (this.selectedItemIndex !== null) {
+        this.localOrdenTransferencia.items.splice(this.selectedItemIndex, 1, item);
+        this.selectedItemIndex = null;
+      } else {
+        this.localOrdenTransferencia.items.push(item);
+      }
       this.itemDialogVisible = false;
     },
   },
@@ -133,13 +153,12 @@ export default {
     modelValue(val) {
       this.localVisible = val;
     },
-    // Sincroniza localErrorMessage con errorMessage
     errorMessage(newVal) {
       this.localErrorMessage = newVal;
     },
     ordenTransferencia: {
       handler(newVal) {
-        this.localOrdenTransferencia = { ...newVal };
+        this.localOrdenTransferencia = JSON.parse(JSON.stringify(newVal)); // Crea una copia profunda al actualizar
       },
       immediate: true,
       deep: true,

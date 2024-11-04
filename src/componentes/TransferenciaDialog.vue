@@ -6,14 +6,25 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-text-field v-model="localTransferencia.sku" label="SKU" required type="number" />
-          <v-text-field v-model="localTransferencia.cantidad" label="Cantidad" required type="number" />
+          <v-text-field 
+            v-model="localTransferencia.sku" 
+            label="SKU" 
+            required 
+            type="number" 
+          />
+          <v-text-field 
+            v-model="localTransferencia.cantidad" 
+            label="Cantidad" 
+            required 
+            type="number" 
+            :rules="[cantidadRule]"
+          />
         </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
-        <v-btn class="btn-blue" text @click="saveChanges">Guardar</v-btn>
+        <v-btn class="btn-blue" text :disabled="!isFormValid" @click="saveChanges">Guardar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -30,10 +41,24 @@ export default {
       localTransferencia: { sku: '', cantidad: '' },
     };
   },
+  computed: {
+    isFormValid() {
+      return (
+        this.localTransferencia.sku !== '' &&
+        this.localTransferencia.cantidad !== '' &&
+        this.localTransferencia.cantidad > 0
+      );
+    },
+    cantidadRule() {
+      return value => value > 0 || 'La cantidad debe ser mayor a 0';
+    },
+  },
   methods: {
     saveChanges() {
-      this.$emit('save', { ...this.localTransferencia });
-      this.closeDialog();
+      if (this.isFormValid) {
+        this.$emit('save', { ...this.localTransferencia });
+        this.closeDialog();
+      }
     },
     closeDialog() {
       this.localVisible = false;
