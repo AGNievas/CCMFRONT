@@ -30,7 +30,6 @@ const stockAreaService = {
 
   async getStockAreaByNombre(nombre) {
     try {
-      console.log("crearStockAreaPostResponse")
       const response = await axiosInstance.get(`${URL}/nombre/${nombre}`, { withCredentials: true });
       return response.data.return;
     } catch (error) {
@@ -41,9 +40,7 @@ const stockAreaService = {
 
   async createStockArea(nombre) {
     try {
-      console.log("crearStockAreaPostResponse")
       const response = await axiosInstance.post(`${URL}`, { nombre }, { withCredentials: true });
-      console.log("crearStockAreaPostResponse", response.data.return)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener stockArea:", error);
@@ -53,7 +50,6 @@ const stockAreaService = {
 
   async deleteStockArea(id) {
     try {
-      console.log("antesDeleteStockArea", id)
       const { data: StockAreaEliminado } = await axiosInstance.delete(`${URL}/${id}`, { withCredentials: true });
       return StockAreaEliminado;
     } catch (error) {

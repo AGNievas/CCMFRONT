@@ -6,11 +6,7 @@ const pacienteService = {
 
   async getAllPaciente() {
     try {
-      console.log("aca")
       const response = await axiosInstance.get(URL, { withCredentials: true });
-
-      console.log(response)
-      
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
@@ -21,9 +17,7 @@ const pacienteService = {
   async getAllPacienteByStockAreaId(id) {
     try {
       const response = await axiosInstance.get(`${URL}/area/${id}`, { withCredentials: true });
-
-      console.log(response)
-      return response.data.message;
+    return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
       return [];
@@ -35,7 +29,7 @@ const pacienteService = {
       const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
       });
-      console.log(response)
+      
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
@@ -57,7 +51,7 @@ const pacienteService = {
 
   async createPaciente(paciente) {
     try {
-      console.log(paciente, "crearpacienteservie");
+      
       const { dni, nombre, apellido, fechaNacimiento, genero } = paciente;
   
       const response = await axiosInstance.post(
@@ -75,7 +69,7 @@ const pacienteService = {
   },
 
   async updatePaciente(paciente) {
-    try {console.log(paciente)
+    try {
       const {id, dni, nombre, apellido, fechaNacimiento, genero} = paciente;
       const { data: pacienteActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
@@ -92,12 +86,12 @@ const pacienteService = {
 
   async deletePaciente(dni) {
     try {
-      console.log(dni,"servicio front delete")
+      
       const { data: pacienteEliminado } = await axiosInstance.delete(
         `${URL}/${dni}`,
         { withCredentials: true }
       );
-      console.log(pacienteEliminado)
+      
       return pacienteEliminado;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);

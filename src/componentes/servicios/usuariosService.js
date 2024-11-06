@@ -7,7 +7,6 @@ const usuariosService = {
   async getAllUsuarios() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
-      console.log("usuariosService", response.data.return)
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);
@@ -16,11 +15,7 @@ const usuariosService = {
   },
   async getAllUsuariosByStockAreaId(stockAreaId) {
     try {
-      console.log(stockAreaId, "servico front id area")
       const response = await axiosInstance.get(`${URL}/areas/${stockAreaId}`, { withCredentials: true });
-      console.log("usuariosService", response.data.return
-        
-      )
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);
@@ -30,12 +25,10 @@ const usuariosService = {
 
   async getUsuarioById(id) {
     try {
-      console.log(id, "servicio front")
+
       const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
       });
-      console.log("aca")
-      console.log(response.data)
       return response.data.message;
     } catch (error) {
       console.error(`Error al obtener el User id: ${id} `, error);
@@ -56,7 +49,7 @@ const usuariosService = {
   },
 
   async createUsuario(usuario) {
-    try {console.log(usuario,"servicio")
+    try {
       const cuil = usuario.cuil;
       const fullName = usuario.fullName;
       const rolId = usuario.rolId;
@@ -79,14 +72,11 @@ const usuariosService = {
 
   async updateUsuario(id, cuil, fullName, stockAreaId, rolId) {
     try {
-      console.log(id, cuil, fullName, stockAreaId, rolId);
-      console.log("AntesUpdateUserPutResponse");
       const { data: usuarioActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
         { cuil, fullName, stockAreaId,rolId },
         { withCredentials: true }
       );
-      console.log("DespuesUserPuttResponse");
       return usuarioActualizado;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
@@ -96,12 +86,10 @@ const usuariosService = {
 
   async deleteUsuario(id) {
     try {
-      console.log("antesDeleteUser", id);
       const { data: usuerioEliminado } = await axiosInstance.delete(
         `${URL}/${id}`,
         { withCredentials: true }
       );
-      console.log(usuerioEliminado, "acaaaa");
       return usuerioEliminado;
     } catch (error) {
       console.error("Error al eliminar Front Delete el usuario:", error);
@@ -124,7 +112,6 @@ const usuariosService = {
 
   async restorePassword(usuario) {
     try {
-      console.log(usuario,"restore")
       const dni =  parsearCuil.extraerNumeroDelCuil(usuario.cuil);
       const response = await axiosInstance.put(
         `${URL}/blank-password/${usuario.id}`,

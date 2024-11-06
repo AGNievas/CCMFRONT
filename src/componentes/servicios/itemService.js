@@ -53,9 +53,9 @@ const itemService = {
       async  createItem(sku, descripcion, tipo_insumo, stock) {
         try {
           const stockAreaId = DEPOSITO_GENERAL;
-          console.log(sku, descripcion, tipo_insumo, stock, "crear item front")
+          
           const response = await axiosInstance.post(API_URL ,{sku, descripcion, tipo_insumo, stock, stockAreaId},{withCredentials:true});
-          console.log("DespcrearItemPostResponse",response)
+          
           return response.data.return;
         } catch (error) {
           console.error("Error al obtener Items:", error);
@@ -65,9 +65,9 @@ const itemService = {
       
       async  updateItem(id,sku,stock) {
         try {
-          console.log(id,sku,stock,"aca?")
+         
           const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, {sku,stock}, {withCredentials:true});
-          console.log("DespuesItemPuttResponse")
+          
           return itemActualizado;
         } catch (error) {
           console.error("Error al actualizar el item:", error);
@@ -78,7 +78,7 @@ const itemService = {
       
       async  deleteItem(id) {
         try {
-          console.log("antesDeleteItem", id)
+          
           const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/${id}`,{withCredentials:true});
           return ItemEliminado;
         } catch (error) {
@@ -89,7 +89,7 @@ const itemService = {
 
       async  deleteItemsBySku(sku) {
         try {
-          console.log("antesDeleteItem")
+          
           const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/items/${sku}`,{withCredentials:true});
           return ItemEliminado;
         } catch (error) {

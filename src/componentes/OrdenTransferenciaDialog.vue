@@ -147,6 +147,7 @@ export default {
         this.localOrdenTransferencia.items.push(item);
       }
       this.itemDialogVisible = false;
+      
     },
   },
   watch: {

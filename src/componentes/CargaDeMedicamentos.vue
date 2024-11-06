@@ -19,7 +19,7 @@
 
       <div v-if="archivoImportado">
         <v-row class="d-flex flex-column align-center">
-          <p> Se han cargado con exito {{cargadosConExito()}} medicamentos</p>
+          <p> {{this.mensajeCarga}}</p>
           <v-btn @click="descargarArchivo(this.archivoADescargar, 'informe')" class="my-2 mx-5 btn-blue btn-tamano">Descargar
             Informe</v-btn>
           <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Volver a la Carga</v-btn>
@@ -45,6 +45,7 @@ export default {
       archivo: null,
       archivoCsvEnviado: null,
       archivoADescargar: null,
+      mensajeCarga:"",
       plantilla: [
         ["sku", "descripcion", "tipo_insumo", "stock"],
       ]
@@ -91,7 +92,22 @@ export default {
     },
     async importarArchivo() {
       this.archivoADescargar = await medicamentosService.cargaMasivaMedicamento(this.archivoCsvEnviado)
+      const {estado} = this.parsearData(this.archivoADescargar)
+      this.mensajeCarga= estado
       this.archivoImportado = true;
+    },
+
+    parsearData(data){
+      let ultimoElemento
+      Papa.parse(data,{
+        header: true,
+        complete: (result)=> {
+          const dataArray = result.data
+          ultimoElemento= dataArray[dataArray.length-1]
+        },
+      
+      })
+      return ultimoElemento
     },
     cancelarArchivo() {
       this.archivoCargado = false;

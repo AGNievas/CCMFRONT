@@ -55,7 +55,7 @@ const ordenTransferenciaService = {
 
   async createOrdenTransferencia(ordenTransferencia, listaItems) {
     try {
-      console.log("orden", ordenTransferencia, "items", listaItems);
+      
       const { stockAreaIdOrigen, stockAreaIdDestino, motivo } =
         ordenTransferencia;
 
@@ -64,7 +64,7 @@ const ordenTransferenciaService = {
         { stockAreaIdOrigen, stockAreaIdDestino, motivo, listaItems },
         { withCredentials: true }
       );
-      console.log(response,"OOOOOOOOOOOOOOOOOOOOOOOOOOO")
+     
       return response;
     } catch (error) {
       console.error("Al crear Orden de Transferencia:", error);

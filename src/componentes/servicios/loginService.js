@@ -6,7 +6,7 @@ const loginService = {
 
     async login(cuil, password) {
         try {
-            console.log("servicio login front", cuil, password)
+            
           const {data: response} = await axiosInstance.post(`${API_URL}/login`,  {
               cuil,
               password,

@@ -15,11 +15,9 @@ const transferenciaStockService = {
 
   async getTransferenciasStockByOrdenId(ordenTransferenciaId) {
     try {
-      console.log(ordenTransferenciaId)
       const response = await axiosInstance.get(`${URL}/orden/${ordenTransferenciaId}`, {
         withCredentials: true,
       });
-      console.log(response)
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
@@ -74,20 +72,6 @@ const transferenciaStockService = {
       return [];
     }
   },
-
-  // async createTransferencia(usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo) {
-  //   try {
-  //     console.log("AntescrearUserPostResponse")
-  //     const response = await axiosInstance.post(`${URL}`, { usuarioId, sku,cantidad, stockAreaIdOrigen , stockAreaIdDestino, motivo}, { withCredentials: true });
-  //     console.log("DespcrearUserPostResponse", response.data.return)
-  //     return response.data.return;
-  //   } catch (error) {
-  //     console.error("Error al obtener Users:", error);
-  //     return [];
-  //   }
-  // },
-
-
 
   async updateTransferenciaStock(id,
     sku,

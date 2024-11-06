@@ -28,8 +28,7 @@ export const useGlobalStore = defineStore('global', {
         cargarAreasYUser(areas, usuarios){
             this.areas = areas
             this.usuarios= usuarios
-            console.log("usuarios al loguear: ",this.usuarios, "areas al loguear: ", this.areas)
-        },
+            },
 
         logout() {
             this.cuil = null
