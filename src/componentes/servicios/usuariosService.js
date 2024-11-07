@@ -26,10 +26,8 @@ const usuariosService = {
   async getUsuarioById(id) {
     try {
 
-      const response = await axiosInstance.get(`${URL}/id/${id}`, {
-        withCredentials: true,
-      });
-      return response.data.message;
+      const response = await axiosInstance.get(`${URL}/id/${id}`, {withCredentials: true,});
+      return response.data.return;
     } catch (error) {
       console.error(`Error al obtener el User id: ${id} `, error);
       throw error;

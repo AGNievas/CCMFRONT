@@ -1,36 +1,90 @@
 <template>
-  <div>
-    
-    <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
-        Historial Apliques {{ pacienteNombreCompleto }}
-        <v-spacer></v-spacer>
-        <v-btn v-if="globalStore.rolId<=2" @click="openAgregarApliqueDialog" class="mx-2 btn-blue">Agregar Aplique</v-btn>
-        <v-btn icon @click="$emit('close')">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+  <v-dialog v-model="isDialogVisible" persistent max-width="600px">
+    <v-card>
+      <v-card-title>
+        <span class="headline">Historial Apliques</span>
+        <span class="headline">{{ pacienteNombreCompleto }}</span>
       </v-card-title>
+      <v-card-actions style="justify-content: center;">
+        <v-btn class="btn-blue" text v-if="globalStore.rolId <= 2" @click="openAgregarApliqueDialog">
+          Agregar Aplique
+        </v-btn>
+        <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
+      </v-card-actions>
 
-      <!-- Componente Listado para mostrar los apliques del paciente -->
-      <Listado :items="apliques" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
-        @delete="confirmDeleteAplique" />
+      <div style="max-height: 600px; overflow-y: auto;">
+        <v-card
+          class="mx-auto"
+          max-width="400"
+          v-for="(aplique, index) in apliques"
+          :key="index"
+          style="margin-bottom: 20px; padding: 10px;"
+        >
+          <v-card-text>
+            <div>{{`Fecha: ${aplique.fechaAplicacion}`}}</div>
+            <p class="text-h5 text--primary">{{`${aplique.descripcion} - ${aplique.sku}`}}</p>
+            <div style="display: flex; justify-content: center; padding-top: 1rem;">
+              <v-btn class="btn-icon" icon dense x-small color="#0E3746" @click="openEditarApliqueDialog(aplique)">
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn class="btn-icon" icon small color="red" @click="confirmDeleteAplique(aplique.id)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </div>
+          </v-card-text>
+          <v-card-actions style="justify-content: center;">
+            <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">
+              {{ expandedCards[index] ? 'Cerrar' : 'Más Información' }}
+            </v-btn>
+          </v-card-actions>
 
-      <!-- Diálogo de agregar/editar aplique -->
-      <v-dialog v-model="apliqueDialogVisible" max-width="500px">
-        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
-          :paciente-id="pacienteId" :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveAplique" />
+          <v-expand-transition>
+            <v-card
+              v-if="expandedCards[index]"
+              class="transition-fast-in-fast-out v-card--reveal"
+              style="height: 100%;"
+            >
+              <v-card-text class="pb-0">
+                <p>Aplicante:</p>
+                <p class="text-h5 text--primary">{{ aplique.aplicanteNombre }}</p>
+                <p>Area:</p>
+                <p class="text-h5 text--primary">{{ aplique.stockAreaNombre }}</p>
+              </v-card-text>
+              <v-card-actions style="justify-content: center;">
+                <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">Cerrar</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-expand-transition>
+        </v-card>
+      </div>
+
+      <!-- Diálogos de agregar/editar aplique y confirmación para eliminar -->
+      <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
+        <ApliqueDialog
+          v-model="apliqueDialogVisible"
+          :is-editing="isEditing"
+          :aplique="apliqueToEdit"
+          :paciente-id="pacienteId"
+          :areas="stockAreas"
+          :usuarios="usuarios"
+          :medicamentos="medicamentos"
+          @save="saveAplique"
+        />
       </v-dialog>
 
-      <!-- Diálogo de confirmación para eliminar aplique -->
-      <ConfirmDialog :isDelete="true" v-model="confirmDeleteDialog" title="Confirmar Eliminación"
-        text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deleteAplique" />
+      <ConfirmDialog
+        :isDelete="true"
+        v-model="confirmDeleteDialog"
+        title="Confirmar Eliminación"
+        text="¿Estás seguro de que deseas eliminar este aplique?"
+        @confirm="deleteAplique"
+      />
     </v-card>
-   
-  </div>
+  </v-dialog>
 </template>
 
+
 <script>
-import Listado from './Listado.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
@@ -43,34 +97,20 @@ import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
 export default {
   props: {
-    pacienteId: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
+    modelValue: { // Recibe el valor del diálogo desde el componente padre
       type: Boolean,
       default: false
     },
-    medicamentos: Array,
+    pacienteId: String,
+    medicamentos: Array
   },
   components: {
-    Listado,
     ApliqueDialog,
     ConfirmDialog,
-    
   },
   data() {
     return {
-      localVisible: this.modelValue,
-      apliquesHeaders: [
-        { text: 'Aplicante', value: 'aplicanteNombre' },
-        { text: 'SKU', value: 'sku' },
-        { text: 'Descripcion', value: 'descripcion' },
-        { text: 'Cantidad', value: 'cantidad' },
-        { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
-        { text: 'Área', value: 'stockAreaNombre' },
-        { text: '', value: '' },
-      ],
+      expandedCards: [],
       pacienteNombreCompleto: '',
       apliques: [],
       stockAreas: [],
@@ -91,6 +131,16 @@ export default {
       this.loadPacienteNombreCompleto();
     }
   },
+  computed: {
+    isDialogVisible: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+      }
+    }
+  },
   watch: {
     pacienteId: {
       immediate: true,
@@ -101,15 +151,17 @@ export default {
         }
       }
     },
-    
     modelValue(val) {
-      this.localVisible = val;
-    },
-    localVisible(val) {
-      this.$emit('update:modelValue', val);
+      if (!val) this.closeDialog();
     }
   },
   methods: {
+    closeDialog() {
+      this.$emit('update:modelValue', false);
+    },
+    toggleCardExpansion(index) {
+      this.expandedCards[index] = !this.expandedCards[index];
+    },
     async loadPacienteNombreCompleto() {
       try {
         const paciente = await PacienteService.getPacienteById(this.pacienteId);
@@ -118,17 +170,15 @@ export default {
         console.error('Error al cargar nombre completo del paciente:', error);
       }
     },
-
     async loadApliques() {
       try {
         const apliquesRaw = await apliqueService.getApliquesByPacienteId(this.pacienteId);
         this.apliques = this.mapApliques(apliquesRaw);
-
+        this.expandedCards = new Array(this.apliques.length).fill(false); // Inicializar expandedCards
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
     },
-
     mapApliques(apliquesRaw) {
       return apliquesRaw.map(aplique => {
         const stockArea = this.stockAreas.find(area => area.id === aplique.stockAreaId);
@@ -142,34 +192,26 @@ export default {
           cantidad: aplique.cantidad,
           fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
           stockAreaNombre: stockArea ? stockArea.nombre : 'Desconocido',
-
         };
       });
     },
-
     async loadStockAreas() {
       this.stockAreas = await stockAreaService.getAllStockArea();
     },
-
     async loadUsuarios() {
-      
       const stockAreaId = this.globalStore.stockAreaId;
       this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(stockAreaId);
     },
-
     openAgregarApliqueDialog() {
       this.isEditing = false;
       this.apliqueToEdit = null; 
       this.apliqueDialogVisible = true; 
     },
-
     openEditarApliqueDialog(aplique) {
       this.isEditing = true;
       this.apliqueToEdit = { ...aplique };
-
       this.apliqueDialogVisible = true; 
     },
-
     async saveAplique(nuevoAplique) {
       try {
         const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId, nuevoAplique);
@@ -187,12 +229,10 @@ export default {
       }
       this.loadApliques();
     },
-
     confirmDeleteAplique(apliqueId) {
       this.apliqueIdToDelete = apliqueId;
       this.confirmDeleteDialog = true;
     },
-
     async deleteAplique() {
       try {
         await apliqueService.deleteAplique(this.apliqueIdToDelete);

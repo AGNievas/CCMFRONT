@@ -201,6 +201,8 @@ async saveTransferencia(orden) {
     this.errorMessage = error || 'Error al guardar la orden de transferencia';
   } finally {
     this.selectedOrdenTransferencia = { items: [], stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '' }; // Reiniciar el objeto después de guardar
+    await this.loadItemsMed();
+    await this.loadMedicamentosByAreaId(this.area)
   }
 }
 ,
@@ -343,7 +345,9 @@ async saveTransferencia(orden) {
       finally{
       
         await this.loadItemsMed();
-        await this.loadMedicamentos();
+        await this.loadMedicamentosByAreaId(this.area)
+        // await this.loadMedicamentos();
+        // this.area = 0;
        
       }
     },
@@ -380,7 +384,3 @@ async saveTransferencia(orden) {
   }
 };
 </script>
-
-<style scoped>
-
-</style>

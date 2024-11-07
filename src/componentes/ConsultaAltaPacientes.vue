@@ -25,16 +25,17 @@
       <PacienteDialog v-model="editarDialog" :is-editing="true" :paciente="pacienteEdit" @save="editarPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
-      <v-dialog v-model="apliqueDialogVisible" max-width="600px">
+      <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
         <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :paciente-id="selectedPacienteId"
-          :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" />
+          :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
       </v-dialog>
 
       <!-- Modal para Ver Historial de Apliques -->
-      <v-dialog v-model="listadoApliquesVisible" max-width="1200px">
-        <ListadoApliques :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
-          :medicamentos="medicamentos" @close="listadoApliquesVisible = false" />
-      </v-dialog>
+      
+        <ListadoApliques v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
+          :medicamentos="medicamentos"  />
+          <!--aaaaaaaaaaaaaaaaaaaaaaaaaaa  -->
+      
 
       <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar este paciente?" @confirm="deletePaciente" />

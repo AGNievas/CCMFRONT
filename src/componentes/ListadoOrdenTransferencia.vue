@@ -34,7 +34,7 @@
         @save="saveTransferencia"
       />
 
-      <v-dialog v-model="itemsDialogVisible" max-width="800px">
+      <v-dialog persistent v-model="itemsDialogVisible" max-width="800px">
   <ListadoDeTransferencias 
     :isViewMode="true" 
     :items="selectedItems"
@@ -45,7 +45,6 @@
 
 
 
-  
 
       <ConfirmDialog
         v-model="deleteDialog"
@@ -68,6 +67,8 @@ import { useGlobalStore } from '@/stores/global';
 
 import transferenciaStockService from './servicios/transferenciaStockService';
 import ListadoDeTransferencias from './ListadoDeTransferencias.vue';
+import UsuarioService from './servicios/usuariosService.js';
+import MedicamentosService from './servicios/medicamentosService.js';
 
 export default {
   components: {
@@ -82,6 +83,7 @@ export default {
       search: '',
       ordenesTransferencias: [],
       stockAreas: [],
+      usuarios: [],
       itemsDialogVisible: false,
       selectedItems: [],
       selectedOrderNumber: null,
@@ -107,40 +109,61 @@ export default {
     },
   },
   async mounted() {
-    await this.loadOrdenesTransferencias();
     await this.loadStockAreas();
+    // await this.loadUsuarios();
+    await this.loadOrdenesTransferencias();
     
   },
   methods: {
-    
     async loadOrdenesTransferencias() {
       this.ordenesTransferencias = await ordenTransferenciaService.getAllOrdenTransferencia();
+      this.actualizarDatosEnTransferencias();
+      console.log("transferencias ", this.ordenesTransferencias)
     },
+    // async loadUsuarios(){
+    //   this.usuarios = await UsuarioService.getAllUsuarios();
+    // },
     async loadStockAreas() {
       this.stockAreas = await stockAreaService.getAllStockArea();
     },
+  async actualizarDatosEnTransferencias() {
+    for (const transferencia of this.ordenesTransferencias) {
+      transferencia.fechaTransferencia = transferencia.fechaTransferencia.split('T')[0];
+      transferencia.usuario = (await UsuarioService.getUsuarioById(transferencia.usuario)).fullName;
+      transferencia.stockAreaIdDestino = (await stockAreaService.getStockAreaById(transferencia.stockAreaIdDestino)).nombre;
+      transferencia.stockAreaIdOrigen = (await stockAreaService.getStockAreaById(transferencia.stockAreaIdOrigen)).nombre;
+
+    }
+  },
+
     openAddOrdenTransferDialog() {
       this.selectedOrdenTransferencia = { items: [] };
       this.isEditing = false;
       this.dialog = true;
     },
     async openItemsDialog(ordenId) {
-  try {
-     const ordenSeleccionada = this.ordenesTransferencias.find(orden => orden.id === ordenId);
-    this.selectedOrderNumber = ordenSeleccionada ? ordenSeleccionada.id : null;
+      try {
+        const ordenSeleccionada = this.ordenesTransferencias.find(orden => orden.id === ordenId);
+        this.selectedOrderNumber = ordenSeleccionada ? ordenSeleccionada.id : null;
 
- 
-    const items = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
-    this.selectedItems = items.map(item => ({
-      sku: item.sku,      
-      cantidad: item.cantidad 
-    }));
-
-    this.itemsDialogVisible = true;
-  } catch (error) {
-    console.error("Error al cargar los items de la orden:", error);
-  }
-},
+        const items = await transferenciaStockService.getTransferenciasStockByOrdenId(ordenId);
+        
+        this.selectedItems = [];
+        for (const item of items) {
+          const descripcion = (await MedicamentosService.getMedicamentoBySku(item.sku)).descripcion;
+          this.selectedItems.push({
+            sku: item.sku,
+            cantidad: item.cantidad,
+            descripcion: descripcion
+          });
+        }
+        
+        console.log("itms ", this.selectedItems);
+        this.itemsDialogVisible = true;
+      } catch (error) {
+        console.error("Error al cargar los items de la orden:", error);
+      }
+    },
     openEditDialog(orden) {
       this.selectedOrdenTransferencia = { ...orden };
       this.isEditing = true;

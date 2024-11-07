@@ -24,7 +24,7 @@
 
       <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1" required></v-text-field>
       <v-select
-        v-model="apliqueLocal.aplicante"
+        v-model="apliqueLocal.aplicanteNombre"
         :items="usuarios"
         item-title="fullName"
         item-value="id"
@@ -160,6 +160,7 @@ export default {
       };
     },
     closeDialog() {
+      console.log("assssssssss ", this.apliqueLocal)
       this.$emit('update:modelValue', false);
       this.resetApliqueLocal();
     },

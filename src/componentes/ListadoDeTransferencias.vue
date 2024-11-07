@@ -1,5 +1,5 @@
 <template>
-  <v-card class="custom-container">
+  
     <v-card-title class="d-flex align-center pe-2">
       <span v-if="isViewMode" class="headline">Listado de Medicamentos Orden N°: {{ orderNumber }}</span>
       <v-spacer></v-spacer>
@@ -8,7 +8,7 @@
 
     <Listado :items="items" :headers="transferenciasHeaders" :isEditable="!isViewMode"
       @edit="(item) => $emit('edit-item', item)" @delete="(item) => $emit('delete-item', item.index)" />
-  </v-card>
+  
 </template>
 
 <script>
@@ -33,6 +33,7 @@ export default {
       return [
         { text: 'SKU', value: 'sku' },
         { text: 'Cantidad', value: 'cantidad' },
+        { text: 'Descripcion', value: 'descripcion' },
         { text: '', value: '', sortable: false },
       ];
     },
