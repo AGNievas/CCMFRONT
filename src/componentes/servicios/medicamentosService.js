@@ -28,9 +28,8 @@ const medicamentosService = {
 
   async getMedicamentoBySku(sku) {
     try {
-      
       const response = await axiosInstance.get(`${URL}/${sku}`, { withCredentials: true });
-      return response.data.return;
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
       return [];

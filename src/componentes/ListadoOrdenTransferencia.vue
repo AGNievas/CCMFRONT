@@ -67,7 +67,6 @@ import { useGlobalStore } from '@/stores/global';
 
 import transferenciaStockService from './servicios/transferenciaStockService';
 import ListadoDeTransferencias from './ListadoDeTransferencias.vue';
-import UsuarioService from './servicios/usuariosService.js';
 import MedicamentosService from './servicios/medicamentosService.js';
 
 export default {
@@ -110,7 +109,6 @@ export default {
   },
   async mounted() {
     await this.loadStockAreas();
-    // await this.loadUsuarios();
     await this.loadOrdenesTransferencias();
     
   },
@@ -120,19 +118,16 @@ export default {
       this.actualizarDatosEnTransferencias();
       console.log("transferencias ", this.ordenesTransferencias)
     },
-    // async loadUsuarios(){
-    //   this.usuarios = await UsuarioService.getAllUsuarios();
-    // },
     async loadStockAreas() {
       this.stockAreas = await stockAreaService.getAllStockArea();
     },
   async actualizarDatosEnTransferencias() {
     for (const transferencia of this.ordenesTransferencias) {
       transferencia.fechaTransferencia = transferencia.fechaTransferencia.split('T')[0];
-      transferencia.usuario = (await UsuarioService.getUsuarioById(transferencia.usuario)).fullName;
-      transferencia.stockAreaIdDestino = (await stockAreaService.getStockAreaById(transferencia.stockAreaIdDestino)).nombre;
-      transferencia.stockAreaIdOrigen = (await stockAreaService.getStockAreaById(transferencia.stockAreaIdOrigen)).nombre;
 
+      transferencia.usuario = this.globalStore.getUsuarios.find(element => element.id == transferencia.usuario).fullName;
+      transferencia.stockAreaIdDestino = this.globalStore.getAreas.find(element => element.id == transferencia.stockAreaIdDestino).nombre;
+      transferencia.stockAreaIdOrigen = this.globalStore.getAreas.find(element => element.id == transferencia.stockAreaIdOrigen).nombre;
     }
   },
 
