@@ -28,8 +28,7 @@ const pacienteService = {
     try {
       const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
-      });
-      
+      });   
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
@@ -50,20 +49,16 @@ const pacienteService = {
   },
 
   async createPaciente(paciente) {
-    try {
-      
-      const { dni, nombre, apellido, fechaNacimiento, genero } = paciente;
-  
+    try {   
+      const { dni, nombre, apellido, fechaNacimiento, genero } = paciente;  
       const response = await axiosInstance.post(
         `${URL}`,
         { dni, nombre, apellido, fechaNacimiento, genero },
         { withCredentials: true }
-      );
-  
+      );  
       return response.data;
     } catch (error) {
       console.error("Error al agregar paciente:", error);
-      // Propagar el error completo para acceder al mensaje
       throw error;
     }
   },
@@ -76,25 +71,22 @@ const pacienteService = {
         { id, dni, nombre, apellido, fechaNacimiento, genero },
         { withCredentials: true }
       );
-
       return pacienteActualizado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar el paciente:", error);
       throw error;
     }
   },
 
   async deletePaciente(dni) {
     try {
-      
       const { data: pacienteEliminado } = await axiosInstance.delete(
         `${URL}/${dni}`,
         { withCredentials: true }
       );
-      
       return pacienteEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al eliminar el paciente:", error);
       throw error;
     }
   },

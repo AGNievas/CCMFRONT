@@ -37,7 +37,6 @@
             min="0"
           ></v-text-field>
 
-          <!-- Alertas de error -->
           <v-alert v-if="formError" type="error" dismissible>
             Todos los campos son obligatorios. Por favor, completa la información.
           </v-alert>

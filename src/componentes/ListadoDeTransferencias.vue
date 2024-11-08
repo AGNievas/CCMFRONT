@@ -1,5 +1,4 @@
 <template>
-  
     <v-card-title class="d-flex align-center pe-2">
       <span v-if="isViewMode" class="headline">Listado de Medicamentos Orden N°: {{ orderNumber }}</span>
       <v-spacer></v-spacer>
@@ -8,12 +7,10 @@
 
     <Listado :items="items" :headers="transferenciasHeaders" :isEditable="!isViewMode"
       @edit="(item) => $emit('edit-item', item)" @delete="(item) => $emit('delete-item', item.index)" />
-  
 </template>
 
 <script>
 import Listado from './Listado.vue';
-
 export default {
   props: {
     items: Array,
@@ -26,8 +23,6 @@ export default {
   components: {
     Listado,
   },
-
-  
   computed: {
     transferenciasHeaders() {
       return [
@@ -37,7 +32,6 @@ export default {
         { text: '', value: '', sortable: false },
       ];
     },
-   
   },
 };
 </script>

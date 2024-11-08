@@ -16,21 +16,14 @@ export default {
   data() {
     return {
       isSessionActive: false,
-
     };
   },
   async mounted() {
     this.isSessionActive = this.globalStore.getLogueado;
     this.globalStore.cargarAreasYUser(await stockAreaService.getAllStockArea(), await usuariosService.getAllUsuarios())
-
   },
-
-
   computed: {
     ...mapStores(useGlobalStore)
   }
-
 };
 </script>
-
-<style scoped></style>

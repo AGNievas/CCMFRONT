@@ -76,15 +76,12 @@
       @closeDialog="closeEditDialog"
       @confirm="updateMedicamento"
     />
-
-   
 </template>
 
 <script>
 import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import MedicamentoDialog from './MedicamentoDialog.vue';
-
 import stockAreasIdService from "./servicios/stockAreaService.js";
 import itemService from "./servicios/itemService";
 import medicamentosService from "./servicios/medicamentosService.js";
@@ -347,12 +344,12 @@ async saveTransferencia(orden) {
         console.error("Error al eliminar el medicamento:", error);
       }
       finally{
-      
-        await this.loadItemsMed();
+        if(this.area == 0){
+          await this.loadMedicamentos();
+        }else{
+          await this.loadItemsMed();
         await this.loadMedicamentosByAreaId(this.area)
-        // await this.loadMedicamentos();
-        // this.area = 0;
-       
+        }
       }
     },
 

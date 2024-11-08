@@ -6,7 +6,6 @@
       </v-card-title>
 
       <v-card-text>
-        <!-- Popup de error -->
         <v-alert
           v-if="errorMensaje"
           type="error"
@@ -103,7 +102,6 @@ export default {
         return (
         this.pacienteLocal.nombre &&
         this.pacienteLocal.apellido &&
-        
         this.pacienteLocal.fechaNacimiento &&
         this.pacienteLocal.genero
       );
@@ -114,10 +112,8 @@ export default {
       immediate: true,
       handler(newPaciente) {
         if (this.isEditing && newPaciente) {
-        
           this.pacienteLocal = { ...newPaciente };
         } else {
-         
           this.resetPacienteLocal();
         }
       },
@@ -164,7 +160,6 @@ export default {
       if(this.pacienteLocal.dni!=0 && !this.isEditing){
         this.dniError = !validarDni(this.pacienteLocal.dni);
       }
-      
     },
     validateNombre() {
       this.nombreError = !validarNombre(this.pacienteLocal.nombre);
@@ -181,7 +176,6 @@ export default {
     closeDialog() {
       this.localVisible = false;
       this.resetValidation();
-     
       if (!this.errorMensaje) {
         this.resetPacienteLocal();
       }
@@ -204,12 +198,9 @@ export default {
       this.validateApellido();
       this.validateFechaNacimiento();
       this.validateGenero();
-
       if (this.dniError || this.nombreError || this.apellidoError || this.fechaNacimientoError || this.generoError) {
         return; 
       }
-
-      
       this.$emit('save', this.pacienteLocal);
     },
   },

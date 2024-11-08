@@ -13,12 +13,10 @@
         <v-btn v-if="globalStore.rolId <= 2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
-      <!-- Usamos el componente Listado -->
       <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
         @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="openListadoApliques"
         @crear-aplique="openApliqueDialog" />
 
-      <!-- Diálogos -->
       <PacienteDialog ref="pacienteDialog" v-model="agregarDialog" :is-editing="false" @save="addPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
@@ -29,14 +27,10 @@
         <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :paciente-id="selectedPacienteId"
           :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
       </v-dialog>
-
-      <!-- Modal para Ver Historial de Apliques -->
       
-        <ListadoApliques v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
-          :medicamentos="medicamentos"  />
-          <!--aaaaaaaaaaaaaaaaaaaaaaaaaaa  -->
-      
-
+      <ListadoApliques v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
+        :medicamentos="medicamentos"  />
+          
       <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar este paciente?" @confirm="deletePaciente" />
     </v-card>
@@ -53,8 +47,6 @@ import { formatearFecha } from '@/utils/formatearFecha';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
-
-
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 import itemService from './servicios/itemService';
 export default {
@@ -70,7 +62,6 @@ export default {
       searchDni: '',
       searchGenero: 'Todos',
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
-
       agregarDialog: false,
       editarDialog: false,
       isEditing: false,
@@ -100,22 +91,17 @@ export default {
         { text: '', value: '' }
       ];
     },
-
     pacientesFiltradosFormateados() {
       const pacientesFiltrados = this.filtrarPacientes();
       return this.formatearPacientes(pacientesFiltrados);
     }
-
-
   },
   async mounted() {
     this.loadPacientes();
-    //  this.verificarDatosGlobalStore();
     await this.loadMedicamentos();
 
   },
   watch: {
-    // Observa cambios en las áreas y usuarios de globalStore
     'globalStore.getAreas': {
       handler(newAreas) {
         if (newAreas.length) {
@@ -138,7 +124,6 @@ export default {
       const response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getStockAreaId)
       this.medicamentos = response.return
     },
-
     formatearPacientes(pacientesFiltrados) {
       return pacientesFiltrados.map(paciente => ({
         id: paciente.id,
@@ -150,8 +135,6 @@ export default {
         fechaNacimiento: this.formatearFecha(paciente.fechaNacimiento),
       }));
     },
-
-
     filtrarPacientes() {
       return this.pacientes.filter(paciente => {
         const dniApellidoMatch = this.searchDni
@@ -165,20 +148,15 @@ export default {
         return dniApellidoMatch && generoMatch;
       });
     },
-
-
     async loadPacientes() {
       this.pacientes = await pacienteService.getAllPaciente();
     },
     formatearFecha(fecha) {
       return formatearFecha(fecha)
     },
-
     calcularEdad(fechaNacimiento) {
       return differenceInYears(new Date(), new Date(fechaNacimiento))
-
     },
-
     async addPaciente(nuevoPaciente) {
       try {
         const pacienteCreado = await pacienteService.createPaciente(nuevoPaciente);
@@ -188,15 +166,12 @@ export default {
           this.errorMensaje = '';
         }
       } catch (error) {
-
         this.errorMensaje = error.response?.data?.message || 'Error al agregar el paciente.';
         console.error('Error al agregar paciente:', error);
         this.agregarDialog = true;
       }
       this.loadPacientes();
-    }
-    ,
-
+    },
     async editarPaciente(pacienteEditado) {
       try {
         const pacienteActualizado = await pacienteService.updatePaciente(pacienteEditado);
@@ -207,38 +182,27 @@ export default {
         this.editarDialog = false;
         this.errorMensaje = '';
       } catch (error) {
-
         this.errorMensaje = error.response?.data?.message || 'Error al actualizar el paciente.';
         console.error('Error al actualizar paciente:', error);
         this.editarDialog = true;
       }
       this.loadPacientes();
-    }
-    ,
-
+    },
     openApliqueDialog(pacienteId) {
       this.selectedPacienteId = pacienteId;
       this.isEditing = false;
       this.apliqueDialogVisible = true;
     },
-
     openListadoApliques(paciente) {
       this.selectedPacienteId = String(paciente.id);
       this.listadoApliquesVisible = true;
     },
     handleSaveAplique() {
       this.apliqueDialogVisible = false;
-
-    }
-
-    ,
+    },
     async saveApliqueFromDialog(nuevoAplique) {
       try {
-
-
-
         const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
-
         if (!this.isEditing) {
           console.log(resultado);
         }
@@ -246,14 +210,12 @@ export default {
       } catch (error) {
         console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
       }
-    }
-    ,
+    },
     saveApliqueFromListado(nuevoAplique) {
 
       this.$refs.listadoApliques.saveAplique(nuevoAplique);
       this.apliqueDialogVisible = false;
     },
-
     openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();
       this.pacienteEdit = {};
@@ -278,8 +240,6 @@ export default {
         console.error('Error al eliminar paciente:', error);
       }
     },
-
-
   },
 };
 </script>

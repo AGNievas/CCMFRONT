@@ -1,14 +1,12 @@
 import axiosInstance from "@/axios.js";
 
-const URL = '/stock-area'; // URL base
+const URL = '/stock-area'; 
 
 const stockAreaService = {
 
   async getAllStockArea() {
     try {
-      
       const response = await axiosInstance.get(`${URL}/`, { withCredentials: true });
-      
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener stockArea:", error);
@@ -18,9 +16,7 @@ const stockAreaService = {
 
   async getStockAreaById(id) {
     try {
-     
       const response = await axiosInstance.get(`${URL}/id/${id}`, { withCredentials: true });
-      
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener stockArea:", error);
@@ -43,7 +39,7 @@ const stockAreaService = {
       const response = await axiosInstance.post(`${URL}`, { nombre }, { withCredentials: true });
       return response.data.return;
     } catch (error) {
-      console.error("Error al obtener stockArea:", error);
+      console.error("Error al crear stockArea:", error);
       return [];
     }
   },
@@ -53,11 +49,10 @@ const stockAreaService = {
       const { data: StockAreaEliminado } = await axiosInstance.delete(`${URL}/${id}`, { withCredentials: true });
       return StockAreaEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al eliminar el stockArea:", error);
       throw error;
     }
   }
-
 }
 
 export default stockAreaService;

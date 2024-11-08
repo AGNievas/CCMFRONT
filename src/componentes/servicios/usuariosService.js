@@ -54,18 +54,15 @@ const usuariosService = {
       const fullName = usuario.fullName;
       const rolId = usuario.rolId;
       const stockAreaId = usuario.stockAreaId;
-
       const password = parsearCuil.extraerNumeroDelCuil(usuario.cuil);
-
       const response = await axiosInstance.post(
         `${URL}`,
         { cuil, password, fullName,  stockAreaId,rolId },
         { withCredentials: true }
       );
-
       return response.data.return;
     } catch (error) {
-      console.error("Error al obtener Users:", error);
+      console.error("Error al crear usuario:", error);
       return [];
     }
   },
@@ -92,7 +89,7 @@ const usuariosService = {
       );
       return usuerioEliminado;
     } catch (error) {
-      console.error("Error al eliminar Front Delete el usuario:", error);
+      console.error("Error al eliminar el usuario:", error);
       throw error;
     }
   },

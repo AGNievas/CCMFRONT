@@ -13,7 +13,6 @@
         </RouterLink>
         <v-btn v-if="this.globalStore.getLogueado" icon @click="logout" class="navbar-icon">
           <v-icon v-if="this.globalStore.getLogueado">mdi-export</v-icon>
-          <!-- <v-icon v-else>mdi-account</v-icon> -->
         </v-btn>
       </template>
     </v-app-bar>
@@ -22,7 +21,6 @@
     <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
-      
         <v-list-item>
           <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
         </v-list-item>
@@ -38,10 +36,8 @@
         <v-list-item>
           <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado De Orden Transferencias</RouterLink>
         </v-list-item>
-
       </v-list>
     </v-navigation-drawer>
-
   </div>
 </template>
 
@@ -56,7 +52,6 @@ export default {
     return {
       drawer: false,
       isSessionActive: false,
-
     };
   },
   methods: {
@@ -69,21 +64,14 @@ export default {
       this.$router.push('/login');
     },
   },
-
   computed: {
     ...mapStores(useGlobalStore)
-
-
   },
   mounted() {
     this.isSessionActive = sessionStorage.length > 1
   },
-
   updated() {
-    
     this.isSessionActive = sessionStorage.length > 1
-
   }
-
 };
 </script>

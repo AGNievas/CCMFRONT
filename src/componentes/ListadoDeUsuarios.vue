@@ -27,7 +27,6 @@
         @restorePassword="confirmRestorePassword"
       />
     </v-card>
-
   
     <ConfirmDialog
       v-model="deleteDialog"
@@ -44,7 +43,6 @@
       @confirm="restorePassword"
     />
 
-    <!-- Diálogos para agregar y editar usuarios -->
     <UsuarioDialog
       v-model="dialog"
       :is-editing="false"
@@ -72,7 +70,6 @@ import UsuarioDialog from './UsuarioDialog.vue';
 import usuariosService from './servicios/usuariosService.js';
 import stockAreaService from './servicios/stockAreaService.js';
 import rolService from './servicios/rolService';
-
 export default {
   name: 'ListadoDeUsuarios',
   components: {
@@ -97,7 +94,6 @@ export default {
     };
   },
   computed: {
-   
     usuariosHeaders() {
       return [
         { text: 'CUIL', value: 'cuil' },
@@ -109,7 +105,6 @@ export default {
     },
     usuariosConArea() {
       const searchTrimmed = this.search.trim().toLowerCase();
-
       return [...this.usuarios]
         .map(usuario => ({
           ...usuario,
@@ -119,7 +114,6 @@ export default {
         .filter(usuario => {
           const cuilMatches = usuario.cuil.toLowerCase().includes(searchTrimmed);
           const nameMatches = usuario.fullName.toLowerCase().includes(searchTrimmed);
-
           return cuilMatches || nameMatches;
         });
     },
@@ -142,54 +136,41 @@ export default {
   methods: {
     async loadRols() {
       this.roles = await rolService.getAllRol();
-  
     },
-
     async loadUsuarios() {
-  this.usuarios = await usuariosService.getAllUsuarios();
-
-},
-
+      this.usuarios = await usuariosService.getAllUsuarios();
+    },
     async loadStockAreas() {
       this.stockAreas = await stockAreaService.getAllStockArea();
     },
-
     getNombreArea(stockAreaId) {
       const area = this.stockAreas.find(area => area.id === stockAreaId);
       return area ? area.nombre : 'Área no encontrada';
     },
-
     getNombreRol(rolId) {
       const rol = this.roles.find(rol => rol.id === rolId);
       return rol ? rol.name : 'Rol no encontrado';
     },
-
     openAddUserDialog() {
       this.dialog = true;
     },
-
     openEditDialog(usuario) {
       this.editUsuario = { ...usuario };
       this.editDialog = true;
     },
-
     confirmDelete(id) {
       this.confirmDeleteId = id;
-      
       this.deleteDialog = true;
     },
-
     confirmRestorePassword(usuario) {
       this.confirmRestorePass = usuario;
       this.restoreDialog = true;
     },
-
     async addUsuario(newUsuario) {
       if (!this.validarFormulario(newUsuario)) {
         this.formError = true;
         return;
       }
-
       try {
         await usuariosService.createUsuario(newUsuario);
         await this.loadUsuarios();
@@ -199,18 +180,15 @@ export default {
         console.error('Error al agregar el usuario:', error);
       }
     },
-
     resetNewUsuario() {
       this.newUsuario = { cuil: '', fullName: '', rol: '', stockAreaId: '', rolId: '' };
       this.formError = false;
     },
-
     async updateUsuario(editUsuario) {
       if (!this.validarFormulario(editUsuario)) {
         this.editFormError = true;
         return;
       }
-
       try {
         await usuariosService.updateUsuario(
           editUsuario.id,
@@ -225,7 +203,6 @@ export default {
         console.error('Error al actualizar el usuario:', error);
       }
     },
-
     async deleteUsuario() {
       try {
         await usuariosService.deleteUsuario(this.confirmDeleteId);
@@ -235,7 +212,6 @@ export default {
         console.error('Error al eliminar el usuario:', error);
       }
     },
-
     async restorePassword() {
       try {
         await usuariosService.restorePassword(this.confirmRestorePass);
@@ -245,7 +221,6 @@ export default {
         console.error('Error al restaurar la contraseña del usuario:', error);
       }
     },
-
     validarFormulario(usuario) {
       return usuario.cuil && usuario.fullName && usuario.rol !== null && usuario.stockAreaId !== null;
     },

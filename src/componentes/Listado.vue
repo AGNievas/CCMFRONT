@@ -1,25 +1,25 @@
 <template>
-    <div >
-      <Tabla
-        :headers="headers"
-        :data="filteredItems"
-        :isListadoUsuarios="isListadoUsuarios" 
-        :isListadoApliques="isListadoApliques"
-        :isListadoPacientes="isListadoPacientes"
-        :isListadoMedicamentos="isListadoMedicamentos"
-        :isListadoOrdenTransferencia="isListadoOrdenTransferencia"
-        :isEditable="isEditable"
-        @edit="$emit('edit', $event)"
-        @delete="$emit('delete', $event)"
-        @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
-        @ver-historial="$emit('ver-historial', $event)"
-        @crear-aplique="$emit('crear-aplique', $event)"
-        @ver-items="$emit('ver-items', $event)"
-      />
-    </div>
-  </template>
+  <div >
+    <Tabla
+      :headers="headers"
+      :data="filteredItems"
+      :isListadoUsuarios="isListadoUsuarios" 
+      :isListadoApliques="isListadoApliques"
+      :isListadoPacientes="isListadoPacientes"
+      :isListadoMedicamentos="isListadoMedicamentos"
+      :isListadoOrdenTransferencia="isListadoOrdenTransferencia"
+      :isEditable="isEditable"
+      @edit="$emit('edit', $event)"
+      @delete="$emit('delete', $event)"
+      @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
+      @ver-historial="$emit('ver-historial', $event)"
+      @crear-aplique="$emit('crear-aplique', $event)"
+      @ver-items="$emit('ver-items', $event)"
+    />
+  </div>
+</template>
   
-  <script>
+<script>
 import Tabla from './Tabla.vue';
 
 export default {
@@ -68,7 +68,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    
   },
   computed: {
     filteredItems() {

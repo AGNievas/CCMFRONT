@@ -1,25 +1,24 @@
 <template>
-
   <v-card>
     <v-card-title>{{ isEditing ? 'Editar Aplique' : 'Agregar Aplique' }}</v-card-title>
     <v-card-text>
       <v-text-field
-    v-if="!isEditing"
-    v-model="apliqueLocal.sku"
-    label="SKU"
-    required
-    type="number"
-  ></v-text-field>
+        v-if="!isEditing"
+        v-model="apliqueLocal.sku"
+        label="SKU"
+        required
+        type="number"
+      ></v-text-field>
 
-  <v-select
-    v-if="!isEditing"
-    v-model="apliqueLocal.descripcion"
-    :items="medicamentos"
-    item-title="descripcion"
-    item-value="id"
-    label="Medicamento"
-    required
-  ></v-select>
+      <v-select
+        v-if="!isEditing"
+        v-model="apliqueLocal.descripcion"
+        :items="medicamentos"
+        item-title="descripcion"
+        item-value="id"
+        label="Medicamento"
+        required
+      ></v-select>
 
 
       <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1" required></v-text-field>
@@ -55,8 +54,6 @@
 </template>
 
 <script>
-
-
 export default {
   props: {
     modelValue: {
@@ -101,7 +98,6 @@ export default {
       } else {
         return this.apliqueLocal.aplicante && this.apliqueLocal.fechaAplicacion
       }
-      
     },
   },
   watch: {
@@ -113,7 +109,6 @@ export default {
     },
     'apliqueLocal.sku'(newSku) {
       const medicamento = this.medicamentos.find(med => med.sku == newSku);
-     
       if (medicamento) {
         this.apliqueLocal.descripcion = medicamento.descripcion;
       } else {
@@ -122,7 +117,6 @@ export default {
     },
     'apliqueLocal.descripcion'(newDescripcion) {
       const medicamento = this.medicamentos.find(med => med.descripcion == newDescripcion);
-      
       if (medicamento) {
         this.apliqueLocal.sku = medicamento.sku;
       } else {
@@ -133,10 +127,8 @@ export default {
     immediate: true,
     handler(newAplique) {
       if (this.isEditing && newAplique) {
-        
         this.apliqueLocal = { id: newAplique.id, ...newAplique };
       } else {
-       
         this.resetApliqueLocal();
       }
     },
@@ -145,7 +137,6 @@ export default {
   methods: {
     save() {
       this.$emit('save', this.apliqueLocal);
-     
       this.closeDialog();
     },
     resetApliqueLocal() {
@@ -160,7 +151,6 @@ export default {
       };
     },
     closeDialog() {
-      console.log("assssssssss ", this.apliqueLocal)
       this.$emit('update:modelValue', false);
       this.resetApliqueLocal();
     },

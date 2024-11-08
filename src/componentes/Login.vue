@@ -25,7 +25,6 @@
         </v-card-text>
       </v-card>
     </v-container>
-  
 </template>
 
 <script>
@@ -77,10 +76,8 @@ export default {
     formatearCuil(cuil){
       return parsearCuil.formatearCuil(cuil)
     },
-
     async login() {
       this.validateForm()
-
       try {
         const { cuil, password } = this.formData;
         const { payload: response } = await loginService.login(cuil, password);
@@ -96,8 +93,8 @@ export default {
         this.$router.push('/home');
         
         const areas = await stockAreaService.getAllStockArea();
-    const usuarios = await usuariosService.getAllUsuarios();
-    this.globalStore.cargarAreasYUser(areas, usuarios);
+        const usuarios = await usuariosService.getAllUsuarios();
+        this.globalStore.cargarAreasYUser(areas, usuarios);
 
         this.resetearFormulario();
       } catch (error) {
@@ -107,8 +104,6 @@ export default {
         this.error = "Complete los campos para continuar.";
       }
     },
-
-    
 
     resetearFormulario() {
       this.formData = {
@@ -121,11 +116,6 @@ export default {
 </script>
 
 <style scoped>
-
-/* v-card-text {
-  min-height: 150px;
-} */
-
 .btn-blue {
   margin-top: 20px;
 }

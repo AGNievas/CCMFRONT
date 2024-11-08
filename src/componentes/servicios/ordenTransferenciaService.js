@@ -6,7 +6,6 @@ const ordenTransferenciaService = {
   async getAllOrdenTransferencia() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
-      console.log("esta ", response.data.message)
       return response.data.message;
       
     } catch (error) {

@@ -16,9 +16,7 @@ const medicamentosService = {
 
   async getAllMedicamentoByStockAreaId(id) {
     try {
-      
       const response = await axiosInstance.get(`/item/listado-items/${id}`, { withCredentials: true });
-      
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -38,33 +36,27 @@ const medicamentosService = {
 
   async createMedicamento(sku, descripcion, tipoInsumo) {
     try {
-      
       const response = await axiosInstance.post(`${URL}`,{sku,descripcion, tipoInsumo}, { withCredentials: true });
-      
       return response.data.return;
     } catch (error) {
-      console.error("Error al obtener medicamentos:", error);
+      console.error("Error al crear medicamentos:", error);
       return [];
     }
   },
 
   async cargaMasivaMedicamento(filePath) {
     try {
-      
       const response = await axiosInstance.post(`${URL}/carga-masiva`,{filePath}, { withCredentials: true });
-      console.log(response.data)
       return response.data;
     } catch (error) {
-      console.error("Error al obtener medicamentos:", error);
+      console.error("Error en carga masiva:", error);
       return [];
     }
   },
 
   async updateMedicamento(sku, descripcion, tipoInsumo) {
     try {
-      
       const { data: medicamentoActualizado } = await axiosInstance.put(`${URL}/${sku}`, { descripcion, tipoInsumo }, { withCredentials: true });
-      
       return medicamentoActualizado;
     } catch (error) {
       console.error("Error al actualizar el Medicamento:", error);
@@ -74,15 +66,14 @@ const medicamentosService = {
 
   async deleteMedicamento(sku) {
     try {
-      
+
       const { data: medicamentoEliminado } = await axiosInstance.delete(`${URL}/${sku}`, { withCredentials: true });
       return medicamentoEliminado;
     } catch (error) {
-      console.error("Error al actualizar el Medicamento:", error);
+      console.error("Error al eliminar el Medicamento:", error);
       throw error;
     }
   }
-
 }
 
 export default medicamentosService;

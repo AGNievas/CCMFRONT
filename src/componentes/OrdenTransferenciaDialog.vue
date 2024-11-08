@@ -159,7 +159,7 @@ export default {
     },
     ordenTransferencia: {
       handler(newVal) {
-        this.localOrdenTransferencia = JSON.parse(JSON.stringify(newVal)); // Crea una copia profunda al actualizar
+        this.localOrdenTransferencia = JSON.parse(JSON.stringify(newVal));
       },
       immediate: true,
       deep: true,

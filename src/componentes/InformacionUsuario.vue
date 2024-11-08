@@ -8,16 +8,11 @@
       <v-card-text class="text-center">
         <div v-if="usuarioActual" class="user-details">
           <v-text-field v-model="usuarioActual.fullNameUsuario" label="Nombre" readonly></v-text-field>
-
           <v-text-field v-model="usuarioActual.cuil" label="Cuil" readonly></v-text-field>
-
           <v-text-field v-model="usuarioActual.nombreArea" label="Área" readonly></v-text-field>
-
           <v-text-field v-model="usuarioActual.rolName" label="Rol" readonly></v-text-field>
-
           <v-btn @click="openEditPasswordDialog" class="btn-blue mx-2">Editar Contraseña</v-btn>
 
-          <!-- Diálogo de edición de contraseña (código correcto, no modificado) -->
           <v-dialog v-model="editPasswordDialog" persistent max-width="400px">
             <v-card>
               <v-card-title>
@@ -26,7 +21,6 @@
 
               <v-card-text>
                 <v-form ref="form" v-model="formValid">
-                  <!-- Contraseña Actual -->
                   <v-text-field 
                   v-model="currentPassword" 
                   :type="showCurrentPassword ? 'text' : 'password'"
@@ -37,7 +31,6 @@
                   >
                   </v-text-field>
 
-                  <!-- Nueva Contraseña -->
                   <v-text-field v-model="newPassword" 
                   :type="showNewPassword ? 'text' : 'password'"
                   label="Nueva Contraseña" 
@@ -47,7 +40,6 @@
                   >
                   </v-text-field>
 
-                  <!-- Repetir Nueva Contraseña -->
                   <v-text-field v-model="repeatNewPassword" 
                   :type="showRepeatNewPassword ? 'text' : 'password'"
                   label="Repetir Nueva Contraseña" 
@@ -57,7 +49,6 @@
                   >
                   </v-text-field>
 
-                  <!-- Mostrar errores si faltan campos o las contraseñas no coinciden -->
                   <v-alert v-if="formError" type="error" dismissible>
                     {{ errorMessage }}
                   </v-alert>
@@ -105,7 +96,6 @@ export default {
         nombreArea: "",
         rolName: ""
       },
-      
       errorMessage: "",
       editPasswordDialog: false,
       currentPassword: "",
@@ -139,7 +129,6 @@ export default {
           nombreArea: '',
           rolName: ''
         };
-
         try {
           const usuarioNombre = await usuariosService.getUsuarioById(this.usuarioActual.usuarioId)
           this.usuarioActual.fullNameUsuario = usuarioNombre.fullName
@@ -152,7 +141,6 @@ export default {
         }
       }
     },
-
     openEditPasswordDialog() {
       this.editPasswordDialog = true;
       this.currentPassword = "";
@@ -160,25 +148,20 @@ export default {
       this.repeatNewPassword = "";
       this.resetErrors();
     },
-
     closeEditPasswordDialog() {
       this.editPasswordDialog = false;
       this.resetErrors();
     },
-
     async updatePassword() {
       this.resetErrors();
-
       if (!this.currentPassword || !this.newPassword || !this.repeatNewPassword) {
         this.formError = true;
         return;
       }
-
       if (this.newPassword !== this.repeatNewPassword) {
         this.passwordMismatchError = true;
         return;
       }
-
       try {
         await usuariosService.updatePassword(this.usuarioActual.usuarioId, this.currentPassword, this.newPassword);
         this.closeEditPasswordDialog();
@@ -187,14 +170,12 @@ export default {
         this.errorMessage = error;
       }
     },
-
     resetErrors() {
       this.formError = false;
       this.passwordMismatchError = false;
       this.currentPasswordError = false;
       this.errorMessage = "";
     },
-
     toggleShowCurrentPassword() {
       this.showCurrentPassword = !this.showCurrentPassword;
     },
@@ -207,7 +188,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

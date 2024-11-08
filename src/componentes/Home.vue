@@ -1,6 +1,5 @@
 <template>
   <div class="home-container background-image">
-
   </div> 
 </template>
 
@@ -9,14 +8,9 @@
 
 export default {
   name: 'src-componentes-home',
-  components: {
-    
-  },
+  components: {},
   props: [],
   methods: {},
   computed: {}
 };
 </script>
-
-<style>
-</style>

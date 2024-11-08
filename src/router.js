@@ -25,8 +25,8 @@ const routes = [
   {
     path: '/apliques/:pacienteId',
     name: 'ListadoDeApliques',
-    component: ListadoApliques, // Ruta para el historial de apliques
-    props: true, // Para pasar el ID del paciente como prop
+    component: ListadoApliques, 
+    props: true, 
   },
  
 

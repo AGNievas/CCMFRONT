@@ -3,8 +3,8 @@
     <v-card>
       <div v-if="!archivoCargado">
         <v-row class="d-flex flex-column align-center">
-          <v-btn @click="subirArchivo" class="my-2 mx-5 btn-blue btn-tamano">Subir Archivo</v-btn>
-          <v-btn @click="descargarArchivo(this.plantilla, 'plantilla')" class="my-2 mx-5 btn-blue btn-tamano">Descargar
+          <v-btn @click="subirArchivo" class="my-2 mx-5 btn-blue btn-blue">Subir Archivo</v-btn>
+          <v-btn @click="descargarArchivo(this.plantilla, 'plantilla')" class="my-2 mx-5 btn-blue btn-blue">Descargar
             Plantilla</v-btn>
         </v-row>
       </div>
@@ -12,20 +12,19 @@
       <div v-if="archivoCargado && !archivoImportado">
         <v-row class="d-flex flex-column align-center">
           <p class="recuperar-link" @click="descargarArchivo(this.archivoADescargar)">{{ nombreArchivo }}</p>
-          <v-btn @click="importarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Importar</v-btn>
-          <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Cancelar</v-btn>
+          <v-btn @click="importarArchivo" class="my-2 mx-5 btn-blue btn-blue">Importar</v-btn>
+          <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-blue">Cancelar</v-btn>
         </v-row>
       </div>
 
       <div v-if="archivoImportado">
         <v-row class="d-flex flex-column align-center">
           <p> {{this.mensajeCarga}}</p>
-          <v-btn @click="descargarArchivo(this.archivoADescargar, 'informe')" class="my-2 mx-5 btn-blue btn-tamano">Descargar
+          <v-btn @click="descargarArchivo(this.archivoADescargar, 'informe')" class="my-2 mx-5 btn-blue btn-blue">Descargar
             Informe</v-btn>
-          <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-tamano">Volver a la Carga</v-btn>
+          <v-btn @click="cancelarArchivo" class="my-2 mx-5 btn-blue btn-blue">Volver a la Carga</v-btn>
         </v-row>
       </div>
-
     </v-card>
   </v-container>
 </template>
@@ -52,7 +51,6 @@ export default {
         .map(e => e.join(","))
         .join("\n")
     };
-    
   },
   methods: {
     subirArchivo() {
@@ -68,7 +66,6 @@ export default {
             header: true,
             dynamicTyping: true,
             complete: (result) => {
-              
               this.archivoCargado = true;
               this.archivoCsvEnviado = result.data
             },
@@ -96,7 +93,6 @@ export default {
       this.mensajeCarga= estado
       this.archivoImportado = true;
     },
-
     parsearData(data){
       let ultimoElemento
       Papa.parse(data,{
@@ -105,7 +101,6 @@ export default {
           const dataArray = result.data
           ultimoElemento= dataArray[dataArray.length-1]
         },
-      
       })
       return ultimoElemento
     },
@@ -123,7 +118,7 @@ export default {
 </script>
 
 <style scoped>
-.btn-tamano {
+.btn-blue {
   min-width: 200px;
 }
 </style>

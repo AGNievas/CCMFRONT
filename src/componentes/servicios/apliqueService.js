@@ -66,7 +66,7 @@ const apliqueService = {
 
       return response.data.message;
     } catch (error) {
-      console.error("Error al obtener Aplique:", error);
+      console.error("Error al crear Aplique:", error);
       return [];
     }
   },
@@ -89,7 +89,7 @@ const apliqueService = {
 
       return response.data.message;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar el aplique:", error);
       throw error;
     }
   },
@@ -102,7 +102,7 @@ const apliqueService = {
       );
       return ApliqueEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al eliminar el Aplique:", error);
       throw error;
     }
   },

@@ -92,10 +92,9 @@ const transferenciaStockService = {
             ordenTransferenciaId },
         { withCredentials: true }
       );
-
       return transferenciaStockActualizado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar el usuariola transferencia:", error);
       throw error;
     }
   },
@@ -108,7 +107,7 @@ const transferenciaStockService = {
       );
       return transferenciaStockEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al eliminar la transferencia:", error);
       throw error;
     }
   },

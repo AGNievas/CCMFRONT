@@ -39,7 +39,6 @@
   </v-dialog>
 </template>
 
-
 <script>
 import Listado from './Listado.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
@@ -54,7 +53,7 @@ import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
 export default {
   props: {
-    modelValue: { // Recibe el valor del diálogo desde el componente padre
+    modelValue: {
       type: Boolean,
       default: false
     },
