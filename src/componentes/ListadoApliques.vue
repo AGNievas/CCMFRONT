@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogVisible" persistent max-width="600px">
+  <v-dialog v-model="isDialogVisible" persistent max-width="1200px">
     <v-card>
       <v-card-title>
         <span class="headline">Historial Apliques</span>
@@ -12,53 +12,9 @@
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
-      <div style="max-height: 600px; overflow-y: auto;">
-        <v-card
-          class="mx-auto"
-          max-width="400"
-          v-for="(aplique, index) in apliques"
-          :key="index"
-          style="margin-bottom: 20px; padding: 10px;"
-        >
-          <v-card-text>
-            <div>{{`Fecha: ${aplique.fechaAplicacion}`}}</div>
-            <p class="text-h5 text--primary">{{`${aplique.descripcion} - ${aplique.sku}`}}</p>
-            <div style="display: flex; justify-content: center; padding-top: 1rem;">
-              <v-btn class="btn-icon" icon dense x-small color="#0E3746" @click="openEditarApliqueDialog(aplique)">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-btn class="btn-icon" icon small color="red" @click="confirmDeleteAplique(aplique.id)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </div>
-          </v-card-text>
-          <v-card-actions style="justify-content: center;">
-            <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">
-              {{ expandedCards[index] ? 'Cerrar' : 'Más Información' }}
-            </v-btn>
-          </v-card-actions>
+      <Listado :items="apliques" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
+        @delete="confirmDeleteAplique" />
 
-          <v-expand-transition>
-            <v-card
-              v-if="expandedCards[index]"
-              class="transition-fast-in-fast-out v-card--reveal"
-              style="height: 100%;"
-            >
-              <v-card-text class="pb-0">
-                <p>Aplicante:</p>
-                <p class="text-h5 text--primary">{{ aplique.aplicanteNombre }}</p>
-                <p>Area:</p>
-                <p class="text-h5 text--primary">{{ aplique.stockAreaNombre }}</p>
-              </v-card-text>
-              <v-card-actions style="justify-content: center;">
-                <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">Cerrar</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-expand-transition>
-        </v-card>
-      </div>
-
-      <!-- Diálogos de agregar/editar aplique y confirmación para eliminar -->
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
         <ApliqueDialog
           v-model="apliqueDialogVisible"
@@ -85,6 +41,7 @@
 
 
 <script>
+import Listado from './Listado.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
@@ -105,12 +62,21 @@ export default {
     medicamentos: Array
   },
   components: {
+    Listado,
     ApliqueDialog,
     ConfirmDialog,
   },
   data() {
     return {
-      expandedCards: [],
+      apliquesHeaders: [
+        { text: 'Aplicante', value: 'aplicanteNombre' },
+        { text: 'SKU', value: 'sku' },
+        { text: 'Descripcion', value: 'descripcion' },
+        { text: 'Cantidad', value: 'cantidad' },
+        { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
+        { text: 'Área', value: 'stockAreaNombre' },
+        { text: '', value: '' },
+      ],
       pacienteNombreCompleto: '',
       apliques: [],
       stockAreas: [],
@@ -159,9 +125,6 @@ export default {
     closeDialog() {
       this.$emit('update:modelValue', false);
     },
-    toggleCardExpansion(index) {
-      this.expandedCards[index] = !this.expandedCards[index];
-    },
     async loadPacienteNombreCompleto() {
       try {
         const paciente = await PacienteService.getPacienteById(this.pacienteId);
@@ -174,7 +137,6 @@ export default {
       try {
         const apliquesRaw = await apliqueService.getApliquesByPacienteId(this.pacienteId);
         this.apliques = this.mapApliques(apliquesRaw);
-        this.expandedCards = new Array(this.apliques.length).fill(false); // Inicializar expandedCards
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }

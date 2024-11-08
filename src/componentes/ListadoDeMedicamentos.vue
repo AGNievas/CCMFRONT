@@ -201,8 +201,12 @@ async saveTransferencia(orden) {
     this.errorMessage = error || 'Error al guardar la orden de transferencia';
   } finally {
     this.selectedOrdenTransferencia = { items: [], stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '' }; // Reiniciar el objeto después de guardar
-    await this.loadItemsMed();
-    await this.loadMedicamentosByAreaId(this.area)
+    if(this.area == 0){
+      await this.loadMedicamentos();
+    }else{
+      await this.loadItemsMed();
+     await this.loadMedicamentosByAreaId(this.area)
+    }
   }
 }
 ,

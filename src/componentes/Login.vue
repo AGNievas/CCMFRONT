@@ -8,7 +8,7 @@
               @input="formData.cuil = formatearCuil(formData.cuil)"></v-text-field>
             <v-text-field 
             v-model="formData.password" 
-            label="Password" 
+            label="Contraseña" 
             required 
             :type="showPassword ? 'text' : 'password'"
             :error-messages="passwordErrors"
@@ -21,7 +21,7 @@
           <br>
 
           <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error }}</v-alert>
-          <RouterLink to="/recuperarPassword" class="recuperar-link">recuperar contraseña</RouterLink>
+          <RouterLink to="/recuperarPassword" class="recuperar-link">Recuperar Contraseña</RouterLink>
         </v-card-text>
       </v-card>
     </v-container>

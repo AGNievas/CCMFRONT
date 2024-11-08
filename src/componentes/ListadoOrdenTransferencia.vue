@@ -16,43 +16,42 @@
         <v-btn @click="openAddOrdenTransferDialog" class="mx-2 btn-blue">Agregar Orden Transferencia</v-btn>
       </v-card-title>
 
-      <Listado
-  :items="ordenesTransferencias"
-  :headers="ordenTransferenciaHeaders"
-  :isListadoOrdenTransferencia="true"
-  @edit="openEditDialog"
-  @delete="confirmDelete"
-  @ver-items="openItemsDialog"
-/>
+    <Listado
+      :items="ordenesTransferencias"
+      :headers="ordenTransferenciaHeaders"
+      :isListadoOrdenTransferencia="true"
+      @edit="openEditDialog"
+      @delete="confirmDelete"
+      @ver-items="openItemsDialog"
+    />
 
-      <OrdenTransferenciaDialog
-        v-model="dialog"
-        :is-editing="isEditing"
-        :ordenTransferencia="selectedOrdenTransferencia"
-        :areas="stockAreas"
-        :errorMessage="errorMessage"
-        @save="saveTransferencia"
-      />
+    <OrdenTransferenciaDialog
+      v-model="dialog"
+      :is-editing="isEditing"
+      :ordenTransferencia="selectedOrdenTransferencia"
+      :areas="stockAreas"
+      :errorMessage="errorMessage"
+      @save="saveTransferencia"
+    />
 
-      <v-dialog persistent v-model="itemsDialogVisible" max-width="800px">
-  <ListadoDeTransferencias 
-    :isViewMode="true" 
-    :items="selectedItems"
-    :orderNumber="selectedOrderNumber"  
-    @close="itemsDialogVisible = false" 
-  />
-</v-dialog>
+    <v-dialog v-model="itemsDialogVisible" max-width="800px">
+      <div class="v-card">
+          <ListadoDeTransferencias 
+            :isViewMode="true" 
+            :items="selectedItems"
+            :orderNumber="selectedOrderNumber"  
+            @close="itemsDialogVisible = false" 
+          />
+      </div> 
+    </v-dialog>
 
-
-
-
-      <ConfirmDialog
-        v-model="deleteDialog"
-        :isDelete="true"
-        title="Confirmar Eliminación"
-        text="¿Estás seguro de que deseas eliminar esta transferencia?"
-        @confirm="deleteTransferencia"
-      />
+    <ConfirmDialog
+      v-model="deleteDialog"
+      :isDelete="true"
+      title="Confirmar Eliminación"
+      text="¿Estás seguro de que deseas eliminar esta transferencia?"
+      @confirm="deleteTransferencia"
+    />
     </v-card>
   </div>
 </template>
