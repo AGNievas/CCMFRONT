@@ -136,11 +136,7 @@ export default {
   },
   async mounted() {
     this.loadUsuarios();
-    // this.loadStockAreas();
-    // this.loadRols();
-    
- 
-  },
+ },
 
 
   watch: {
@@ -169,6 +165,7 @@ export default {
     // },
     async loadUsuarios() {
       this.usuarios = await usuariosService.getAllUsuarios();
+      console.log(this.usuarios,"USUARIOS EN LOAD USUARIOS")
     },
     // async loadStockAreas() {
     //   this.stockAreas = await stockAreaService.getAllStockArea();

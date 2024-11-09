@@ -98,7 +98,7 @@ export default {
   },
   async mounted() {
     this.loadPacientes();
-    await this.loadMedicamentos();
+    this.loadMedicamentos();
 
   },
   watch: {
@@ -121,9 +121,9 @@ export default {
   },
   methods: {
     async loadMedicamentos() {
-      const response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getAreaId)
+      const response = await itemService.getAllItem()
       console.log(response, "CARGA MEDICAMENTOS EN PACIENTE")
-      this.medicamentos = response.return
+      this.medicamentos = response
     },
     formatearPacientes(pacientesFiltrados) {
       return pacientesFiltrados.map(paciente => ({

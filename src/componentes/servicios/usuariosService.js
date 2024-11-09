@@ -7,15 +7,18 @@ const usuariosService = {
   async getAllUsuarios() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
+      
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);
       return [];
     }
   },
-  async getAllUsuariosByStockAreaId(areaId) {
+  async getAllUsuariosByAreaId(areaId) {
     try {
-      const response = await axiosInstance.get(`${URL}/areas/${areaId}`, { withCredentials: true });
+      console.log(areaId,"acacaca")
+      const response = await axiosInstance.get(`${URL}/area/${areaId}`, { withCredentials: true });
+      
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);

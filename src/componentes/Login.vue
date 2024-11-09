@@ -30,6 +30,7 @@ import parsearCuil from '@/utils/parsearCuil';
 import areaService from "./servicios/areaService";
 import usuariosService from "./servicios/usuariosService";
 import rolService from "./servicios/rolService";
+import stockAreaService from "./servicios/stockAreaService";
 export default {
   data() {
     return {
@@ -87,10 +88,11 @@ export default {
         this.globalStore.setUsuario(cuil, usuarioId, areaId, areaNombre, fullNameUsuario, rolId, rolName, rolId == 1, true)
         this.$router.push('/home');
         const areas = await areaService.getAllArea();
+        const stockAreas = await stockAreaService.getAllStockArea();
         const usuarios = await usuariosService.getAllUsuarios();
         const roles = await rolService.getAllRol()
         console.log(roles, "roles en login")
-        this.globalStore.cargarAreasYUser(areas, usuarios,roles);
+        this.globalStore.cargarAreasYUser(areas, usuarios,roles, stockAreas);
 
 
         this.resetearFormulario();

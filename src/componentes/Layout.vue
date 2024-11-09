@@ -10,6 +10,7 @@ import { useGlobalStore } from '@/stores/global';
 import areaService from './servicios/areaService';
 import usuariosService from './servicios/usuariosService';
 import rolService from './servicios/rolService';
+import stockAreaService from './servicios/stockAreaService';
 export default {
   components: {
     Navbar,
@@ -28,10 +29,11 @@ export default {
    methods:{
     async loadAreasYUsuarios(){
       const areas = await areaService.getAllArea();
+      const stockAreas = await stockAreaService.getAllStockArea();
       const usuarios = await usuariosService.getAllUsuarios();
       const roles = await rolService.getAllRol()
-      console.log(roles, "roles en layout")
-      this.globalStore.cargarAreasYUser(areas, usuarios,roles);
+      console.log(stockAreas, "stockAreas en layout")
+      this.globalStore.cargarAreasYUser(areas, usuarios,roles, stockAreas);
     }
   }
 };

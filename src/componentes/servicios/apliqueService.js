@@ -27,6 +27,7 @@ const apliqueService = {
 
   async getApliquesByPacienteId(pacienteId) {
     try {
+      console.log(pacienteId, "ID PACIENTE EN GET APLIES SERVICCE")
       const response = await axiosInstance.get(
         `${URL}/paciente/${pacienteId}`,
         {

@@ -160,8 +160,9 @@ export default {
       this.stockAreas = await stockAreaService.getAllStockArea();
     },
     async loadUsuarios() {
-      const stockAreaId = this.globalStore.stockAreaId;
-      this.usuarios = await usuariosService.getAllUsuariosByStockAreaId(stockAreaId);
+      const areaId = this.globalStore.getAreaId;
+      console.log(areaId, "AREA ID EN LOAD USUARIOS APLIQUES")
+      this.usuarios = await usuariosService.getAllUsuariosByAreaId(areaId);
     },
     openAgregarApliqueDialog() {
       this.isEditing = false;
