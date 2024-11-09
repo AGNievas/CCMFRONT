@@ -13,9 +13,9 @@ const usuariosService = {
       return [];
     }
   },
-  async getAllUsuariosByStockAreaId(stockAreaId) {
+  async getAllUsuariosByStockAreaId(areaId) {
     try {
-      const response = await axiosInstance.get(`${URL}/areas/${stockAreaId}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/areas/${areaId}`, { withCredentials: true });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener Users:", error);
@@ -50,14 +50,15 @@ const usuariosService = {
 
   async createUsuario(usuario) {
     try {
+      console.log(usuario)
       const cuil = usuario.cuil;
       const fullName = usuario.fullName;
       const rolId = usuario.rolId;
-      const stockAreaId = usuario.stockAreaId;
+      const areaId = usuario.areaId;
       const password = parsearCuil.extraerNumeroDelCuil(usuario.cuil);
       const response = await axiosInstance.post(
         `${URL}`,
-        { cuil, password, fullName,  stockAreaId,rolId },
+        { cuil, password, fullName,  areaId,rolId },
         { withCredentials: true }
       );
       return response.data.return;
@@ -67,11 +68,11 @@ const usuariosService = {
     }
   },
 
-  async updateUsuario(id, cuil, fullName, stockAreaId, rolId) {
+  async updateUsuario(id, cuil, fullName, areaId, rolId) {
     try {
       const { data: usuarioActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
-        { cuil, fullName, stockAreaId,rolId },
+        { cuil, fullName, areaId,rolId },
         { withCredentials: true }
       );
       return usuarioActualizado;

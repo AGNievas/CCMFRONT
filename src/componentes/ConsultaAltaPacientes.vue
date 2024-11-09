@@ -121,7 +121,8 @@ export default {
   },
   methods: {
     async loadMedicamentos() {
-      const response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getStockAreaId)
+      const response = await itemService.getItemsYDescripcionByStockAreaId(this.globalStore.getAreaId)
+      console.log(response, "CARGA MEDICAMENTOS EN PACIENTE")
       this.medicamentos = response.return
     },
     formatearPacientes(pacientesFiltrados) {

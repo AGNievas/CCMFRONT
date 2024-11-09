@@ -49,7 +49,7 @@
       :usuario="newUsuario"
       @save="addUsuario"
       :roles="roles"
-      :areas="stockAreas"
+      :areas="areas"
     />
     <UsuarioDialog
       v-model="editDialog"
@@ -58,7 +58,7 @@
       @update:usuario="editUsuario = $event"
       @save="updateUsuario"
       :roles="roles"
-      :areas="stockAreas"
+      :areas="areas"
     />
   </div>
 </template>
@@ -68,8 +68,9 @@ import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import UsuarioDialog from './UsuarioDialog.vue';
 import usuariosService from './servicios/usuariosService.js';
-import stockAreaService from './servicios/stockAreaService.js';
-import rolService from './servicios/rolService';
+// import stockAreaService from './servicios/stockAreaService.js';
+// import rolService from './servicios/rolService';
+import { useGlobalStore } from '@/stores/global';
 export default {
   name: 'ListadoDeUsuarios',
   components: {
@@ -81,7 +82,8 @@ export default {
     return {
       search: '',
       usuarios: [],
-      stockAreas: [],
+      // stockAreas: [],
+      areas:[],
       roles: [],
       dialog: false,
       editDialog: false,
@@ -89,8 +91,9 @@ export default {
       restoreDialog: false,
       confirmRestorePass: null,
       confirmDeleteId: null,
-      newUsuario: { cuil: '', fullName: '', stockAreaId: '', rolId: '' },
-      editUsuario: { cuil: '', fullName: '', stockAreaId: '', rolId: '' },
+      globalStore: useGlobalStore(),
+      newUsuario: { cuil: '', fullName: '', areaId: '', rolId: '' },
+      editUsuario: { cuil: '', fullName: '', areaId: '', rolId: '' },
     };
   },
   computed: {
@@ -108,8 +111,8 @@ export default {
       return [...this.usuarios]
         .map(usuario => ({
           ...usuario,
-          nombreArea: this.getNombreArea(usuario.stockAreaId),
-          rolName: this.getNombreRol(usuario.rolId),
+          nombreArea: usuario.Area.nombre,
+          rolName: usuario.Rol.name,
         }))
         .filter(usuario => {
           const cuilMatches = usuario.cuil.toLowerCase().includes(searchTrimmed);
@@ -118,39 +121,67 @@ export default {
         });
     },
     usuariosFiltradosParaVista() {
-      return this.usuariosConArea.map(usuario => ({
+      return this.usuariosConArea.map(usuario => (console.log(usuario),{
+        
         cuil: usuario.cuil,
         fullName: usuario.fullName,
-        rolName: this.getNombreRol(usuario.rolId), 
-        nombreArea: this.getNombreArea(usuario.stockAreaId), 
+        rolName: usuario.Rol.name, 
+        nombreArea: usuario.Area.nombre, 
         id: usuario.id, 
   }));
+
+
 },
+
   },
   async mounted() {
     this.loadUsuarios();
-    this.loadStockAreas();
-    this.loadRols();
+    // this.loadStockAreas();
+    // this.loadRols();
+    
  
   },
-  methods: {
-    async loadRols() {
-      this.roles = await rolService.getAllRol();
+
+
+  watch: {
+    'globalStore.getAreas': {
+      handler(newAreas) {
+        if (newAreas.length) {
+          this.areas = newAreas;
+        }
+      },
+      immediate: true,
     },
+    'globalStore.getRoles': {
+      handler(newRoles) {
+        if (newRoles.length) {
+          this.roles = newRoles;
+        }
+      },
+      immediate: true,
+    },
+    
+  },
+  methods: {
+
+    // async loadRols() {
+    //   this.roles = await rolService.getAllRol();
+    // },
     async loadUsuarios() {
       this.usuarios = await usuariosService.getAllUsuarios();
     },
-    async loadStockAreas() {
-      this.stockAreas = await stockAreaService.getAllStockArea();
-    },
-    getNombreArea(stockAreaId) {
-      const area = this.stockAreas.find(area => area.id === stockAreaId);
-      return area ? area.nombre : 'Área no encontrada';
-    },
-    getNombreRol(rolId) {
-      const rol = this.roles.find(rol => rol.id === rolId);
-      return rol ? rol.name : 'Rol no encontrado';
-    },
+    // async loadStockAreas() {
+    //   this.stockAreas = await stockAreaService.getAllStockArea();
+    // },
+
+    // getNombreArea(areaId) {
+    //   const area = this.areas.find(area => area.id === areaId);
+    //   return area ? area.nombre : 'Área no encontrada';
+    // },
+    // getNombreRol(rolId) {
+    //   const rol = this.roles.find(rol => rol.id === rolId);
+    //   return rol ? rol.name : 'Rol no encontrado';
+    // },
     openAddUserDialog() {
       this.dialog = true;
     },
@@ -181,7 +212,7 @@ export default {
       }
     },
     resetNewUsuario() {
-      this.newUsuario = { cuil: '', fullName: '', rol: '', stockAreaId: '', rolId: '' };
+      this.newUsuario = { cuil: '', fullName: '', rol: '', areaId: '', rolId: '' };
       this.formError = false;
     },
     async updateUsuario(editUsuario) {
@@ -194,7 +225,7 @@ export default {
           editUsuario.id,
           editUsuario.cuil,
           editUsuario.fullName,
-          editUsuario.stockAreaId,
+          editUsuario.areaId,
           editUsuario.rolId
         );
         await this.loadUsuarios();
@@ -222,7 +253,7 @@ export default {
       }
     },
     validarFormulario(usuario) {
-      return usuario.cuil && usuario.fullName && usuario.rol !== null && usuario.stockAreaId !== null;
+      return usuario.cuil && usuario.fullName && usuario.rol !== null && usuario.areaId !== null;
     },
   },
 };

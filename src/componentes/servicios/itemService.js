@@ -35,12 +35,14 @@ const itemService = {
     }
   },
 
-  async  getItemsYDescripcionByStockAreaId(stockAreaId) {
+  async  getItemsYDescripcionByStockAreaId(areaId) {
     try {
-      const response = await axiosInstance.get(`${API_URL}/listado-items/${stockAreaId}`, {withCredentials:true});
+      console.log(areaId)
+      const response = await axiosInstance.get(`${API_URL}/listado-items/${areaId}`, {withCredentials:true});
+      
       return response.data;
     } catch (error) {
-      console.error(`Error al obtener el items del Stock Area id : ${stockAreaId} `, error);
+      console.error(`Error al obtener el items del Stock Area id : ${areaId} `, error);
       throw error;
     }
   },

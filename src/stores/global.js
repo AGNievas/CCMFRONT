@@ -13,6 +13,7 @@ export const useGlobalStore = defineStore('global', {
         logueado: false,
         areas: [],
         usuarios: [],
+        roles:[],
     }),
     actions: {
         setUsuario(cuil, usuarioId, areaId, areaNombre, fullNameUsuario, rolId,rolName, esAdmin, logueado) {
@@ -27,9 +28,10 @@ export const useGlobalStore = defineStore('global', {
             this.logueado = logueado
         }
         ,
-        cargarAreasYUser(areas, usuarios){
+        cargarAreasYUser(areas, usuarios, roles){
             this.areas = areas
             this.usuarios= usuarios
+            this.roles= roles
             },
 
         logout() {
@@ -47,7 +49,7 @@ export const useGlobalStore = defineStore('global', {
     getters: {
         getUsuarioCuil: (state) => state.cuil,
         getUsuarioId: (state) => state.usuarioId,
-        getareaId: (state) => state.areaId,
+        getAreaId: (state) => state.areaId,
         getAreaNombre: (state) => state.areaNombre,
         getFullNameUsuario: (state) => state.fullNameUsuario,
         getRolId: (state) => state.rolId,
@@ -56,5 +58,6 @@ export const useGlobalStore = defineStore('global', {
         getLogueado: (state) => state.logueado,
         getAreas: (state) => state.areas,
         getUsuarios: (state) => state.usuarios,
+        getRoles:(state)=> state.roles,
       }
 })

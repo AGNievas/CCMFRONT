@@ -14,7 +14,7 @@
           />
           <v-text-field v-model="localUsuario.fullName" label="Nombre Completo" required></v-text-field>
           <v-select v-model="localUsuario.rolId" :items="roles" item-title="name" item-value="id" label="Rol" required></v-select>
-          <v-select v-model="localUsuario.stockAreaId" :items="areas" item-title="nombre" item-value="id" label="Área" required></v-select>
+          <v-select v-model="localUsuario.areaId" :items="areas" item-title="nombre" item-value="id" label="Área" required></v-select>
 
           <v-alert v-if="formError" type="error" dismissible>
             Todos los campos son obligatorios. Por favor, completa la información.
@@ -49,7 +49,16 @@ export default {
       localUsuario: this.createLocalUsuario() 
     };
   },
+
+created(){
+  console.log(this.areas,"create")
+},
+  mounted(){
+    console.log(this.usuario)
+ 
+  },
   methods: {
+
     
     formatearCuil(cuil) {
       return parsearCuil.formatearCuil(cuil);
