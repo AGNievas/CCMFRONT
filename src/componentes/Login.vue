@@ -1,36 +1,31 @@
 <template>
-    <v-container>
-      <v-card>
-        <v-card-text class="text-center">
-          <v-form @submit.prevent="login">
-            <v-text-field v-model="formData.cuil" placeholder="CUIL" label="CUIL" required type="text"
-              :error-messages="cuilErrors"
-              @input="formData.cuil = formatearCuil(formData.cuil)"></v-text-field>
-            <v-text-field 
-            v-model="formData.password" 
-            label="Contraseña" 
-            required 
-            :type="showPassword ? 'text' : 'password'"
-            :error-messages="passwordErrors"
-            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append-inner="toggleShowPassword"
-            ></v-text-field>
+  <v-container>
+    <v-card>
+      <v-card-text class="text-center">
+        <v-form @submit.prevent="login">
+          <v-text-field v-model="formData.cuil" placeholder="CUIL" label="CUIL" required type="text"
+            :error-messages="cuilErrors" @input="formData.cuil = formatearCuil(formData.cuil)"></v-text-field>
+          <v-text-field v-model="formData.password" label="Password" required :type="showPassword ? 'text' : 'password'"
+            :error-messages="passwordErrors" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="toggleShowPassword"></v-text-field>
 
-            <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
-          </v-form>
-          <br>
+          <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
+        </v-form>
+        <br>
 
-          <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error }}</v-alert>
-          <RouterLink to="/recuperarPassword" class="recuperar-link">Recuperar Contraseña</RouterLink>
-        </v-card-text>
-      </v-card>
-    </v-container>
+        <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error
+          }}</v-alert>
+        <RouterLink to="/recuperarPassword" class="recuperar-link">recuperar contraseña</RouterLink>
+      </v-card-text>
+    </v-card>
+  </v-container>
+
 </template>
 
 <script>
 import loginService from "./servicios/loginService";
 import { useGlobalStore } from "@/stores/global";
-import  parsearCuil  from '@/utils/parsearCuil';
+import parsearCuil from '@/utils/parsearCuil';
 import stockAreaService from "./servicios/stockAreaService";
 import usuariosService from "./servicios/usuariosService";
 export default {
@@ -73,37 +68,37 @@ export default {
       return re.test(this.formData.cuil);
     },
 
-    formatearCuil(cuil){
+    formatearCuil(cuil) {
       return parsearCuil.formatearCuil(cuil)
     },
+
     async login() {
       this.validateForm()
+
       try {
         const { cuil, password } = this.formData;
         const { payload: response } = await loginService.login(cuil, password);
-        const { usuarioId, stockAreaId, fullNameUsuario, rolId } = response
+        const { usuarioId, areaId, areaNombre, fullNameUsuario, rolId, rolName } = response
         sessionStorage.setItem('session', JSON.stringify({
-          cuil,
-          usuarioId,
-          stockAreaId,
-          fullNameUsuario,
-          rolId
+          cuil, usuarioId, areaId, areaNombre, fullNameUsuario, rolId, rolName,
         }));
-        this.globalStore.setUsuario(cuil, usuarioId, stockAreaId, fullNameUsuario, rolId, rolId == 1, true)
+        this.globalStore.setUsuario(cuil, usuarioId, areaId, areaNombre, fullNameUsuario, rolId, rolName, rolId == 1, true)
         this.$router.push('/home');
-        
         const areas = await stockAreaService.getAllStockArea();
         const usuarios = await usuariosService.getAllUsuarios();
         this.globalStore.cargarAreasYUser(areas, usuarios);
+
 
         this.resetearFormulario();
       } catch (error) {
         this.error = error;
       }
-      if(!this.formData.cuil || !this.formData.password){
+      if (!this.formData.cuil || !this.formData.password) {
         this.error = "Complete los campos para continuar.";
       }
     },
+
+
 
     resetearFormulario() {
       this.formData = {
