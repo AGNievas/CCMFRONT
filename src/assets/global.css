@@ -172,8 +172,6 @@
     padding-left: 0px !important; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
   }
 
-  
-
   .v-app-bar-title {
     font-size:medium;
         
@@ -182,15 +180,11 @@
     margin-inline-start: 0px;
   }
 
-  .v-btn--icon.v-btn--density-default {
+  .v-btn.navbar-icon {
     width: calc(var(--v-btn-height) + 0px);
     height: calc(var(--v-btn-height) + 0px);
   }
 
-  .v-btn .v-icon {
-    --v-icon-size-multiplier: 0.8571428571;
-}
-    
   .v-card-title .v-text-field,
   .v-card-title .v-select,
   .v-card-title .v-btn {
