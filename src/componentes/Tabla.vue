@@ -28,7 +28,7 @@
       <tr>
         <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
         <td class="text-start acciones-cell">
-          <v-btn title="Editar" class="btn-icon" v-if="canVerEdit" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
+          <v-btn title="Editar" class="btn-icon" v-if="canVerEdit" icon dense x-small color="#0E3746" @click="$emit('edit', item.id ? item.id : item.sku ? item.sku : index)">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn title="Eliminar" class="btn-icon" v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">
@@ -149,7 +149,7 @@ export default {
  
   data() {
     return {
-      ROL_ID_USER: 3,
+      
       globalStore: useGlobalStore(),
       sortKey: null,       
       sortOrder: 'asc',   
@@ -181,7 +181,7 @@ export default {
     },
 
     canCreateAplique() {
-      return this.isListadoPacientes && this.globalStore.rolId != this.ROL_ID_USER
+      return this.isListadoPacientes && this.globalStore.rolId != this.globalStore.getRolDataEntry
     },
 
     canVerHistorial() {
@@ -189,14 +189,14 @@ export default {
     },
 
     canVerDetail() {
-      return this.isListadoOrdenTransferencia && this.globalStore.rolId != this.ROL_ID_USER;
+      return this.isListadoOrdenTransferencia && this.globalStore.rolId != this.globalStore.getRolDataEntry;
     },
 
     canVerEdit() {
       return (this.isListadoUsuarios && this.globalStore.getEsAdmin) ||
-             (this.isListadoMedicamentos && this.globalStore.rolId !== this.ROL_ID_USER) ||
-             (this.isListadoPacientes && this.globalStore.rolId !== this.ROL_ID_USER) ||
-             (this.isListadoApliques && this.globalStore.rolId !== this.ROL_ID_USER) ||
+             (this.isListadoMedicamentos && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
+             (this.isListadoPacientes && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
+             (this.isListadoApliques && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
              (this.isListadoOrdenTransferencia && this.globalStore.getEsAdmin) || this.isEditable;
     },
 

@@ -25,10 +25,10 @@
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
         <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :paciente-id="selectedPacienteId"
-          :areas="stockAreas" :usuarios="usuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
+        :areas="globalStore.getAreas" :stockAreas="stockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
       </v-dialog>
       
-      <ListadoApliques v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="stockAreas" :usuarios="usuarios"
+      <ListadoApliques v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas" :stockAreas="s" :usuarios="globalStore.getUsuarios"
         :medicamentos="medicamentos"  />
           
       <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
@@ -72,6 +72,7 @@ export default {
       listadoApliquesVisible: false,
       selectedPacienteId: null,
       errorMensaje: '',
+      areas:[],
       stockAreas: [],
       usuarios: [],
       pacientes: [],
@@ -105,7 +106,15 @@ export default {
     'globalStore.getAreas': {
       handler(newAreas) {
         if (newAreas.length) {
-          this.stockAreas = newAreas;
+          this.areas = newAreas;
+        }
+      },
+      immediate: true,
+    },
+    'globalStore.getStockAreas': {
+      handler(newStockAreas) {
+        if (newStockAreas.length) {
+          this.StockAreas = newStockAreas;
         }
       },
       immediate: true,
@@ -122,7 +131,6 @@ export default {
   methods: {
     async loadMedicamentos() {
       const response = await itemService.getAllItem()
-      console.log(response, "CARGA MEDICAMENTOS EN PACIENTE")
       this.medicamentos = response
     },
     formatearPacientes(pacientesFiltrados) {
@@ -191,11 +199,13 @@ export default {
     },
     openApliqueDialog(pacienteId) {
       this.selectedPacienteId = pacienteId;
+      console.log(this.selectedPacienteId, "PACIENTE CUANDO ABRO DIALO DIRECTO")
       this.isEditing = false;
       this.apliqueDialogVisible = true;
     },
-    openListadoApliques(paciente) {
-      this.selectedPacienteId = String(paciente.id);
+    openListadoApliques(pacienteId) {
+      this.selectedPacienteId = pacienteId;
+      console.log(this.selectedPacienteId, "PACIENTE CUANDO ABRO LISTADO")
       this.listadoApliquesVisible = true;
     },
     handleSaveAplique() {

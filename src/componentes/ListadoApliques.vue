@@ -3,16 +3,16 @@
     <v-card>
       <v-card-title>
         <span class="headline">Historial Apliques</span>
-        <span class="headline">{{ pacienteNombreCompleto }}</span>
+        <span class="headline"> {{ this.pacienteId.nombre }} {{ this.pacienteId.apellido }}</span>
       </v-card-title>
       <v-card-actions style="justify-content: center;">
-        <v-btn class="btn-blue" text v-if="globalStore.rolId <= 2" @click="openAgregarApliqueDialog">
+        <v-btn class="btn-blue" text v-if="globalStore.rolId <=globalStore.getRolAutorizante" @click="openAgregarApliqueDialog">
           Agregar Aplique
         </v-btn>
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
-      <Listado :items="apliques" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
+      <Listado :items="valoresTabla" :headers="apliquesHeaders" :usuarios="usuarios" :isListadoApliques="true" @edit="openEditarApliqueDialog"
         @delete="confirmDeleteAplique" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
@@ -20,8 +20,9 @@
           v-model="apliqueDialogVisible"
           :is-editing="isEditing"
           :aplique="apliqueToEdit"
-          :paciente-id="pacienteId"
-          :areas="stockAreas"
+          :paciente-id="this.pacienteId"
+          :areas="areas"
+          :stockAreas="stockAreas"
           :usuarios="usuarios"
           :medicamentos="medicamentos"
           @save="saveAplique"
@@ -44,11 +45,8 @@ import Listado from './Listado.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
-import stockAreaService from './servicios/stockAreaService';
-import usuariosService from './servicios/usuariosService';
 import { useGlobalStore } from '@/stores/global';
-import { formatearFecha } from '@/utils/formatearFecha';
-import PacienteService from './servicios/pacienteService';
+ import { formatearFecha } from '@/utils/formatearFecha';
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
 export default {
@@ -57,7 +55,13 @@ export default {
       type: Boolean,
       default: false
     },
-    pacienteId: String,
+    areas: Array,
+    stockAreas: Array,
+    usuarios: Array,
+    pacienteId: {
+      type: Object,
+      required: true,
+    },
     medicamentos: Array
   },
   components: {
@@ -73,13 +77,12 @@ export default {
         { text: 'Descripcion', value: 'descripcion' },
         { text: 'Cantidad', value: 'cantidad' },
         { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
-        { text: 'Área', value: 'stockAreaNombre' },
+        { text: 'Área', value: 'areaNombre'},
+        { text: 'Sub Área', value: 'stockAreaNombre' },
         { text: '', value: '' },
       ],
       pacienteNombreCompleto: '',
       apliques: [],
-      stockAreas: [],
-      usuarios: [],
       apliqueDialogVisible: false,
       isEditing: false,
       apliqueToEdit: null,
@@ -89,15 +92,31 @@ export default {
     };
   },
   async mounted() {
-    await this.loadStockAreas();
-    await this.loadUsuarios();
+   
     await this.loadApliques();
-    if (this.pacienteId) {
-      this.loadPacienteNombreCompleto();
-    }
+      console.log(this.pacienteId, "AVER SI LLEGA COMO UNDEFINED?")
   },
   computed: {
-    isDialogVisible: {
+    valoresTabla(){
+      
+      return this.apliques.map(aplique => {
+        
+         return {
+          id: aplique.id, 
+          aplicanteNombre: aplique.User.fullName,
+          sku: aplique.Medicamento.sku,
+          descripcion : aplique.Medicamento.descripcion,
+          cantidad: aplique.cantidad,
+          fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
+          areaNombre: aplique.StockArea.Area.nombre,
+          stockAreaNombre: aplique.StockArea.nombre,
+         };
+        
+       });
+    },
+    
+
+        isDialogVisible: {
       get() {
         return this.modelValue;
       },
@@ -111,72 +130,54 @@ export default {
       immediate: true,
       handler(newVal) {
         if (newVal) {
-          this.loadApliques();
-          this.loadPacienteNombreCompleto();
+         this.loadApliques();
+          
         }
       }
     },
     modelValue(val) {
       if (!val) this.closeDialog();
-    }
+    },
+
   },
   methods: {
     closeDialog() {
       this.$emit('update:modelValue', false);
     },
-    async loadPacienteNombreCompleto() {
-      try {
-        const paciente = await PacienteService.getPacienteById(this.pacienteId);
-        this.pacienteNombreCompleto = `${paciente.nombre} ${paciente.apellido}`;
-      } catch (error) {
-        console.error('Error al cargar nombre completo del paciente:', error);
-      }
-    },
+  
+    
     async loadApliques() {
+
       try {
-        const apliquesRaw = await apliqueService.getApliquesByPacienteId(this.pacienteId);
+        this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
+        
+      } catch (error) {
+        console.error('Error al cargar apliques:', error);
+      }
+    
+      try {
+        const apliquesRaw = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
         this.apliques = this.mapApliques(apliquesRaw);
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
     },
-    mapApliques(apliquesRaw) {
-      return apliquesRaw.map(aplique => {
-        const stockArea = this.stockAreas.find(area => area.id === aplique.stockAreaId);
-        const usuario = this.usuarios.find(user => user.id === aplique.aplicante);
-        const medicamento = this.medicamentos.find(medicamento => medicamento.sku === aplique.sku)
-        return {
-          id: aplique.id, 
-          aplicanteNombre: usuario ? usuario.fullName : 'Desconocido',
-          sku: aplique.sku,
-          descripcion : medicamento.descripcion,
-          cantidad: aplique.cantidad,
-          fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
-          stockAreaNombre: stockArea ? stockArea.nombre : 'Desconocido',
-        };
-      });
-    },
-    async loadStockAreas() {
-      this.stockAreas = await stockAreaService.getAllStockArea();
-    },
-    async loadUsuarios() {
-      const areaId = this.globalStore.getAreaId;
-      console.log(areaId, "AREA ID EN LOAD USUARIOS APLIQUES")
-      this.usuarios = await usuariosService.getAllUsuariosByAreaId(areaId);
-    },
-    openAgregarApliqueDialog() {
+   
+   
+     openAgregarApliqueDialog() {
       this.isEditing = false;
       this.apliqueToEdit = null; 
       this.apliqueDialogVisible = true; 
     },
-    openEditarApliqueDialog(aplique) {
+    openEditarApliqueDialog(apliqueId) {
       this.isEditing = true;
-      this.apliqueToEdit = { ...aplique };
+      const aplique = this.apliques.find(apl => apl.id ==apliqueId)
+      this.apliqueToEdit = { ...aplique};
       this.apliqueDialogVisible = true; 
     },
     async saveAplique(nuevoAplique) {
       try {
-        const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId, nuevoAplique);
+        const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId.id, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);
           if (index !== -1) {

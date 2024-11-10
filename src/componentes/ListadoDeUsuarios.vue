@@ -68,8 +68,6 @@ import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import UsuarioDialog from './UsuarioDialog.vue';
 import usuariosService from './servicios/usuariosService.js';
-// import stockAreaService from './servicios/stockAreaService.js';
-// import rolService from './servicios/rolService';
 import { useGlobalStore } from '@/stores/global';
 export default {
   name: 'ListadoDeUsuarios',
@@ -160,25 +158,10 @@ export default {
   },
   methods: {
 
-    // async loadRols() {
-    //   this.roles = await rolService.getAllRol();
-    // },
     async loadUsuarios() {
       this.usuarios = await usuariosService.getAllUsuarios();
       console.log(this.usuarios,"USUARIOS EN LOAD USUARIOS")
     },
-    // async loadStockAreas() {
-    //   this.stockAreas = await stockAreaService.getAllStockArea();
-    // },
-
-    // getNombreArea(areaId) {
-    //   const area = this.areas.find(area => area.id === areaId);
-    //   return area ? area.nombre : 'Área no encontrada';
-    // },
-    // getNombreRol(rolId) {
-    //   const rol = this.roles.find(rol => rol.id === rolId);
-    //   return rol ? rol.name : 'Rol no encontrado';
-    // },
     openAddUserDialog() {
       this.dialog = true;
     },

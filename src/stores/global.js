@@ -15,6 +15,11 @@ export const useGlobalStore = defineStore('global', {
         stockAreas:[],
         usuarios: [],
         roles:[],
+        ROL_ID_SUPER_ADMIN: 1,
+        ROL_ID_ADMIN:2,
+        ROL_ID_AUTORIZANTE:3,
+        ROL_ID_DATA_ENTRY: 4,
+
     }),
     actions: {
         setUsuario(cuil, usuarioId, areaId, areaNombre, fullNameUsuario, rolId,rolName, esAdmin, logueado) {
@@ -62,5 +67,9 @@ export const useGlobalStore = defineStore('global', {
         getStockAreas: (state) => state.stockAreas,
         getUsuarios: (state) => state.usuarios,
         getRoles:(state)=> state.roles,
+        getRolSuperAdmin:(state) => state.ROL_ID_SUPER_ADMIN,
+        getRolAdmin:(state)=> state.ROL_ID_ADMIN,
+        getRolAutorizante:(state) => state.ROL_ID_AUTORIZANTE,
+        getRolDataEntry:(state) => state.ROL_ID_DATA_ENTRY,
       }
 })

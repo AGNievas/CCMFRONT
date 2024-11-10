@@ -90,6 +90,7 @@ export default {
         const areas = await areaService.getAllArea();
         const stockAreas = await stockAreaService.getAllStockArea();
         const usuarios = await usuariosService.getAllUsuarios();
+        console.log(usuarios, "USUARIOS  EN LOGIN")
         const roles = await rolService.getAllRol()
         console.log(roles, "roles en login")
         this.globalStore.cargarAreasYUser(areas, usuarios,roles, stockAreas);

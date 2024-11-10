@@ -3,61 +3,25 @@
     <v-card-title>{{ isEditing ? 'Editar Aplique' : 'Agregar Aplique' }}</v-card-title>
     <v-card-text>
 
-      <v-select v-if="!isEditing"
-        v-model="areaId"
-        :items="areas"
-        item-title="nombre"
-        item-value="id"
-        label="Área"
-        required
-      ></v-select>
-      <v-select v-if="!isEditing"
-        v-model="apliqueLocal.stockAreaId"
-        :items="stockAreasDeArea"
-        item-title="nombre"
-        item-value="id"
-        label="Sub Área de Stock"
-        required
-      ></v-select>
-      
+      <v-select v-if="!isEditing" v-model="areaId" :items="areas" item-title="nombre" item-value="id" label="Área"
+        :disabled="!puedeSeleccionarArea" :readonly="!puedeSeleccionarArea" required></v-select>
+      <v-select v-if="!isEditing" v-model="apliqueLocal.stockAreaId" :items="stockAreasDeArea" item-title="nombre"
+        item-value="id" label="Sub Área de Stock" required></v-select>
+
       <!-- Select de SKU -->
-      <v-select
-        v-if="!isEditing"
-        v-model="apliqueLocal.sku"
-        :items="medicamentosPorStockArea"
-        item-title="sku"
-        item-value="sku"
-        label="SKU"
-        required
-      ></v-select>
+      <v-select v-if="!isEditing" v-model="apliqueLocal.sku" :items="medicamentosPorStockArea" item-title="sku"
+        item-value="sku" label="SKU" required></v-select>
 
       <!-- Select de Descripción del Medicamento -->
-      <v-select
-        v-if="!isEditing"
-        v-model="apliqueLocal.descripcion"
-        :items="medicamentosPorStockArea"
-        item-title="descripcion"
-        item-value="descripcion"
-        label="Medicamento"
-        required
-      ></v-select>
+      <v-select v-if="!isEditing" v-model="apliqueLocal.descripcion" :items="medicamentosPorStockArea"
+        item-title="descripcion" item-value="descripcion" label="Medicamento" required></v-select>
 
-      <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1" required></v-text-field>
-      <v-select
-        v-model="apliqueLocal.aplicanteNombre"
-        :items="usuariosPorArea"
-        item-title="fullName"
-        item-value="id"
-        label="Aplicante"
-        required
-      ></v-select>
-      
-      <v-text-field
-        v-model="apliqueLocal.fechaAplicacion"
-        label="Fecha Aplicación"
-        type="date"
-        required
-      ></v-text-field>
+      <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1"
+        required></v-text-field>
+      <v-select v-model="apliqueLocal.aplicante" :items="usuariosPorArea" item-title="fullName" item-value="id"
+        label="Aplicante" required></v-select>
+
+      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha Aplicación" type="date" required></v-text-field>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -79,6 +43,7 @@ export default {
     isEditing: Boolean,
     aplique: Object,
     areas: Array,
+    stockAreas: Array,
     usuarios: Array,
     medicamentos: Array,
     pacienteId: {
@@ -89,7 +54,7 @@ export default {
   data() {
     return {
       dialogVisible: this.modelValue,
-      stockAreas: [],
+
       areaId: '',
       apliqueLocal: {
         sku: '',
@@ -98,29 +63,44 @@ export default {
         aplicante: '',
         stockAreaId: '',
         fechaAplicacion: '',
+        areaId:'',
         pacienteId: this.pacienteId,
       },
       globalStore: useGlobalStore(),
     };
   },
-  computed: {
-    // puedeSeleccionarArea() {
-      
-    //   return this.globalStore.getRolId == 1 || this.globalStore.getRolId == 2; // Super Admin o Admin
-    // },
 
-    usuariosPorArea(){
-      return this.usuarios.filter(usuario => usuario.areaId == this.areaId)
+  mounted() {
+    this.definirArea()
+    console.log(this.usuarios, "usuarios en APLIQUE DIALOG")
+    console.log(this.aplique, "PACIENTE ID EN DIALOG")
+  },
+  computed: {
+    puedeSeleccionarArea() {
+      return this.globalStore.getRolId == 1 || this.globalStore.getRolId == 2;
+    },
+
+
+    usuariosPorArea() {
+      let areaId
+      console.log(this.aplique,"APLIQUE LOCAL EN DIALOG")
+      if(!this.isEditing){
+        areaId = this.areaId
+      }else{  
+        areaId = this.aplique.StockArea.Area.id
+      }
+      
+      return this.usuarios.filter(usuario => usuario.areaId == areaId)
     },
 
     stockAreasDeArea() {
       return this.globalStore.getStockAreas.filter(
-        stockArea => stockArea.Area.id === this.areaId
+        stockArea => stockArea.Area.id == this.areaId
       );
     },
     medicamentosPorStockArea() {
       return this.medicamentos
-        .filter(medicamento => medicamento.StockArea?.id === this.apliqueLocal.stockAreaId)
+        .filter(medicamento => medicamento.StockArea?.id == this.apliqueLocal.stockAreaId)
         .map(medicamento => ({
           sku: medicamento.Medicamento.sku,
           descripcion: medicamento.Medicamento.descripcion,
@@ -129,6 +109,13 @@ export default {
     },
     isFormValid() {
       if (!this.isEditing) {
+        console.log('Descripcion:', this.apliqueLocal.descripcion);
+        console.log('SKU:', this.apliqueLocal.sku);
+        console.log('Cantidad:', this.apliqueLocal.cantidad);
+        console.log('Aplicante:', this.apliqueLocal.aplicante);
+        console.log('StockAreaId:', this.apliqueLocal.stockAreaId);
+        console.log('FechaAplicacion:', this.apliqueLocal.fechaAplicacion);
+
         return (
           this.apliqueLocal.descripcion &&
           this.apliqueLocal.sku &&
@@ -141,6 +128,7 @@ export default {
         return this.apliqueLocal.aplicante && this.apliqueLocal.fechaAplicacion;
       }
     },
+
   },
   watch: {
     modelValue(val) {
@@ -150,7 +138,7 @@ export default {
       this.$emit('update:modelValue', val);
     },
 
-    
+
     'apliqueLocal.sku'(newSku) {
       const medicamento = this.medicamentosPorStockArea.find(
         med => med.sku === newSku
@@ -162,7 +150,7 @@ export default {
       }
     },
 
-    
+
     'apliqueLocal.descripcion'(newDescripcion) {
       const medicamento = this.medicamentosPorStockArea.find(
         med => med.descripcion === newDescripcion
@@ -186,6 +174,12 @@ export default {
     },
   },
   methods: {
+
+    definirArea() {
+      if (!this.puedeSeleccionarArea) {
+        this.areaId = this.globalStore.getAreaId
+      }
+    },
     save() {
       this.$emit('save', this.apliqueLocal);
       this.closeDialog();

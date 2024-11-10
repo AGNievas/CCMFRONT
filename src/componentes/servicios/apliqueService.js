@@ -56,6 +56,7 @@ const apliqueService = {
 
   async createAplique(pacienteId, nuevoAplique) {
     try {
+      console.log(pacienteId, "SERVICIO CREATE APLIQUE")
       const { sku, cantidad, aplicante, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
