@@ -155,13 +155,7 @@ export default {
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
-    
-      try {
-        this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
-        
-      } catch (error) {
-        console.error('Error al cargar apliques:', error);
-      }
+   
     },
    
    
@@ -173,7 +167,9 @@ export default {
     openEditarApliqueDialog(aplique) {
       this.isEditing = true;
       const apliqueId= aplique.id
+      
       const apliqueSinMap = this.apliques.find(apl => apl.id ==apliqueId)
+      console.log(apliqueSinMap, "APLIQUE EN LISTADO APLIQUED EDITAR")
       this.apliqueToEdit = { ...apliqueSinMap};
       this.apliqueDialogVisible = true; 
     },

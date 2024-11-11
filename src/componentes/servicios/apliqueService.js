@@ -54,7 +54,7 @@ const apliqueService = {
   },
 
   async createAplique(pacienteId, nuevoAplique) {
-    try {
+    try {console.log(nuevoAplique, "SERVICIO CREATE APLIQUE")
       console.log(pacienteId, "SERVICIO CREATE APLIQUE")
       const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
@@ -77,11 +77,11 @@ const apliqueService = {
       console.log(pacienteId, "PACIENTE EN UpdaTE")
       console.log(aplique, "APLIQUE EN SERVICE")
       const { User, fechaAplicacion, id } = aplique;
-      const userId = User.id
+      
       const response = await axiosInstance.put(
         `${URL}/${id}`,
         {
-          userId,
+          User,
           fechaAplicacion,
         },
         { withCredentials: true }

@@ -8,17 +8,14 @@
       <v-select v-if="!isEditing" v-model="apliqueLocal.stockAreaId" :items="stockAreasDeArea" item-title="nombre"
         item-value="id" label="Sub Área de Stock" required></v-select>
 
-      <!-- Select de SKU -->
       <v-select v-if="!isEditing" v-model="apliqueLocal.sku" :items="medicamentosPorStockArea" item-title="sku"
         item-value="sku" label="SKU" required></v-select>
-
-      <!-- Select de Descripción del Medicamento -->
       <v-select v-if="!isEditing" v-model="apliqueLocal.descripcion" :items="medicamentosPorStockArea"
         item-title="descripcion" item-value="descripcion" label="Medicamento" required></v-select>
 
       <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1"
         required></v-text-field>
-      <v-select v-model="apliqueLocal.User.id" :items="usuariosPorArea" item-title="fullName" item-value="id"
+      <v-select v-model="apliqueLocal.User" :items="usuariosPorArea" item-title="fullName" item-value="id"
         label="Aplicante"  required></v-select>
 
       <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha Aplicación" type="date" required></v-text-field>
@@ -72,7 +69,7 @@ export default {
 
   mounted() {
     this.definirArea()
-   
+    this.usuarioBaseEdit()
   },
   computed: {
     puedeSeleccionarArea() {
@@ -88,9 +85,6 @@ export default {
       }else{  
         areaId = this.areaId
       }
-      // const usuariosFiltrados=this.usuarios.filter(usuario => usuario.areaId == areaId)
-     
-      // return usuariosFiltrados
       return this.usuarios.filter(usuario => usuario.areaId == areaId )
     },
 
@@ -114,12 +108,12 @@ export default {
           this.apliqueLocal.descripcion &&
           this.apliqueLocal.sku &&
           this.apliqueLocal.cantidad &&
-          this.apliqueLocal.User.id &&
+          this.apliqueLocal.User &&
           this.apliqueLocal.stockAreaId &&
           this.apliqueLocal.fechaAplicacion
         );
       } else {
-        return this.apliqueLocal.User.id && this.apliqueLocal.fechaAplicacion;
+        return this.apliqueLocal.User && this.apliqueLocal.fechaAplicacion;
       }
     },
 
@@ -161,17 +155,18 @@ export default {
       handler(newAplique) {
        
         if (this.isEditing && newAplique) {
-         
-          this.apliqueLocal = { id: newAplique.id, ...newAplique };
+        this.apliqueLocal = { id: newAplique.id, ...newAplique };
         } else {
-          this.resetApliqueLocal();
+         this.resetApliqueLocal();
         }
         
       },
     },
   },
   methods: {
-
+    usuarioBaseEdit(){
+      this.apliqueLocal.User = this.isEditing ? this.aplique.User.id : ''
+    },
     definirArea() {
       if (!this.puedeSeleccionarArea) {
         this.areaId = this.globalStore.getAreaId
