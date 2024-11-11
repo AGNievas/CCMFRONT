@@ -1,5 +1,5 @@
 import axiosInstance from "@/axios.js";
-import parsearCuil from "@/utils/parsearCuil";
+import {parsearCuil} from "@/utils/utils";
 
 const URL = "/user";
 

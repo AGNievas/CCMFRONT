@@ -24,10 +24,9 @@
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
-        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :paciente-id="selectedPacienteId"
-        :areas="globalStore.getAreas" :stockAreas="stockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
+        <ApliqueDialog v-model="apliqueDialogVisible" :paciente-id="selectedPacienteId"
+        :areas="globalStore.getAreas" :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
       </v-dialog>
-      
       
       <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"  :usuarios="globalStore.getUsuarios"
         :medicamentos="medicamentos"  />
@@ -44,7 +43,7 @@ import PacienteDialog from './PacienteDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import pacienteService from './servicios/pacienteService';
 import { differenceInYears } from 'date-fns'
-import { formatearFecha } from '@/utils/formatearFecha';
+import { formatearFecha } from '@/utils/utils';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
@@ -65,7 +64,6 @@ export default {
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
       agregarDialog: false,
       editarDialog: false,
-      isEditing: false,
       deleteDialog: false,
       pacienteEdit: {},
       confirmDeleteId: null,
@@ -73,13 +71,15 @@ export default {
       listadoApliquesVisible: false,
       selectedPacienteId: null,
       errorMensaje: '',
-      areas:[],
-      stockAreas: [],
-      usuarios: [],
       pacientes: [],
       medicamentos: [],
       globalStore: useGlobalStore()
     };
+  },
+  async mounted() {
+    this.loadPacientes();
+    this.loadMedicamentos();
+
   },
   computed: {
     pacientesHeaders() {
@@ -98,11 +98,7 @@ export default {
       return this.formatearPacientes(pacientesFiltrados);
     }
   },
-  async mounted() {
-    this.loadPacientes();
-    this.loadMedicamentos();
-
-  },
+  
   watch: {
     'globalStore.getAreas': {
       handler(newAreas) {
@@ -198,20 +194,18 @@ export default {
       }
       this.loadPacientes();
     },
+
     openApliqueDialog(pacienteId) {
       this.selectedPacienteId = pacienteId;
-     
       this.isEditing = false;
       this.apliqueDialogVisible = true;
     },
+
     openListadoApliques(pacienteId) {
       this.selectedPacienteId = pacienteId;
-    
       this.listadoApliquesVisible = true;
     },
-    handleSaveAplique() {
-      this.apliqueDialogVisible = false;
-    },
+
     async saveApliqueFromDialog(nuevoAplique) {
       try {
         console.log(nuevoAplique,"nuevo aplique en save")
@@ -226,15 +220,7 @@ export default {
       }
       
     },
-    // saveApliqueFromListado(nuevoAplique) {
-
-    //   this.$refs.listadoApliques.saveAplique(nuevoAplique);
-    //   this.apliqueDialogVisible = false;
-    // },
-
-    verHistorial(){
-      this.$refs.listadoApliquesVisible = true
-    },
+ 
     openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();
       this.pacienteEdit = {};

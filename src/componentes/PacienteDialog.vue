@@ -43,10 +43,10 @@
           ></v-text-field>
           <v-text-field
             v-model="pacienteLocal.fechaNacimiento"
-            label="Fecha de Nacimiento (YYYY-MM-DD)"
+            label="Fecha de Nacimiento (DD-MM-YYYY)"
             type="date"
             required
-            @input="formatearFechaNacimiento"
+            @input="pacienteLocal.fechaNacimiento"
             @keypress="soloNumeros"
             :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
           ></v-text-field>
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { validarDni, validarNombre, validarFechaNacimiento } from '@/utils/validarPaciente';
+import { validarDni, validarNombre, soloLetras, soloNumeros } from '@/utils/utils';
 
 export default {
   props: {
@@ -136,28 +136,14 @@ export default {
       };
     },
     soloNumeros(event) {
-      const key = event.key;
-      if (!/[0-9]/.test(key)) {
-        event.preventDefault();
-      }
+    return soloNumeros(event)
     },
     soloLetras(event) {
-      const key = event.key;
-      if (!/[a-zA-Z\s]/.test(key)) {
-        event.preventDefault();
-      }
+      return soloLetras(event)
     },
-    formatearFechaNacimiento() {
-      let fecha = this.pacienteLocal.fechaNacimiento.replace(/\D/g, ''); 
-      if (fecha.length > 4 && fecha.length <= 6) {
-        fecha = `${fecha.slice(0, 4)}-${fecha.slice(4)}`; 
-      } else if (fecha.length > 6) {
-        fecha = `${fecha.slice(0, 4)}-${fecha.slice(4, 6)}-${fecha.slice(6)}`; 
-      }
-      this.pacienteLocal.fechaNacimiento = fecha;
-    },
+
     validateDni() {
-      if(this.pacienteLocal.dni!=0 && !this.isEditing){
+      if(this.pacienteLocal.dni!=0 ){
         this.dniError = !validarDni(this.pacienteLocal.dni);
       }
     },
@@ -167,9 +153,7 @@ export default {
     validateApellido() {
       this.apellidoError = !validarNombre(this.pacienteLocal.apellido);
     },
-    validateFechaNacimiento() {
-      this.fechaNacimientoError = !validarFechaNacimiento(this.pacienteLocal.fechaNacimiento);
-    },
+   
     validateGenero() {
       this.generoError = !this.pacienteLocal.genero;
     },
@@ -196,11 +180,12 @@ export default {
       this.validateDni();
       this.validateNombre();
       this.validateApellido();
-      this.validateFechaNacimiento();
       this.validateGenero();
       if (this.dniError || this.nombreError || this.apellidoError || this.fechaNacimientoError || this.generoError) {
         return; 
       }
+      const [day, month, year] = this.pacienteLocal.fechaNacimiento.split('/');
+      this.pacienteLocal.fechaNacimiento = `${year}-${month}-${day}`;
       this.$emit('save', this.pacienteLocal);
     },
   },

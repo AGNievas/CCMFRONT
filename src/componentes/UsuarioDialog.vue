@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import  parsearCuil  from '@/utils/parsearCuil';
+import  {parsearCuil}  from '@/utils/utils';
 
 export default {
   props: {

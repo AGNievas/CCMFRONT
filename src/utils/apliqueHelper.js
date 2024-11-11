@@ -6,6 +6,7 @@ export async function saveApliqueHelper(isEditing, pacienteId, nuevoAplique) {
       const apliqueActualizado = await apliqueService.updateAplique(pacienteId, nuevoAplique);
       return apliqueActualizado;
     } else {
+      
       const apliqueCreado = await apliqueService.createAplique(pacienteId, nuevoAplique);
       return apliqueCreado;
     }

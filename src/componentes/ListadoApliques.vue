@@ -6,9 +6,6 @@
         <span class="headline"> {{ this.pacienteId.nombre }} {{ this.pacienteId.apellido }}</span>
       </v-card-title>
       <v-card-actions style="justify-content: center;">
-        <!-- <v-btn class="btn-blue" text v-if="globalStore.rolId <=globalStore.getRolAutorizante" @click="openAgregarApliqueDialog">
-          Agregar Aplique
-        </v-btn> -->
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
@@ -46,7 +43,7 @@ import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
 import { useGlobalStore } from '@/stores/global';
- import { formatearFecha } from '@/utils/formatearFecha';
+ import { formatearFechaYHora } from '@/utils/utils';
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
 export default {
@@ -76,12 +73,12 @@ export default {
         { text: 'SKU', value: 'sku' },
         { text: 'Descripcion', value: 'descripcion' },
         { text: 'Cantidad', value: 'cantidad' },
-        { text: 'Fecha Aplicación', value: 'fechaAplicacion' },
+        { text: 'Fecha y Hora Aplique', value: 'fechaAplicacion' },
         { text: 'Área', value: 'areaNombre'},
         { text: 'Sub Área', value: 'stockAreaNombre' },
         { text: '', value: '' },
       ],
-      pacienteNombreCompleto: '',
+      
       apliques: [],
       apliqueDialogVisible: false,
       isEditing: false,
@@ -107,7 +104,7 @@ export default {
           sku: aplique.Medicamento.sku,
           descripcion : aplique.Medicamento.descripcion,
           cantidad: aplique.cantidad,
-          fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
+          fechaAplicacion: this.formatearFecha(aplique.fechaAplicacion),
           areaNombre: aplique.StockArea.Area.nombre,
           stockAreaNombre: aplique.StockArea.nombre,
      
@@ -142,49 +139,41 @@ export default {
 
   },
   methods: {
+
+    formatearFecha(fecha){
+      console.log(fecha,"fecha q recibo")
+      return formatearFechaYHora(fecha)
+    },
     closeDialog() {
       this.$emit('update:modelValue', false);
     },
   
     
     async loadApliques() {
-
       try {
         this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
-        
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
-   
     },
    
-   
-    //  openAgregarApliqueDialog() {
-    //   this.isEditing = false;
-    //   this.apliqueToEdit = null; 
-    //   this.apliqueDialogVisible = true; 
-    // },
     openEditarApliqueDialog(aplique) {
       this.isEditing = true;
       const apliqueId= aplique.id
-      
       const apliqueSinMap = this.apliques.find(apl => apl.id ==apliqueId)
-      console.log(apliqueSinMap, "APLIQUE EN LISTADO APLIQUED EDITAR")
       this.apliqueToEdit = { ...apliqueSinMap};
       this.apliqueDialogVisible = true; 
     },
     async saveAplique(nuevoAplique) {
       try {
-       console.log(nuevoAplique,"nuevo aplique en listado aploqies")
-    
         const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId.id, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);
-          if (index !== -1) {
+            if (index !== -1) {
             this.apliques.splice(index, 1, resultado);
-          }
-        } else {
-          this.apliques.push(resultado);
+            }
+        // } else {
+        //   this.apliques.push(resultado);
         }
         this.apliqueDialogVisible = false;
       } catch (error) {
@@ -192,10 +181,12 @@ export default {
       }
       this.loadApliques();
     },
+
     confirmDeleteAplique(apliqueId) {
       this.apliqueIdToDelete = apliqueId;
       this.confirmDeleteDialog = true;
     },
+
     async deleteAplique() {
       try {
         await apliqueService.deleteAplique(this.apliqueIdToDelete);

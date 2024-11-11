@@ -18,7 +18,7 @@
       <v-select v-model="apliqueLocal.User" :items="usuariosPorArea" item-title="fullName" item-value="id"
         label="Aplicante"  required></v-select>
 
-      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha Aplicación" type="date" required></v-text-field>
+      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha y Hora de Aplicación" type="datetime-local" required></v-text-field>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -174,7 +174,6 @@ export default {
     },
     save() {
       this.$emit('save', this.apliqueLocal);
-     
       this.closeDialog();
     },
     resetApliqueLocal() {
