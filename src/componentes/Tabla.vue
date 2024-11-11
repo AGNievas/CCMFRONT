@@ -28,7 +28,7 @@
       <tr>
         <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
         <td class="text-start acciones-cell">
-          <v-btn title="Editar" class="btn-icon" v-if="canVerEdit" icon dense x-small color="#0E3746" @click="$emit('edit', item.id ? item.id : item.sku ? item.sku : index)">
+          <v-btn title="Editar" class="btn-icon" v-if="canVerEdit" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn title="Eliminar" class="btn-icon" v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">

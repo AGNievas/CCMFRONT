@@ -6,9 +6,9 @@
         <span class="headline"> {{ this.pacienteId.nombre }} {{ this.pacienteId.apellido }}</span>
       </v-card-title>
       <v-card-actions style="justify-content: center;">
-        <v-btn class="btn-blue" text v-if="globalStore.rolId <=globalStore.getRolAutorizante" @click="openAgregarApliqueDialog">
+        <!-- <v-btn class="btn-blue" text v-if="globalStore.rolId <=globalStore.getRolAutorizante" @click="openAgregarApliqueDialog">
           Agregar Aplique
-        </v-btn>
+        </v-btn> -->
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
@@ -20,7 +20,7 @@
           v-model="apliqueDialogVisible"
           :is-editing="isEditing"
           :aplique="apliqueToEdit"
-          :paciente-id="this.pacienteId"
+          :paciente-id="pacienteId"
           :areas="areas"
           :stockAreas="stockAreas"
           :usuarios="usuarios"
@@ -91,10 +91,10 @@ export default {
       globalStore: useGlobalStore(),
     };
   },
-  async mounted() {
+   mounted() {
    
-    await this.loadApliques();
-      console.log(this.pacienteId, "AVER SI LLEGA COMO UNDEFINED?")
+     this.loadApliques();
+      
   },
   computed: {
     valoresTabla(){
@@ -110,6 +110,7 @@ export default {
           fechaAplicacion: formatearFecha(aplique.fechaAplicacion),
           areaNombre: aplique.StockArea.Area.nombre,
           stockAreaNombre: aplique.StockArea.nombre,
+     
          };
         
        });
@@ -156,27 +157,30 @@ export default {
       }
     
       try {
-        const apliquesRaw = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
-        this.apliques = this.mapApliques(apliquesRaw);
+        this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
+        
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
     },
    
    
-     openAgregarApliqueDialog() {
-      this.isEditing = false;
-      this.apliqueToEdit = null; 
-      this.apliqueDialogVisible = true; 
-    },
-    openEditarApliqueDialog(apliqueId) {
+    //  openAgregarApliqueDialog() {
+    //   this.isEditing = false;
+    //   this.apliqueToEdit = null; 
+    //   this.apliqueDialogVisible = true; 
+    // },
+    openEditarApliqueDialog(aplique) {
       this.isEditing = true;
-      const aplique = this.apliques.find(apl => apl.id ==apliqueId)
-      this.apliqueToEdit = { ...aplique};
+      const apliqueId= aplique.id
+      const apliqueSinMap = this.apliques.find(apl => apl.id ==apliqueId)
+      this.apliqueToEdit = { ...apliqueSinMap};
       this.apliqueDialogVisible = true; 
     },
     async saveAplique(nuevoAplique) {
       try {
+       console.log(nuevoAplique,"nuevo aplique en listado aploqies")
+    
         const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId.id, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);

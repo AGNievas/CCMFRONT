@@ -27,8 +27,7 @@ const apliqueService = {
 
   async getApliquesByPacienteId(pacienteId) {
     try {
-      console.log(pacienteId, "ID PACIENTE EN GET APLIES SERVICCE")
-      const response = await axiosInstance.get(
+           const response = await axiosInstance.get(
         `${URL}/paciente/${pacienteId}`,
         {
           withCredentials: true,
@@ -57,12 +56,12 @@ const apliqueService = {
   async createAplique(pacienteId, nuevoAplique) {
     try {
       console.log(pacienteId, "SERVICIO CREATE APLIQUE")
-      const { sku, cantidad, aplicante, stockAreaId, fechaAplicacion } =
+      const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
       const response = await axiosInstance.post(
         `${URL}`,
-        { pacienteId, sku, cantidad, aplicante, stockAreaId, fechaAplicacion },
+        { pacienteId, sku, cantidad, User, stockAreaId, fechaAplicacion },
         { withCredentials: true }
       );
 
@@ -75,15 +74,14 @@ const apliqueService = {
 
   async updateAplique(pacienteId, aplique) {
     try {
-      const { sku, aplicante, stockAreaId, fechaAplicacion, id } = aplique;
-
+      console.log(pacienteId, "PACIENTE EN UpdaTE")
+      console.log(aplique, "APLIQUE EN SERVICE")
+      const { User, fechaAplicacion, id } = aplique;
+      const userId = User.id
       const response = await axiosInstance.put(
         `${URL}/${id}`,
         {
-          pacienteId,
-          sku,
-          aplicante,
-          stockAreaId,
+          userId,
           fechaAplicacion,
         },
         { withCredentials: true }

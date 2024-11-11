@@ -18,8 +18,8 @@
 
       <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1"
         required></v-text-field>
-      <v-select v-model="apliqueLocal.aplicante" :items="usuariosPorArea" item-title="fullName" item-value="id"
-        label="Aplicante" required></v-select>
+      <v-select v-model="apliqueLocal.User.id" :items="usuariosPorArea" item-title="fullName" item-value="id"
+        label="Aplicante"  required></v-select>
 
       <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha Aplicación" type="date" required></v-text-field>
     </v-card-text>
@@ -60,7 +60,7 @@ export default {
         sku: '',
         descripcion: '',
         cantidad: '',
-        aplicante: '',
+        User: '',
         stockAreaId: '',
         fechaAplicacion: '',
         areaId:'',
@@ -72,8 +72,7 @@ export default {
 
   mounted() {
     this.definirArea()
-    console.log(this.usuarios, "usuarios en APLIQUE DIALOG")
-    console.log(this.aplique, "PACIENTE ID EN DIALOG")
+   
   },
   computed: {
     puedeSeleccionarArea() {
@@ -82,15 +81,17 @@ export default {
 
 
     usuariosPorArea() {
-      let areaId
-      console.log(this.aplique,"APLIQUE LOCAL EN DIALOG")
-      if(!this.isEditing){
-        areaId = this.areaId
-      }else{  
+     let areaId
+     
+      if(this.isEditing){
         areaId = this.aplique.StockArea.Area.id
+      }else{  
+        areaId = this.areaId
       }
-      
-      return this.usuarios.filter(usuario => usuario.areaId == areaId)
+      // const usuariosFiltrados=this.usuarios.filter(usuario => usuario.areaId == areaId)
+     
+      // return usuariosFiltrados
+      return this.usuarios.filter(usuario => usuario.areaId == areaId )
     },
 
     stockAreasDeArea() {
@@ -109,23 +110,16 @@ export default {
     },
     isFormValid() {
       if (!this.isEditing) {
-        console.log('Descripcion:', this.apliqueLocal.descripcion);
-        console.log('SKU:', this.apliqueLocal.sku);
-        console.log('Cantidad:', this.apliqueLocal.cantidad);
-        console.log('Aplicante:', this.apliqueLocal.aplicante);
-        console.log('StockAreaId:', this.apliqueLocal.stockAreaId);
-        console.log('FechaAplicacion:', this.apliqueLocal.fechaAplicacion);
-
-        return (
+              return (
           this.apliqueLocal.descripcion &&
           this.apliqueLocal.sku &&
           this.apliqueLocal.cantidad &&
-          this.apliqueLocal.aplicante &&
+          this.apliqueLocal.User.id &&
           this.apliqueLocal.stockAreaId &&
           this.apliqueLocal.fechaAplicacion
         );
       } else {
-        return this.apliqueLocal.aplicante && this.apliqueLocal.fechaAplicacion;
+        return this.apliqueLocal.User.id && this.apliqueLocal.fechaAplicacion;
       }
     },
 
@@ -165,11 +159,14 @@ export default {
     aplique: {
       immediate: true,
       handler(newAplique) {
+       
         if (this.isEditing && newAplique) {
+         
           this.apliqueLocal = { id: newAplique.id, ...newAplique };
         } else {
           this.resetApliqueLocal();
         }
+        
       },
     },
   },
@@ -182,6 +179,7 @@ export default {
     },
     save() {
       this.$emit('save', this.apliqueLocal);
+     
       this.closeDialog();
     },
     resetApliqueLocal() {
@@ -189,7 +187,7 @@ export default {
         sku: '',
         descripcion: '',
         cantidad: '',
-        aplicante: '',
+        User: '',
         stockAreaId: '',
         fechaAplicacion: '',
         pacienteId: this.pacienteId,

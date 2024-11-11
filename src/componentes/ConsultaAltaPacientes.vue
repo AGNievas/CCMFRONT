@@ -28,9 +28,10 @@
         :areas="globalStore.getAreas" :stockAreas="stockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
       </v-dialog>
       
-      <ListadoApliques v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas" :stockAreas="s" :usuarios="globalStore.getUsuarios"
+      
+      <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"  :usuarios="globalStore.getUsuarios"
         :medicamentos="medicamentos"  />
-          
+   
       <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
         text="¿Estás seguro de que deseas eliminar este paciente?" @confirm="deletePaciente" />
     </v-card>
@@ -199,13 +200,13 @@ export default {
     },
     openApliqueDialog(pacienteId) {
       this.selectedPacienteId = pacienteId;
-      console.log(this.selectedPacienteId, "PACIENTE CUANDO ABRO DIALO DIRECTO")
+     
       this.isEditing = false;
       this.apliqueDialogVisible = true;
     },
     openListadoApliques(pacienteId) {
       this.selectedPacienteId = pacienteId;
-      console.log(this.selectedPacienteId, "PACIENTE CUANDO ABRO LISTADO")
+    
       this.listadoApliquesVisible = true;
     },
     handleSaveAplique() {
@@ -213,7 +214,9 @@ export default {
     },
     async saveApliqueFromDialog(nuevoAplique) {
       try {
+        console.log(nuevoAplique,"nuevo aplique en save")
         const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
+       
         if (!this.isEditing) {
           console.log(resultado);
         }
@@ -221,11 +224,16 @@ export default {
       } catch (error) {
         console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
       }
+      
     },
-    saveApliqueFromListado(nuevoAplique) {
+    // saveApliqueFromListado(nuevoAplique) {
 
-      this.$refs.listadoApliques.saveAplique(nuevoAplique);
-      this.apliqueDialogVisible = false;
+    //   this.$refs.listadoApliques.saveAplique(nuevoAplique);
+    //   this.apliqueDialogVisible = false;
+    // },
+
+    verHistorial(){
+      this.$refs.listadoApliquesVisible = true
     },
     openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();
