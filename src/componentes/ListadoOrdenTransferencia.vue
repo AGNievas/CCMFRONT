@@ -17,7 +17,7 @@
       </v-card-title>
 
     <Listado
-      :items="ordenesTransferencias"
+      :items="valoresTabla"
       :headers="ordenTransferenciaHeaders"
       :isListadoOrdenTransferencia="true"
       @edit="openEditDialog"
@@ -29,7 +29,7 @@
       v-model="dialog"
       :is-editing="isEditing"
       :ordenTransferencia="selectedOrdenTransferencia"
-      :areas="stockAreas"
+      :stockAreas="stockAreas"
       :errorMessage="errorMessage"
       @save="saveTransferencia"
     />
@@ -61,11 +61,12 @@ import Listado from './Listado.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import OrdenTransferenciaDialog from './OrdenTransferenciaDialog.vue';
 import ordenTransferenciaService from './servicios/ordenTransferenciaService.js';
-import stockAreaService from './servicios/stockAreaService.js';
+
 import { useGlobalStore } from '@/stores/global';
 import transferenciaStockService from './servicios/transferenciaStockService';
 import ListadoDeTransferencias from './ListadoDeTransferencias.vue';
 import MedicamentosService from './servicios/medicamentosService.js';
+import { formatearFecha } from '@/utils/utils';
 export default {
   components: {
     Listado,
@@ -91,6 +92,18 @@ export default {
       errorMessage:'',
     };
   },
+
+  watch:{
+    
+    'globalStore.getStockAreas': {
+      handler(newStockAreas) {
+        if (newStockAreas.length) {
+          this.stockAreas = newStockAreas;
+        }
+      },
+      immediate: true,
+    },
+  },
   computed: {
     ordenTransferenciaHeaders() {
       return [
@@ -102,27 +115,40 @@ export default {
         { text: '', value: 'acciones', sortable: false },
       ];
     },
+
+    valoresTabla(){
+      console.log(this.stockAreas,"stock Areas")
+      return this.ordenesTransferencias.map(transferencia => {
+        return {
+          id : transferencia.id,
+          usuarioAutorizante: transferencia.User.fullName,
+          nombreAreaOrigen:  this.stockAreas.find(element => element.id == transferencia.stockAreaIdOrigen).nombre,
+          nombreAreaDestino: this.stockAreas.find(element => element.id == transferencia.stockAreaIdDestino).nombre,
+          fecha: this.formatearFecha(transferencia.fechaTransferencia),
+          motivo: transferencia.motivo
+        }
+      })
+    }
   },
   async mounted() {
     await this.loadStockAreas();
+    
     await this.loadOrdenesTransferencias();
   },
+ 
   methods: {
+
+    formatearFecha(fecha){
+      return formatearFecha(fecha)
+    },
     async loadOrdenesTransferencias() {
       this.ordenesTransferencias = await ordenTransferenciaService.getAllOrdenTransferencia();
-      this.actualizarDatosEnTransferencias();
+      
     },
     async loadStockAreas() {
-      this.stockAreas = await stockAreaService.getAllStockArea();
+      this.stockAreas = this.globalStore.getStockAreas;
     },
-  async actualizarDatosEnTransferencias() {
-    for (const transferencia of this.ordenesTransferencias) {
-      transferencia.fechaTransferencia = transferencia.fechaTransferencia.split('T')[0];
-      transferencia.usuario = this.globalStore.getUsuarios.find(element => element.id == transferencia.usuario).fullName;
-      transferencia.stockAreaIdDestino = this.globalStore.getAreas.find(element => element.id == transferencia.stockAreaIdDestino).nombre;
-      transferencia.stockAreaIdOrigen = this.globalStore.getAreas.find(element => element.id == transferencia.stockAreaIdOrigen).nombre;
-    }
-  },
+
     openAddOrdenTransferDialog() {
       this.selectedOrdenTransferencia = { items: [] };
       this.isEditing = false;

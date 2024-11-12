@@ -17,7 +17,7 @@
         <v-form ref="form">
           <v-select
             v-model="localOrdenTransferencia.stockAreaIdOrigen"
-            :items="areas"
+            :items="mostrarAreasNombre"
             item-title="nombre"
             item-value="id"
             :label="areaOrigenLabel"
@@ -26,7 +26,7 @@
           />
           <v-select
             v-model="localOrdenTransferencia.stockAreaIdDestino"
-            :items="areas"
+            :items="mostrarAreasNombre"
             item-title="nombre"
             item-value="id"
             label="Área Destino"
@@ -75,7 +75,8 @@ export default {
       type: Object,
       default: () => ({ stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '', items: [] })
     },
-    areas: Array,
+    
+    
     errorMessage: {
       type: String,
       default: '',
@@ -95,9 +96,22 @@ export default {
       userAreaName: '',
       globalStore: useGlobalStore(),
       localErrorMessage: '',
+      areasAMostrar :[]
     };
   },
   computed: {
+    mostrarAreasNombre(){
+        
+            
+      return this.stockAreas.map(areas => {console.log(areas)
+        return {
+          id: areas.id,
+          nombre:  areas.Area.nombre + " - " + areas.nombre 
+        }
+      }, )
+    
+    },
+ 
     areaOrigenLabel() {
       return !this.globalStore.getEsAdmin ? this.userAreaName : 'Área Origen';
     },
@@ -108,16 +122,23 @@ export default {
   },
   mounted() {
     this.traerAreaUsuario();
+  
   },
   methods: {
-    traerAreaUsuario() {
+
+    
+    
+    async traerAreaUsuario() {
+
+     
       if (!this.globalStore.getEsAdmin) {
-        this.localOrdenTransferencia.stockAreaIdOrigen = this.globalStore.getStockAreaId;
-        const userArea = this.areas.find(area => area.id == this.globalStore.getStockAreaId);
+        this.localOrdenTransferencia.stockAreaIdOrigen = this.globalStore.getStockAreas;
+        const userArea = this.stockAreas.find(area => area.id == this.globalStore.getStockAreas);
         this.userAreaName = userArea ? userArea.nombre : 'Área no encontrada';
       }
     },
     saveChanges() {
+      console.log(this.localOrdenTransferencia)
       this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); // Evita referencias reactivas
     },
     closeDialog() {
@@ -151,6 +172,14 @@ export default {
     },
   },
   watch: {
+    'globalStore.getStockAreas': {
+      handler(newStockAreas) {
+        if (newStockAreas.length) {
+          this.stockAreas = newStockAreas;
+        }
+      },
+      immediate: true,
+    },
     modelValue(val) {
       this.localVisible = val;
     },
@@ -164,10 +193,10 @@ export default {
       immediate: true,
       deep: true,
     },
-    areas: {
+    stockAreas: {
       immediate: true,
-      handler(newAreas) {
-        if (newAreas.length > 0) {
+      handler(newStockAreas) {
+        if (newStockAreas.length > 0) {
           this.traerAreaUsuario();
         }
       }

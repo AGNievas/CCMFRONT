@@ -25,7 +25,7 @@
 <script>
 import loginService from "./servicios/loginService";
 import { useGlobalStore } from "@/stores/global";
-import {parsearCuil} from '@/utils/utils';
+import { formatearCuil } from '@/utils/utils';
 // import stockAreaService from "./servicios/stockAreaService";
 import areaService from "./servicios/areaService";
 import usuariosService from "./servicios/usuariosService";
@@ -72,7 +72,7 @@ export default {
     },
 
     formatearCuil(cuil) {
-      return parsearCuil.formatearCuil(cuil)
+      return formatearCuil(cuil)
     },
 
     async login() {

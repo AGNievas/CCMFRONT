@@ -6,6 +6,8 @@ const ordenTransferenciaService = {
   async getAllOrdenTransferencia() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
+      const copiaResponse = {...response}
+      console.log(copiaResponse, "get all ordentrasnferencias, LUTTERI BOTON")
       return response.data.message;
       
     } catch (error) {

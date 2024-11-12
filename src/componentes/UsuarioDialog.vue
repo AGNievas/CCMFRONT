@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import  {parsearCuil}  from '@/utils/utils';
+import  {formatearCuil}  from '@/utils/utils';
 
 export default {
   props: {
@@ -61,7 +61,7 @@ created(){
 
     
     formatearCuil(cuil) {
-      return parsearCuil.formatearCuil(cuil);
+      return formatearCuil(cuil);
     },
     
     createLocalUsuario() {

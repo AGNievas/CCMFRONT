@@ -1,5 +1,5 @@
 import axiosInstance from "@/axios.js";
-import {parsearCuil} from "@/utils/utils";
+import {extraerNumeroDelCuil} from "@/utils/utils";
 
 const URL = "/user";
 
@@ -58,7 +58,7 @@ const usuariosService = {
       const fullName = usuario.fullName;
       const rolId = usuario.rolId;
       const areaId = usuario.areaId;
-      const password = parsearCuil.extraerNumeroDelCuil(usuario.cuil);
+      const password = extraerNumeroDelCuil(usuario.cuil);
       const response = await axiosInstance.post(
         `${URL}`,
         { cuil, password, fullName,  areaId,rolId },
@@ -113,7 +113,7 @@ const usuariosService = {
 
   async restorePassword(usuario) {
     try {
-      const dni =  parsearCuil.extraerNumeroDelCuil(usuario.cuil);
+      const dni =  extraerNumeroDelCuil(usuario.cuil);
       const response = await axiosInstance.put(
         `${URL}/blank-password/${usuario.id}`,
         { dni },
