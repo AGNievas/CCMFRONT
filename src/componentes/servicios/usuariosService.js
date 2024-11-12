@@ -16,7 +16,6 @@ const usuariosService = {
   },
   async getAllUsuariosByAreaId(areaId) {
     try {
-      console.log(areaId,"acacaca")
       const response = await axiosInstance.get(`${URL}/area/${areaId}`, { withCredentials: true });
       
       return response.data.return;
@@ -53,7 +52,6 @@ const usuariosService = {
 
   async createUsuario(usuario) {
     try {
-      console.log(usuario)
       const cuil = usuario.cuil;
       const fullName = usuario.fullName;
       const rolId = usuario.rolId;

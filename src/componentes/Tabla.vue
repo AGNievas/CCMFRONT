@@ -28,24 +28,23 @@
       <tr>
         <td class="text-start" v-for="(value, key) in visibleColumns(item)" :key="key">{{ value }}</td>
         <td class="text-start acciones-cell">
-          <v-btn title="Editar" class="btn-icon" v-if="canVerEdit && editable" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn title="Eliminar" class="btn-icon" v-if="canVerDelete && eliminable" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-          <v-btn title="Restaurar Contraseña" class="btn-icon" v-if="canRestorePassword" icon small color="blue" @click="$emit('restorePassword', item)">
-            <v-icon>mdi-cached</v-icon>
-          </v-btn>
-          <v-btn title="Ver Historial de Apliques" class="btn-icon" v-if="canVerHistorial" icon small color="blue" @click="$emit('ver-historial', item)">
-            <v-icon>mdi-file-document-outline</v-icon>
-          </v-btn>
-          <v-btn title="Agregar Aplique" class="btn-icon" v-if="canCreateAplique" icon small color="green" @click="$emit('crear-aplique', item)">
-            <v-icon>mdi-pill</v-icon>
-          </v-btn>
-          <v-btn title="Ver Detalles" class="btn-icon" v-if="canVerDetail" icon @click="$emit('ver-items', item.id)">
-            <v-icon>mdi-eye</v-icon>
-          </v-btn>
+          <AccionButtons
+            :item="item"
+            :editable="editable"
+            :eliminable="eliminable"
+            :canVerEdit="canVerEdit"
+            :canVerDelete="canVerDelete"
+            :canRestorePassword="canRestorePassword"
+            :canCreateAplique="canCreateAplique"
+            :canVerHistorial="canVerHistorial"
+            :canVerDetail="canVerDetail"
+            @edit="$emit('edit', item)"
+            @delete="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)"
+            @restorePassword="$emit('restorePassword', item)"
+            @ver-historial="$emit('ver-historial', item)"
+            @crear-aplique="$emit('crear-aplique', item)"
+            @ver-items="$emit('ver-items', item.id)"
+          />
         </td>
       </tr>
     </template>
@@ -78,24 +77,23 @@
         class="transition-fast-in-fast-out v-card--reveal"
       >
         <div style="display: flex; justify-content: center;">
-          <v-btn title="Editar" class="btn-icon" v-if="canVerEdit && editable" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn title="Eliminar" class="btn-icon" v-if="canVerDelete && eliminable" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-          <v-btn title="Restaurar Contraseña" class="btn-icon" v-if="canRestorePassword" icon small color="blue" @click="$emit('restorePassword', item)">
-            <v-icon>mdi-cached</v-icon>
-          </v-btn>
-          <v-btn title="Ver Historial de Apliques" class="btn-icon" v-if="canVerHistorial" icon small color="blue" @click="$emit('ver-historial', item)">
-            <v-icon>mdi-file-document-outline</v-icon>
-          </v-btn>
-          <v-btn title="Agregar Aplique" class="btn-icon" v-if="canCreateAplique" icon small color="green" @click="$emit('crear-aplique', item)">
-            <v-icon>mdi-pill</v-icon>
-          </v-btn>
-          <v-btn title="Ver Detalles" class="btn-icon" v-if="canVerDetail" icon @click="$emit('ver-items', item.id)">
-            <v-icon>mdi-eye</v-icon>
-          </v-btn>
+          <AccionButtons
+            :item="item"
+            :editable="editable"
+            :eliminable="eliminable"
+            :canVerEdit="canVerEdit"
+            :canVerDelete="canVerDelete"
+            :canRestorePassword="canRestorePassword"
+            :canCreateAplique="canCreateAplique"
+            :canVerHistorial="canVerHistorial"
+            :canVerDetail="canVerDetail"
+            @edit="$emit('edit', item)"
+            @delete="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)"
+            @restorePassword="$emit('restorePassword', item)"
+            @ver-historial="$emit('ver-historial', item)"
+            @crear-aplique="$emit('crear-aplique', item)"
+            @ver-items="$emit('ver-items', item.id)"
+          />
         </div>
         <v-card-actions style="justify-content: center;">
           <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">Cerrar</v-btn>
@@ -108,9 +106,13 @@
 
 <script>
 import { useGlobalStore } from '@/stores/global';
+import AccionButtons from './AccionButtons.vue'
 
 export default {
   name: 'Tabla',
+  components: {
+    AccionButtons,
+  },
   props: {
     data: {
       type: Array,
@@ -122,7 +124,7 @@ export default {
     },
     isListadoUsuarios: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     isListadoApliques: {
       type: Boolean,
@@ -144,14 +146,21 @@ export default {
       type: Boolean,
       default: false,
     },
-    eliminable: Boolean,
-    editable: Boolean,
+    eliminable: {
+      type: Boolean,
+      default: true,
+    },
+    editable: {
+      type: Boolean,
+      default: true,
+    },  
   },
+  emits:['edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-items'],
  
   data() {
     return {
       globalStore: useGlobalStore(),
-      sortKey: null,       
+      sortKey: null,
       sortOrder: 'asc',   
       isMobile: false,
       expandedCards: [],
@@ -210,7 +219,6 @@ export default {
       this.expandedCards[index] = !this.expandedCards[index];
     },
     loadExpandedCards(){
-      console.log(this.data,"LOAD EXPANDED CARD EN TABLA")
         this.expandedCards = new Array(this.data ? this.data.length: 0).fill(false); 
     },
     visibleColumns(item) {

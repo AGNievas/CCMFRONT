@@ -133,14 +133,10 @@ export default {
     },
     isFormValid() {
       if(!this.isEditing){
-        console.log(this.localOrdenTransferencia)
         const { stockAreaIdOrigen, stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
-        console.log(stockAreaIdOrigen, stockAreaIdDestino, motivo, items,"isFROMVALID?")
-        console.log(items, "ITEMS EN IS FORM VALID")
         return stockAreaIdOrigen&& stockAreaIdDestino&& motivo && items ? items.length!=0 : false
       }else{
         const { motivo } = this.localOrdenTransferencia;
-      console.log( motivo , "DATOS EN IS FORM VALID", this.localOrdenTransferencia, "LOCAL ORDENTRANSFERENCIA ")
       return  motivo ;
       }
      
@@ -168,13 +164,11 @@ export default {
     saveChanges() {
       
       if(!this.isEditing){
-        console.log(this.localOrdenTransferencia,"save changes")
         this.localOrdenTransferencia.userId = this.globalStore.getUsuarioId,
         this.localOrdenTransferencia.areaIdOrigen = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
         this.localOrdenTransferencia.areaIdDestino = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdDestino).Area.id
         this.localOrdenTransferencia.fechaTransferencia= this.formatearFechaYHora(new Date())
       }
-      console.log(this.localOrdenTransferencia)
       
       this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); // Evita referencias reactivas
     },
@@ -199,8 +193,6 @@ export default {
     },
     saveItem(item) {
       if (this.selectedItemIndex !== null) {
-        console.log(item, "item cuando carga")
-        console.log(this.localOrdenTransferencia, "ordentransferencia cuando carga")
         this.localOrdenTransferencia.items.splice(this.selectedItemIndex, 1, item);
         this.selectedItemIndex = null;
       } else {
@@ -228,7 +220,6 @@ export default {
     },
     ordenTransferencia: {
       handler(newVal) {
-        console.log(newVal, "NEW WAL EN ORDENTRANSFERENCIA")
         this.localOrdenTransferencia = JSON.parse(JSON.stringify(newVal));
       },
       immediate: true,

@@ -54,8 +54,7 @@ const apliqueService = {
   },
 
   async createAplique(pacienteId, nuevoAplique) {
-    try {console.log(nuevoAplique, "SERVICIO CREATE APLIQUE")
-      console.log(pacienteId, "SERVICIO CREATE APLIQUE")
+    try {
       const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
@@ -74,8 +73,6 @@ const apliqueService = {
 
   async updateAplique(pacienteId, aplique) {
     try {
-      console.log(pacienteId, "PACIENTE EN UpdaTE")
-      console.log(aplique, "APLIQUE EN SERVICE")
       const { User, fechaAplicacion, id } = aplique;
       
       const response = await axiosInstance.put(

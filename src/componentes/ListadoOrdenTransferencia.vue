@@ -16,8 +16,8 @@
         <v-btn @click="openAddOrdenTransferDialog" class="mx-2 btn-blue">Agregar Orden Transferencia</v-btn>
       </v-card-title>
 
-    <Listado
-      :items="valoresTabla"
+    <Tabla
+      :data="valoresTabla"
       :headers="ordenTransferenciaHeaders"
       :isListadoOrdenTransferencia="true"
       @edit="openEditDialog"
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import Listado from './Listado.vue';
+import Tabla from './Tabla.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import OrdenTransferenciaDialog from './OrdenTransferenciaDialog.vue';
 import ordenTransferenciaService from './servicios/ordenTransferenciaService.js';
@@ -70,7 +70,7 @@ import MedicamentosService from './servicios/medicamentosService.js';
 import { formatearFecha } from '@/utils/utils';
 export default {
   components: {
-    Listado,
+    Tabla,
     ConfirmDialog,
     OrdenTransferenciaDialog,
     ListadoDeTransferencias
@@ -107,7 +107,6 @@ export default {
     },
     'globalStore.getStockAreas': {
       handler(newStockAreas) {
-        console.log(newStockAreas,"GLOBAL STORE GET STOCK ARAEAS LISTADO ORDEN")
         if (newStockAreas.length) {
           this.stockAreas = newStockAreas;
         }
@@ -128,7 +127,6 @@ export default {
     },
 
     valoresTabla() {
-      console.log(this.stockAreas, "stockAREAS EN VALORES TABLA()")
   if (!this.stockAreas || this.stockAreas.length == 0) {
     return []; // Retorna un array vacío si stockAreas no está definido o está vacío
   }
@@ -193,27 +191,22 @@ export default {
       }
     },
     openEditDialog(orden) {
-      console.log(orden, "orden en edit")
       const listaItems = this.selectedOrdenTransferencia.listaItems
       this.selectedOrdenTransferencia = { ...orden,  listaItems};
       this.isEditing = true;
       this.dialog = true;
     },
     confirmDelete(id) {
-      console.log(id,"id en confirm delete")
       this.selectedOrdenTransferencia = this.ordenesTransferencias.find(trans => trans.id === id);
       this.deleteDialog = true;
     },
     async saveTransferencia(orden) {
       try {
         const { items, ...ordenData } = orden;
-        console.log(items, ordenData, "SAVE TRANSFERENCIA ; ITEMS ORDEN DATA" )
         if (this.isEditing) {
           await ordenTransferenciaService.updateOrdenTransferencia(ordenData);
-          console.log( ordenData, "SAVE TRANSFERENCIA ; UPDATE ORDEN DATA" )
         } else {
           await ordenTransferenciaService.createOrdenTransferencia(ordenData, items);
-          console.log(items, ordenData, "SAVE TRANSFERENCIA ; ITEMS ORDEN DATA" )
         }
         this.dialog = false;
         this.errorMessage = '';

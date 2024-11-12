@@ -44,8 +44,8 @@
         <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
-      <Listado
-        :items="filteredMedicamentos"
+      <Tabla
+        :data="filteredMedicamentos"
         :headers="usuariosHeaders"
         :isListadoMedicamentos="true"
         @edit="openEditDialog"
@@ -57,8 +57,9 @@
       <OrdenTransferenciaDialog
         v-model="dialog"
         :is-editing="false"
+        :user="globalStore.getUsuarioIdYNombre"
         :ordenTransferencia="selectedOrdenTransferencia"
-        :areas="areas"
+        :stockAreas="this.globalStore.getStockAreas"
         :errorMessage="errorMessage"
         @save="saveTransferencia"
       />
@@ -96,7 +97,7 @@
 </template>
 
 <script>
-import Listado from './Listado.vue';
+import Tabla from './Tabla.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import MedicamentoDialog from './MedicamentoDialog.vue';
 import stockAreasService from "./servicios/stockAreaService.js";
@@ -109,10 +110,10 @@ import areaService from './servicios/areaService.js'
 export default {
   name: "ListadoDeMedicamentos",
   components: {
-    Listado,
     ConfirmDialog,
     MedicamentoDialog,
     OrdenTransferenciaDialog,
+    Tabla,
     },
   data() {
     return {
@@ -274,8 +275,8 @@ export default {
 
     async addMedicamento({medicamentoEmitido}) {
       this.skuError = false;
-
-      const exists = this.medicamentos.some(
+      let medicamentos = await medicamentosService.getAllMedicamento()
+      const exists = medicamentos.some(
         (medicamento) => medicamento.sku == medicamentoEmitido.sku
       );
 
@@ -319,12 +320,12 @@ export default {
           let itemActualizar = this.itemsMed.find(
             (itemMed) => (itemMed.Medicamento.sku == medicamentoEmitido.sku) && (itemMed.StockArea.areaId == this.area) && (itemMed.StockArea.id == this.stockArea)
           );
-          console.log(itemActualizar,"COMO VIENE EL ITEM en UPDATEMEDICAMENTO")
           await itemService.updateItem(itemActualizar.id, medicamentoEmitido.sku, medicamentoEmitido.stock)
           this.onStockAreaChange(this.stockArea)
+          this.loadItemsMed()
         }else{
           await medicamentosService.updateMedicamento(medicamentoEmitido.sku, medicamentoEmitido.descripcion, medicamentoEmitido.tipo_medicamento);
-          this.onAreaChange(this.area)
+          this.onAreaChange(this.area)          
         }
         this.closeEditDialog();
       } catch (error) {

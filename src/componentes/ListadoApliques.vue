@@ -9,7 +9,7 @@
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
-      <Listado :items="valoresTabla" :headers="apliquesHeaders" :usuarios="usuarios" :isListadoApliques="true" @edit="openEditarApliqueDialog"
+      <Tabla :data="valoresTabla" :headers="apliquesHeaders" :usuarios="usuarios" :isListadoApliques="true" @edit="openEditarApliqueDialog"
         @delete="confirmDeleteAplique" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import Listado from './Listado.vue';
+import Tabla from './Tabla.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
@@ -62,7 +62,7 @@ export default {
     medicamentos: Array
   },
   components: {
-    Listado,
+    Tabla,
     ApliqueDialog,
     ConfirmDialog,
   },
@@ -141,7 +141,6 @@ export default {
   methods: {
 
     formatearFecha(fecha){
-      console.log(fecha,"fecha q recibo")
       return formatearFechaYHora(fecha)
     },
     closeDialog() {

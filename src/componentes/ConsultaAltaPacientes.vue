@@ -13,7 +13,7 @@
         <v-btn v-if="globalStore.rolId <= 2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
-      <Listado :items="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
+      <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
         @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="openListadoApliques"
         @crear-aplique="openApliqueDialog" />
 
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import Listado from './Listado.vue';
+import Tabla from './Tabla.vue';
 import PacienteDialog from './PacienteDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import pacienteService from './servicios/pacienteService';
@@ -51,7 +51,7 @@ import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 import itemService from './servicios/itemService';
 export default {
   components: {
-    Listado,
+    Tabla,
     PacienteDialog,
     ConfirmDialog,
     ApliqueDialog,
@@ -208,7 +208,6 @@ export default {
 
     async saveApliqueFromDialog(nuevoAplique) {
       try {
-        console.log(nuevoAplique,"nuevo aplique en save")
         const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
        
         if (!this.isEditing) {

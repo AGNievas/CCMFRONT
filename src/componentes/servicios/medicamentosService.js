@@ -66,7 +66,6 @@ const medicamentosService = {
 
   async updateMedicamento(sku, descripcion, tipo_medicamento) {
     try {
-      console.log("ASDASDAS ", sku, descripcion, tipo_medicamento)
       const { data: medicamentoActualizado } = await axiosInstance.put(`${URL}/${sku}`, { descripcion, tipo_medicamento }, { withCredentials: true });
       return medicamentoActualizado;
     } catch (error) {

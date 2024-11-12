@@ -38,7 +38,6 @@ const itemService = {
 
   async  getItemsYDescripcionByStockAreaId(areaId) {
     try {
-      console.log(areaId)
       const response = await axiosInstance.get(`${API_URL}/listado-items/${areaId}`, {withCredentials:true});
       
       return response.data;
@@ -64,8 +63,7 @@ const itemService = {
   },
     
   async  updateItem(id,sku,stock) {
-    try { console.log(id,sku,stock, "LISTADO MEDICAMENTOS" )
-      
+    try {
       const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, {sku,stock}, {withCredentials:true});
       
       return itemActualizado;

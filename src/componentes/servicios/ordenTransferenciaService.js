@@ -6,8 +6,6 @@ const ordenTransferenciaService = {
   async getAllOrdenTransferencia() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
-      const copiaResponse = {...response}
-      console.log(copiaResponse, "get all ordentrasnferencias, LUTTERI BOTON")
       return response.data.message;
       
     } catch (error) {
@@ -57,9 +55,6 @@ const ordenTransferenciaService = {
 
   async createOrdenTransferencia(ordenTransferencia, listaItems) {
     try {
-      console.log(ordenTransferencia,listaItems,
-         "ORDEN EN SERVICIO")
-      
       const { stockAreaIdOrigen, stockAreaIdDestino, motivo, areaIdDestino, areaIdOrigen, userId } =
         ordenTransferencia;
 
@@ -80,7 +75,6 @@ const ordenTransferenciaService = {
    ordenTransferencia
 
   ) {
-    console.log(ordenTransferencia, "ORDEN TRANSFERENCIA EN UPDATE SERVICE ")
     const {id, motivo   } = ordenTransferencia
     try {
       const { data: ordenTransferenciaActualizado } = await axiosInstance.put(
@@ -100,7 +94,6 @@ const ordenTransferenciaService = {
 
   async deleteOrdenTransferencia(id) {
     try {
-      console.log(id, "id ORDENTRANSFERENCIA EN SERVICIO")
       const { data: ordenTransferenciaEliminado } = await axiosInstance.delete(
         `${URL}/${id}`,
         { withCredentials: true }

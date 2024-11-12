@@ -17,8 +17,8 @@
       </v-card-title>
 
       
-      <Listado
-        :items="usuariosFiltradosParaVista"
+      <Tabla
+        :data="usuariosFiltradosParaVista"
         :headers="usuariosHeaders"
         :showRestorePassword="true"
         :isListadoUsuarios="true"
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import Listado from './Listado.vue';
+import Tabla from './Tabla.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import UsuarioDialog from './UsuarioDialog.vue';
 import usuariosService from './servicios/usuariosService.js';
@@ -72,7 +72,7 @@ import { useGlobalStore } from '@/stores/global';
 export default {
   name: 'ListadoDeUsuarios',
   components: {
-    Listado,
+    Tabla,
     ConfirmDialog,
     UsuarioDialog,
   },
@@ -160,7 +160,6 @@ export default {
 
     async loadUsuarios() {
       this.usuarios = await usuariosService.getAllUsuarios();
-      console.log(this.usuarios,"USUARIOS EN LOAD USUARIOS")
     },
     openAddUserDialog() {
       this.dialog = true;

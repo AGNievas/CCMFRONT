@@ -26,7 +26,7 @@ const pacienteService = {
 
   async getPacienteById(paciente) {
     const {id} = paciente
-    try {console.log(id,"paciente get by id")
+    try {
       const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
       });   
