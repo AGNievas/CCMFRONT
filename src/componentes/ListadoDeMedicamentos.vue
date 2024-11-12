@@ -26,7 +26,7 @@
         ></v-select>
 
         <v-select
-          v-if="area != 0"
+          :disabled="area == 0"
           v-model="stockArea"
           :items="stockAreasTodo"
           item-title="nombre"

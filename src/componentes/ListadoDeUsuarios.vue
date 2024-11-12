@@ -20,7 +20,6 @@
       <Tabla
         :data="usuariosFiltradosParaVista"
         :headers="usuariosHeaders"
-        :showRestorePassword="true"
         :isListadoUsuarios="true"
         @edit="openEditDialog"
         @delete="confirmDelete"

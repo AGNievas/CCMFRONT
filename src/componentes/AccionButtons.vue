@@ -37,6 +37,8 @@ export default {
     canCreateAplique: Boolean,
     canVerHistorial: Boolean,
     canVerDetail: Boolean
-  }
+  },
+emits:['edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-items'],
+
 };
 </script>
