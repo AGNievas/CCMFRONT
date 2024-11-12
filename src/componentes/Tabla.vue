@@ -210,7 +210,8 @@ export default {
       this.expandedCards[index] = !this.expandedCards[index];
     },
     loadExpandedCards(){
-        this.expandedCards = new Array(this.data.length).fill(false); 
+      console.log(this.data,"LOAD EXPANDED CARD EN TABLA")
+        this.expandedCards = new Array(this.data ? this.data.length: 0).fill(false); 
     },
     visibleColumns(item) {
       if (!item) return {};

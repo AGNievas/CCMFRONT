@@ -15,7 +15,7 @@
         </v-alert>
 
         <v-form ref="form">
-          <v-select
+          <v-select v-if="!this.isEditing"
             v-model="localOrdenTransferencia.stockAreaIdOrigen"
             :items="mostrarAreasNombre"
             item-title="nombre"
@@ -24,7 +24,7 @@
             :disabled="!globalStore.getEsAdmin"
             required
           />
-          <v-select
+          <v-select v-if="!this.isEditing"
             v-model="localOrdenTransferencia.stockAreaIdDestino"
             :items="mostrarAreasNombre"
             item-title="nombre"
@@ -37,7 +37,7 @@
             label="Motivo"
             required
           />
-          <ListadoDeTransferencias
+          <ListadoDeTransferencias v-if="!this.isEditing"
             :items="localOrdenTransferencia.items"
             :item="selectedItem"
             @add-item="openAddItemDialog"
@@ -67,6 +67,7 @@ import ListadoDeTransferencias from './ListadoDeTransferencias.vue';
 import TransferenciaDialog from './TransferenciaDialog.vue';
 import { useGlobalStore } from '@/stores/global';
 
+import { formatearFechaYHora } from '@/utils/utils';
 export default {
   props: {
     modelValue: Boolean,
@@ -75,8 +76,9 @@ export default {
       type: Object,
       default: () => ({ stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '', items: [] })
     },
-    
-    
+     stockAreas:{
+      type:Array,
+     }, 
     errorMessage: {
       type: String,
       default: '',
@@ -89,14 +91,24 @@ export default {
   data() {
     return {
       localVisible: this.modelValue,
-      localOrdenTransferencia: JSON.parse(JSON.stringify(this.ordenTransferencia)), // Copia profunda
+      localOrdenTransferencia: {
+        stockAreaIdOrigen:'',
+        stockAreaIdDestino:'',
+        areaIdOrigen:'',
+        areaIdDestino:'',
+        fechaTransferencia:'',
+        userId: '',
+        motivo:'',
+        listaItems:[],
+      },
       itemDialogVisible: false,
       selectedItemIndex: null,
       selectedItem: null,
       userAreaName: '',
       globalStore: useGlobalStore(),
       localErrorMessage: '',
-      areasAMostrar :[]
+      areasAMostrar :[],
+      // user: !this.isEditing ? this.globalStore.getUsuarioIdYNombre : ''
     };
   },
   computed: {
@@ -106,7 +118,11 @@ export default {
       return this.stockAreas.map(areas => {console.log(areas)
         return {
           id: areas.id,
-          nombre:  areas.Area.nombre + " - " + areas.nombre 
+          nombre:  areas.Area.nombre + " - " + areas.nombre,
+          Area:{
+            id: areas.Area.id,
+            nombre: areas.Area.nombre
+          } 
         }
       }, )
     
@@ -116,17 +132,29 @@ export default {
       return !this.globalStore.getEsAdmin ? this.userAreaName : 'Área Origen';
     },
     isFormValid() {
-      const { stockAreaIdOrigen, stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
-      return stockAreaIdOrigen && stockAreaIdDestino && motivo && items.length > 0;
+      if(!this.isEditing){
+        console.log(this.localOrdenTransferencia)
+        const { stockAreaIdOrigen, stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
+        console.log(stockAreaIdOrigen, stockAreaIdDestino, motivo, items,"isFROMVALID?")
+        console.log(items, "ITEMS EN IS FORM VALID")
+        return stockAreaIdOrigen&& stockAreaIdDestino&& motivo && items ? items.length!=0 : false
+      }else{
+        const { motivo } = this.localOrdenTransferencia;
+      console.log( motivo , "DATOS EN IS FORM VALID", this.localOrdenTransferencia, "LOCAL ORDENTRANSFERENCIA ")
+      return  motivo ;
+      }
+     
     },
   },
-  mounted() {
+  async mounted() {
     this.traerAreaUsuario();
   
   },
   methods: {
 
-    
+    formatearFechaYHora(fecha){
+      return formatearFechaYHora(fecha)
+    },
     
     async traerAreaUsuario() {
 
@@ -138,7 +166,16 @@ export default {
       }
     },
     saveChanges() {
+      
+      if(!this.isEditing){
+        console.log(this.localOrdenTransferencia,"save changes")
+        this.localOrdenTransferencia.userId = this.globalStore.getUsuarioId,
+        this.localOrdenTransferencia.areaIdOrigen = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
+        this.localOrdenTransferencia.areaIdDestino = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdDestino).Area.id
+        this.localOrdenTransferencia.fechaTransferencia= this.formatearFechaYHora(new Date())
+      }
       console.log(this.localOrdenTransferencia)
+      
       this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); // Evita referencias reactivas
     },
     closeDialog() {
@@ -162,6 +199,8 @@ export default {
     },
     saveItem(item) {
       if (this.selectedItemIndex !== null) {
+        console.log(item, "item cuando carga")
+        console.log(this.localOrdenTransferencia, "ordentransferencia cuando carga")
         this.localOrdenTransferencia.items.splice(this.selectedItemIndex, 1, item);
         this.selectedItemIndex = null;
       } else {
@@ -172,14 +211,15 @@ export default {
     },
   },
   watch: {
-    'globalStore.getStockAreas': {
-      handler(newStockAreas) {
-        if (newStockAreas.length) {
-          this.stockAreas = newStockAreas;
-        }
-      },
-      immediate: true,
-    },
+  //   'globalStore.getStockAreas': {
+  //   handler(newStockAreas) {
+  //     console.log(newStockAreas, "GLOBALSOTRE EN WATCH EN OPEN DIALOG")
+  //     if (Array.isArray(newStockAreas) && newStockAreas.length > 0) {
+  //       this.stockAreas = newStockAreas;
+  //     }
+  //   },
+  //   immediate: true,
+  // },
     modelValue(val) {
       this.localVisible = val;
     },
@@ -188,19 +228,21 @@ export default {
     },
     ordenTransferencia: {
       handler(newVal) {
+        console.log(newVal, "NEW WAL EN ORDENTRANSFERENCIA")
         this.localOrdenTransferencia = JSON.parse(JSON.stringify(newVal));
       },
       immediate: true,
       deep: true,
     },
-    stockAreas: {
-      immediate: true,
-      handler(newStockAreas) {
-        if (newStockAreas.length > 0) {
-          this.traerAreaUsuario();
-        }
-      }
-    },
+    // stockAreas: {
+    //   immediate: true,
+    //   handler(newStockAreas) {
+    //     console.log(newStockAreas, "stockAreas Watch en ORDEN DIALOG")
+    //     if (newStockAreas.length > 0) {
+    //       this.traerAreaUsuario();
+    //     }
+    //   }
+    // },
   },
 };
 </script>

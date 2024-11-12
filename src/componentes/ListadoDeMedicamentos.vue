@@ -319,6 +319,7 @@ export default {
           let itemActualizar = this.itemsMed.find(
             (itemMed) => (itemMed.Medicamento.sku == medicamentoEmitido.sku) && (itemMed.StockArea.areaId == this.area) && (itemMed.StockArea.id == this.stockArea)
           );
+          console.log(itemActualizar,"COMO VIENE EL ITEM en UPDATEMEDICAMENTO")
           await itemService.updateItem(itemActualizar.id, medicamentoEmitido.sku, medicamentoEmitido.stock)
           this.onStockAreaChange(this.stockArea)
         }else{

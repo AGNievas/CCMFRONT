@@ -64,7 +64,7 @@ const itemService = {
   },
     
   async  updateItem(id,sku,stock) {
-    try {
+    try { console.log(id,sku,stock, "LISTADO MEDICAMENTOS" )
       
       const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, {sku,stock}, {withCredentials:true});
       

@@ -28,6 +28,7 @@
     <OrdenTransferenciaDialog
       v-model="dialog"
       :is-editing="isEditing"
+      :user="globalStore.getUsuarioIdYNombre"
       :ordenTransferencia="selectedOrdenTransferencia"
       :stockAreas="stockAreas"
       :errorMessage="errorMessage"
@@ -90,13 +91,23 @@ export default {
       selectedOrdenTransferencia: {},
       globalStore: useGlobalStore(),
       errorMessage:'',
+      usuario:'',
     };
   },
 
   watch:{
     
+
+    'globalStore.getUsuarioIdYNombre': {
+      handler(newUsuario) {
+          this.usuario = newUsuario;
+        
+      },
+      immediate: true,
+    },
     'globalStore.getStockAreas': {
       handler(newStockAreas) {
+        console.log(newStockAreas,"GLOBAL STORE GET STOCK ARAEAS LISTADO ORDEN")
         if (newStockAreas.length) {
           this.stockAreas = newStockAreas;
         }
@@ -116,25 +127,29 @@ export default {
       ];
     },
 
-    valoresTabla(){
-      console.log(this.stockAreas,"stock Areas")
-      return this.ordenesTransferencias.map(transferencia => {
-        return {
-          id : transferencia.id,
-          usuarioAutorizante: transferencia.User.fullName,
-          nombreAreaOrigen:  this.stockAreas.find(element => element.id == transferencia.stockAreaIdOrigen).nombre,
-          nombreAreaDestino: this.stockAreas.find(element => element.id == transferencia.stockAreaIdDestino).nombre,
-          fecha: this.formatearFecha(transferencia.fechaTransferencia),
-          motivo: transferencia.motivo
-        }
-      })
-    }
-  },
-  async mounted() {
-    await this.loadStockAreas();
+    valoresTabla() {
+      console.log(this.stockAreas, "stockAREAS EN VALORES TABLA()")
+  if (!this.stockAreas || this.stockAreas.length == 0) {
+    return []; // Retorna un array vacío si stockAreas no está definido o está vacío
+  }
+  return this.ordenesTransferencias.map(transferencia => {
+    const stockAreaOrigen = this.stockAreas.find(element => element.id == transferencia.stockAreaIdOrigen) || 'Área no encontrada';
+    const stockAreaDestino = this.stockAreas.find(element => element.id == transferencia.stockAreaIdDestino)|| 'Área no encontrada';
     
-    await this.loadOrdenesTransferencias();
-  },
+    return {
+      id: transferencia.id,
+      usuarioAutorizante: transferencia.User.fullName,
+      nombreAreaOrigen : stockAreaOrigen.Area.nombre,
+      nombreAreaDestino: stockAreaDestino.Area.nombre,
+      fecha: this.formatearFecha(transferencia.fechaTransferencia),
+      motivo: transferencia.motivo
+    };
+  });
+}},
+  async mounted() {
+  await this.loadStockAreas(); // Espera a que stockAreas esté cargado
+  await this.loadOrdenesTransferencias(); // Luego carga las órdenes
+},
  
   methods: {
 
@@ -142,9 +157,13 @@ export default {
       return formatearFecha(fecha)
     },
     async loadOrdenesTransferencias() {
-      this.ordenesTransferencias = await ordenTransferenciaService.getAllOrdenTransferencia();
-      
-    },
+  try {
+    const data = await ordenTransferenciaService.getAllOrdenTransferencia();
+    this.ordenesTransferencias = Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Error al cargar las órdenes de transferencia:", error);
+  }
+},
     async loadStockAreas() {
       this.stockAreas = this.globalStore.getStockAreas;
     },
@@ -174,21 +193,27 @@ export default {
       }
     },
     openEditDialog(orden) {
-      this.selectedOrdenTransferencia = { ...orden };
+      console.log(orden, "orden en edit")
+      const listaItems = this.selectedOrdenTransferencia.listaItems
+      this.selectedOrdenTransferencia = { ...orden,  listaItems};
       this.isEditing = true;
       this.dialog = true;
     },
     confirmDelete(id) {
+      console.log(id,"id en confirm delete")
       this.selectedOrdenTransferencia = this.ordenesTransferencias.find(trans => trans.id === id);
       this.deleteDialog = true;
     },
     async saveTransferencia(orden) {
       try {
         const { items, ...ordenData } = orden;
+        console.log(items, ordenData, "SAVE TRANSFERENCIA ; ITEMS ORDEN DATA" )
         if (this.isEditing) {
           await ordenTransferenciaService.updateOrdenTransferencia(ordenData);
+          console.log( ordenData, "SAVE TRANSFERENCIA ; UPDATE ORDEN DATA" )
         } else {
           await ordenTransferenciaService.createOrdenTransferencia(ordenData, items);
+          console.log(items, ordenData, "SAVE TRANSFERENCIA ; ITEMS ORDEN DATA" )
         }
         this.dialog = false;
         this.errorMessage = '';

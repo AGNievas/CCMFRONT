@@ -56,6 +56,7 @@ export default {
   methods: {
     saveChanges() {
       if (this.isFormValid) {
+        console.log(this.localTransferencia, "localtransferencia save changes")
         this.$emit('save', { ...this.localTransferencia });
         this.closeDialog();
       }

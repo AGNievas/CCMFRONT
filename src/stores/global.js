@@ -15,6 +15,7 @@ export const useGlobalStore = defineStore('global', {
         stockAreas:[],
         usuarios: [],
         roles:[],
+        usuarioIdYNombre: {},
         ROL_ID_SUPER_ADMIN: 1,
         ROL_ID_ADMIN:2,
         ROL_ID_AUTORIZANTE:3,
@@ -32,6 +33,7 @@ export const useGlobalStore = defineStore('global', {
             this.rolName = rolName
             this.esAdmin = esAdmin
             this.logueado = logueado
+            this.usuarioIdYNombre = {id: this.usuarioId, fullName: this.fullNameUsuario}
         }
         ,
         cargarAreasYUser(areas, usuarios, roles, stockAreas){
@@ -71,5 +73,6 @@ export const useGlobalStore = defineStore('global', {
         getRolAdmin:(state)=> state.ROL_ID_ADMIN,
         getRolAutorizante:(state) => state.ROL_ID_AUTORIZANTE,
         getRolDataEntry:(state) => state.ROL_ID_DATA_ENTRY,
+        getUsuarioIdYNombre:(state) => {state.usuarioId, state.fullNameUsuario} 
       }
 })

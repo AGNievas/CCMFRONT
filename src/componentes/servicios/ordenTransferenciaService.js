@@ -57,13 +57,15 @@ const ordenTransferenciaService = {
 
   async createOrdenTransferencia(ordenTransferencia, listaItems) {
     try {
+      console.log(ordenTransferencia,listaItems,
+         "ORDEN EN SERVICIO")
       
-      const { stockAreaIdOrigen, stockAreaIdDestino, motivo } =
+      const { stockAreaIdOrigen, stockAreaIdDestino, motivo, areaIdDestino, areaIdOrigen, userId } =
         ordenTransferencia;
 
       const response = await axiosInstance.post(
         `${URL}`,
-        { stockAreaIdOrigen, stockAreaIdDestino, motivo, listaItems },
+        { stockAreaIdOrigen, stockAreaIdDestino, motivo,  areaIdDestino, areaIdOrigen, userId, listaItems },
         { withCredentials: true }
       );
      
@@ -75,25 +77,16 @@ const ordenTransferenciaService = {
   },
 
   async updateOrdenTransferencia(
-    id,
-    usuarioId,
-    sku,
-    cantidad,
-    stockAreaIdOrigen,
-    stockAreaIdDestino,
-    motivo
+   ordenTransferencia
+
   ) {
+    console.log(ordenTransferencia, "ORDEN TRANSFERENCIA EN UPDATE SERVICE ")
+    const {id, motivo   } = ordenTransferencia
     try {
       const { data: ordenTransferenciaActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
         {
-          id,
-          usuarioId,
-          sku,
-          cantidad,
-          stockAreaIdOrigen,
-          stockAreaIdDestino,
-          motivo,
+           motivo,
         },
         { withCredentials: true }
       );
@@ -107,6 +100,7 @@ const ordenTransferenciaService = {
 
   async deleteOrdenTransferencia(id) {
     try {
+      console.log(id, "id ORDENTRANSFERENCIA EN SERVICIO")
       const { data: ordenTransferenciaEliminado } = await axiosInstance.delete(
         `${URL}/${id}`,
         { withCredentials: true }
