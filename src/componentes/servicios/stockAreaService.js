@@ -14,6 +14,17 @@ const stockAreaService = {
     }
   },
 
+  async getStockAreaByArea(areaId) {
+    try {
+      //
+      const response = await axiosInstance.get(`${URL}/area/${areaId}`, { withCredentials: true });
+      return response.data.return;
+    } catch (error) {
+      console.error("Error al obtener stockArea:", error);
+      return [];
+    }
+  },
+
   async getStockAreaById(id) {
     try {
       const response = await axiosInstance.get(`${URL}/id/${id}`, { withCredentials: true });

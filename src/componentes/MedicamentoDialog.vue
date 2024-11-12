@@ -21,15 +21,15 @@
             :readonly="isEditing && area !== 0"
           ></v-text-field>
 
-          <v-select
-            v-model="localMedicamento.tipo_insumo"
-            :items="tipoInsumoOptions"
-            label="Tipo de Insumo"
+          <v-text-field
+            v-model="localMedicamento.tipo_medicamento"
+            label="Tipo de Medicamento"
+            :readonly="isEditing && area !== 0"
             required
-          ></v-select>
+          ></v-text-field>
 
           <v-text-field
-            v-if="(isEditing && area !== 0) || !isEditing"
+            v-if="(isEditing && area !== 0 && stockArea !== 0) || !isEditing"
             v-model.number="localMedicamento.stock"
             label="Stock"
             required
@@ -63,7 +63,8 @@ export default {
     dialogVisible: Boolean,
     isEditing: Boolean,
     area: Number,
-    tipoInsumoOptions: Array,
+    stockArea: Number,
+    tipoMedicamentoOptions: Array,
     medicamento: Object,
     skuError: Boolean
   },
@@ -94,14 +95,14 @@ export default {
     confirmAction() {
       this.formError = false;
       
-      if((this.isEditing && this.area != 0 && !this.localMedicamento.stock) || (!this.isEditing && !this.localMedicamento.stock) ){
+      if((this.isEditing && this.area != 0 && this.stockArea != 0 && !this.localMedicamento.stock) || (!this.isEditing && !this.localMedicamento.stock) ){
         this.formError = true;
         return;
       }
       if (
         !this.localMedicamento.sku ||
         !this.localMedicamento.descripcion ||
-        !this.localMedicamento.tipo_insumo 
+        !this.localMedicamento.tipo_medicamento 
       ) {
         this.formError = true;
         return;

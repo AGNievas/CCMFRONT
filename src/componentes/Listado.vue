@@ -9,6 +9,8 @@
       :isListadoMedicamentos="isListadoMedicamentos"
       :isListadoOrdenTransferencia="isListadoOrdenTransferencia"
       :isEditable="isEditable"
+      :editable="editable"
+      :eliminable="eliminable"
       @edit="$emit('edit', $event)"
       @delete="$emit('delete', $event)"
       @restorePassword="showRestorePassword ? $emit('restorePassword', $event) : null"
@@ -68,6 +70,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    eliminable: {
+      type: Boolean,
+      default: true,
+    },
+    editable: {
+      type: Boolean,
+      default: true,
+    }
   },
   computed: {
     filteredItems() {

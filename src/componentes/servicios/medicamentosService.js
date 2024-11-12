@@ -6,18 +6,28 @@ const medicamentosService = {
 
   async getAllMedicamento() {
     try {
-      const response = await axiosInstance.get(`${URL}/`, { withCredentials: true });
-      return response.data.return;
+      const response = await axiosInstance.get(`${URL}/stock`, { withCredentials: true });
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
       return [];
     }
   },
 
-  async getAllMedicamentoByStockAreaId(id) {
+  async getMedicamentosByAreaId(id) {
     try {
-      const response = await axiosInstance.get(`/item/listado-items/${id}`, { withCredentials: true });
-      return response.data.return;
+      const response = await axiosInstance.get(`${URL}/stock?areaId=${id}`, { withCredentials: true });
+      return response.data.message;
+    } catch (error) {
+      console.error("Error al obtener medicamentos:", error);
+      return [];
+    }
+  },
+
+  async getAllMedicamentoByStockAreaId(areaId, stockAreaId) {
+    try {
+      const response = await axiosInstance.get(`${URL}/stock?areaId=${areaId}&stockAreaId=${stockAreaId}`, { withCredentials: true });
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
       return [];
@@ -34,9 +44,9 @@ const medicamentosService = {
     }
   },
 
-  async createMedicamento(sku, descripcion, tipoInsumo) {
+  async createMedicamento(sku, descripcion, tipo_medicamento) {
     try {
-      const response = await axiosInstance.post(`${URL}`,{sku,descripcion, tipoInsumo}, { withCredentials: true });
+      const response = await axiosInstance.post(`${URL}`,{sku,descripcion, tipo_medicamento}, { withCredentials: true });
       return response.data.return;
     } catch (error) {
       console.error("Error al crear medicamentos:", error);
@@ -54,9 +64,10 @@ const medicamentosService = {
     }
   },
 
-  async updateMedicamento(sku, descripcion, tipoInsumo) {
+  async updateMedicamento(sku, descripcion, tipo_medicamento) {
     try {
-      const { data: medicamentoActualizado } = await axiosInstance.put(`${URL}/${sku}`, { descripcion, tipoInsumo }, { withCredentials: true });
+      console.log("ASDASDAS ", sku, descripcion, tipo_medicamento)
+      const { data: medicamentoActualizado } = await axiosInstance.put(`${URL}/${sku}`, { descripcion, tipo_medicamento }, { withCredentials: true });
       return medicamentoActualizado;
     } catch (error) {
       console.error("Error al actualizar el Medicamento:", error);

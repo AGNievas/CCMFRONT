@@ -7,7 +7,6 @@
 .v-container {
   max-width: 500px;
   margin: 0 auto;
-  /* padding-top: 150px;  */
   height: 100%;
   width: 100%;
   display: flex;
@@ -29,7 +28,6 @@
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
-  /* font-weight: bold !important; */
 }
 
 .acciones-cell {
@@ -41,7 +39,6 @@
   text-transform: none;
   background-color: #0E3746;
   color: white;
-  /* margin-right: 5px; */
 }
 
 .btn-icon{
@@ -97,8 +94,8 @@
 
 .v-card-title {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se ajusten a la pantalla */
-  gap: 8px; /* Espacio entre elementos */
+  flex-wrap: wrap; 
+  gap: 8px; 
   justify-content: center;
   text-align: center;
 
@@ -112,8 +109,6 @@
 .headline {
   font-weight: bold;
   color: #0E3746;
-  /* text-align: center;
-  align-items: center; */
 }
 
 .drawer-item-title {
@@ -163,38 +158,32 @@
   width: 100%;
 }
 
-  
+
 @media (max-width: 600px) {
   .v-card-title {
-    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
-    /* align-items: stretch; Asegura que los elementos ocupen el ancho completo */
+    flex-direction: column; 
     padding-right: 4% !important;
-    padding-left: 0px !important; /* Ajusta este valor para que coincida con el padding/margen de la tabla */
+    padding-left: 0px !important; 
   }
-
-  
 
   .v-app-bar-title {
     font-size:medium;
-        
   }
+
   .v-toolbar__content > .v-toolbar-title{
     margin-inline-start: 0px;
   }
 
-  .v-btn--icon.v-btn--density-default {
+  .v-btn.navbar-icon {
     width: calc(var(--v-btn-height) + 0px);
     height: calc(var(--v-btn-height) + 0px);
   }
 
-  .v-btn .v-icon {
-    --v-icon-size-multiplier: 0.8571428571;
-}
     
   .v-card-title .v-text-field,
   .v-card-title .v-select,
   .v-card-title .v-btn {
-    width: 100%; /* Asegura que cada elemento ocupe el 100% del ancho disponible */
+    width: 100%; 
     margin-bottom: 15px;
   }
 }

@@ -2,6 +2,7 @@ import axiosInstance from '@/axios';
 const API_URL = "/item";
 
 const DEPOSITO_GENERAL = 1;
+const PRINCIPAL = 1;
 
 const itemService = { 
      
@@ -47,11 +48,13 @@ const itemService = {
     }
   },
 
-  async  createItem(sku, descripcion, tipo_insumo, stock) {
+  async  createItem(sku, stock) {
     try {
-      const stockAreaId = DEPOSITO_GENERAL;
+      const areaId = DEPOSITO_GENERAL;
+      const stockAreaId = PRINCIPAL;
+      const tipo_insumo = "Medicamento";
       
-      const response = await axiosInstance.post(API_URL ,{sku, descripcion, tipo_insumo, stock, stockAreaId},{withCredentials:true});
+      const response = await axiosInstance.post(API_URL ,{sku, tipo_insumo, stock, stockAreaId, areaId},{withCredentials:true});
       
       return response.data.return;
     } catch (error) {
@@ -83,7 +86,7 @@ const itemService = {
     }
   },
 
-  async  deleteItemsBySku(sku) {
+  async deleteItemsBySku(sku) {
     try {
       
       const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/items/${sku}`,{withCredentials:true});
