@@ -2,60 +2,29 @@
   <v-dialog v-model="localVisible" persistent max-width="600px">
     <v-card>
       <v-card-title>
-        <span class="headline">{{ isEditing ? 'Editar Orden de Transferencia' : 'Agregar Nueva Orden de Transferencia' }}</span>
+        <span class="headline">{{ isEditing ? 'Editar Orden de Transferencia' : 'Agregar Nueva Orden de Transferencia'
+          }}</span>
       </v-card-title>
       <v-card-text>
-        <v-alert
-          v-if="localErrorMessage"
-          type="error"
-          dismissible
-          @input="localErrorMessage = ''"
-        >
+        <v-alert v-if="localErrorMessage" type="error" dismissible @input="localErrorMessage = ''">
           {{ localErrorMessage }}
         </v-alert>
 
         <v-form ref="form">
-          <v-select v-if="!this.isEditing"
-            v-model="localOrdenTransferencia.stockAreaIdOrigen"
-            :items="mostrarAreasNombre"
-            item-title="nombre"
-            item-value="id"
-            :label="areaOrigenLabel"
-            :disabled="!globalStore.getEsAdmin"
-            required
-          />
-          <v-select v-if="!this.isEditing"
-            v-model="localOrdenTransferencia.stockAreaIdDestino"
-            :items="mostrarAreasNombre"
-            item-title="nombre"
-            item-value="id"
-            label="Área Destino"
-            required
-          />
-          <v-text-field
-            v-model="localOrdenTransferencia.motivo"
-            label="Motivo"
-            required
-          />
-          <ListadoDeTransferencias v-if="!this.isEditing"
-            :items="localOrdenTransferencia.items"
-            @add-item="openAddItemDialog"
-            @edit-item="openEditItemDialog"
-            @delete-item="deleteItem"
-            @close="closeDialog"
-            :disabled="!selectedStockArea"
-          />
+          <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdOrigen" :items="mapeoAreas"
+            item-title="nombre" item-value="id" :label="areaOrigenLabel" :disabled="!globalStore.getEsAdmin" required />
+          <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdDestino"
+            :items="mostrarAreasNombre" item-title="nombre" item-value="id" label="Área Destino" required />
+          <v-text-field v-model="localOrdenTransferencia.motivo" label="Motivo" required />
+          <ListadoDeTransferencias v-if="!this.isEditing" :items="localOrdenTransferencia.items"
+            @add-item="openAddItemDialog" @edit-item="openEditItemDialog" @delete-item="deleteItem" @close="closeDialog"
+            :disabled="!selectedStockArea" />
         </v-form>
       </v-card-text>
 
-      <TransferenciaDialog v-if="itemDialogVisible"
-        v-model="itemDialogVisible"
-        :isEditing="isEditingItem"
-        :item="selectedItem"
-        :areaId="selectedArea"
-        :stockAreaId="localOrdenTransferencia.stockAreaIdOrigen"
-        @save="saveItem"
-      />
+      <TransferenciaDialog v-if="itemDialogVisible" v-model="itemDialogVisible" :isEditing="isEditingItem"
+        :item="selectedItem" :areaId="selectedArea" :stockAreaId="localOrdenTransferencia.stockAreaIdOrigen"
+        @save="saveItem" />
 
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -80,9 +49,9 @@ export default {
       type: Object,
       default: () => ({ stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '', items: [] })
     },
-     stockAreas:{
-      type:Array,
-     }, 
+    stockAreas: {
+      type: Array,
+    },
     errorMessage: {
       type: String,
       default: '',
@@ -96,16 +65,16 @@ export default {
     return {
       localVisible: this.modelValue,
       localOrdenTransferencia: {
-        stockAreaIdOrigen:'',
-        stockAreaIdDestino:'',
-        areaIdOrigen:'',
-        areaIdDestino:'',
-        fechaTransferencia:'',
+        stockAreaIdOrigen: '',
+        stockAreaIdDestino: '',
+        areaIdOrigen: '',
+        areaIdDestino: '',
+        fechaTransferencia: '',
         userId: '',
-        motivo:'',
-        listaItems:[],
+        motivo: '',
+        listaItems: [],
       },
-      medicamentos:[],
+      medicamentos: [],
       isEditingItem: false,
       itemDialogVisible: false,
       selectedItemIndex: null,
@@ -113,66 +82,77 @@ export default {
       userAreaName: '',
       globalStore: useGlobalStore(),
       localErrorMessage: '',
-      areasAMostrar :[],
-     
+      areasAMostrar: [],
+
     };
   },
   computed: {
 
-    selectedStockArea(){
+    selectedStockArea() {
       return this.localOrdenTransferencia.stockAreaIdOrigen
     },
-    selectedArea(){
+    selectedArea() {
       return this.stockAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
     },
 
-    mostrarAreasNombre(){
-        
-           
+    mostrarAreasNombre() {
+
+      if (this.localOrdenTransferencia.stockAreaIdOrigen) {
+        return this.mapeoAreas.filter(
+          area => area.id !== this.localOrdenTransferencia.stockAreaIdOrigen
+        );
+      } else {
+        return this.mapeoAreas;
+      }
+
+
+
+    },
+
+    mapeoAreas() {
       return this.stockAreas.map(areas => {
         return {
           id: areas.id,
-          nombre:  areas.Area.nombre + " - " + areas.nombre,
-          Area:{
+          nombre: areas.Area.nombre + " - " + areas.nombre,
+          Area: {
             id: areas.Area.id,
             nombre: areas.Area.nombre
-          } 
+          }
         }
-      }, )
-    
+      },)
     },
-   
- 
+
+
     areaOrigenLabel() {
       return !this.globalStore.getEsAdmin ? this.userAreaName : 'Área Origen';
     },
     isFormValid() {
-      if(!this.isEditing){
+      if (!this.isEditing) {
         const { stockAreaIdOrigen, stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
-        return stockAreaIdOrigen&& stockAreaIdDestino&& motivo && items ? items.length!=0 : false
-      }else{
+        return stockAreaIdOrigen && stockAreaIdDestino && motivo && items ? items.length != 0 : false
+      } else {
         const { motivo } = this.localOrdenTransferencia;
-      return  motivo ;
+        return motivo;
       }
-     
+
     },
   },
   async mounted() {
     this.traerAreaUsuario();
-  
-  
+
+
   },
   methods: {
 
-  
 
-    formatearFechaYHora(fecha){
+
+    formatearFechaYHora(fecha) {
       return formatearFechaYHora(fecha)
     },
-    
+
     async traerAreaUsuario() {
 
-     
+
       if (!this.globalStore.getEsAdmin) {
         this.localOrdenTransferencia.stockAreaIdOrigen = this.globalStore.getStockAreas;
         const userArea = this.stockAreas.find(area => area.id == this.globalStore.getStockAreas);
@@ -180,14 +160,14 @@ export default {
       }
     },
     saveChanges() {
-      
-      if(!this.isEditing){
+
+      if (!this.isEditing) {
         this.localOrdenTransferencia.userId = this.globalStore.getUsuarioId,
-        this.localOrdenTransferencia.areaIdOrigen = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
+          this.localOrdenTransferencia.areaIdOrigen = this.mapeoAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
         this.localOrdenTransferencia.areaIdDestino = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdDestino).Area.id
-        this.localOrdenTransferencia.fechaTransferencia= this.formatearFechaYHora(new Date())
+        this.localOrdenTransferencia.fechaTransferencia = this.formatearFechaYHora(new Date())
       }
-      
+
       this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); // Evita referencias reactivas
     },
     closeDialog() {
@@ -195,7 +175,7 @@ export default {
       this.localErrorMessage = '';
       this.$emit('update:modelValue', false);
     },
-    
+
     openAddItemDialog() {
       this.selectedItem = null;
       this.itemDialogVisible = true;
@@ -219,7 +199,7 @@ export default {
         this.localOrdenTransferencia.items.push(item);
       }
       this.itemDialogVisible = false;
-      
+
     },
   },
   watch: {
@@ -237,7 +217,7 @@ export default {
       immediate: true,
       deep: true,
     },
-   
+
   },
 };
 </script>
