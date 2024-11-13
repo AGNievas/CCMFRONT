@@ -42,14 +42,14 @@
             :error-messages="dniError ? 'El DNI debe tener 8 dígitos' : ''"
           ></v-text-field>
           <v-text-field
-  v-model="pacienteLocal.fechaNacimiento"
-  label="Fecha de Nacimiento (YYYY-MM-DD)"
-  type="date"
-  required
-  @input="validateFechaNacimiento"
-  :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
-/>
-
+            v-model="pacienteLocal.fechaNacimiento"
+            label="Fecha de Nacimiento (DD-MM-YYYY)"
+            type="date"
+            required
+            :input="pacienteLocal.fechaNacimiento"
+            @keypress="soloNumeros"
+            :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
+          ></v-text-field>
           <v-select
             v-model="pacienteLocal.genero"
             :items="['Masculino', 'Femenino', 'No binario']"
