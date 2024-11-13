@@ -12,9 +12,27 @@
             required 
             @input="localUsuario.cuil = formatearCuil(localUsuario.cuil)" 
           />
-          <v-text-field v-model="localUsuario.fullName" label="Nombre Completo" required></v-text-field>
-          <v-select v-model="localUsuario.rolId" :items="roles" item-title="name" item-value="id" label="Rol" required></v-select>
-          <v-select v-model="localUsuario.areaId" :items="areas" item-title="nombre" item-value="id" label="Área" required></v-select>
+          <v-text-field 
+            v-model="localUsuario.fullName" 
+            label="Nombre Completo" 
+            required>
+          </v-text-field>
+          <v-select 
+            v-model="localUsuario.rolId" 
+            :items="roles" 
+            item-title="name" 
+            item-value="id" 
+            label="Rol" 
+            required>
+          </v-select>
+          <v-select 
+            v-model="localUsuario.areaId" 
+            :items="areas" 
+            item-title="nombre" 
+            item-value="id" 
+            label="Área" 
+            required>
+          </v-select>
 
           <v-alert v-if="formError" type="error" dismissible>
             Todos los campos son obligatorios. Por favor, completa la información.
@@ -32,7 +50,7 @@
 </template>
 
 <script>
-import  {formatearCuil}  from '@/utils/utils';
+import { formatearCuil } from '@/utils/utils';
 
 export default {
   props: {
@@ -46,13 +64,13 @@ export default {
   data() {
     return {
       localVisible: this.modelValue, 
-      localUsuario: this.createLocalUsuario() 
+      localUsuario: this.createLocalUsuario(),
+      initialRol: null,
+      initialArea: null
     };
   },
 
   methods: {
-
-    
     formatearCuil(cuil) {
       return formatearCuil(cuil);
     },
@@ -70,6 +88,7 @@ export default {
       this.$emit('update:modelValue', false);
     }
   },
+  
   watch: {
     modelValue(val) {
       this.localVisible = val; 

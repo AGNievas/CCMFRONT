@@ -165,7 +165,8 @@ export default {
       this.dialog = true;
     },
     openEditDialog(usuario) {
-      this.editUsuario = { ...usuario };
+      const user = this.usuarios.find(u => u.id == usuario.id)
+      this.editUsuario = { ...user };
       this.editDialog = true;
     },
     confirmDelete(id) {
