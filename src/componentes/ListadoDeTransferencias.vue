@@ -2,13 +2,10 @@
   <v-card-title class="d-flex align-center pe-2">
     <span v-if="isViewMode" class="headline">Listado de Medicamentos Orden N°: {{ orderNumber }}</span>
     <v-spacer></v-spacer>
-    <v-btn v-if="!isViewMode" @click="$emit('add-item')" class="btn-blue">Agregar Item</v-btn>
+    <v-btn v-if="!isViewMode" @click="$emit('add-item')" class="btn-blue" :disabled="disabled">Agregar Item</v-btn>
     <v-spacer></v-spacer>
-
-    <v-btn icon @click="$emit('close')">
-      <v-icon>mdi-close</v-icon>
-    </v-btn>
   </v-card-title>
+  
 
   <Tabla :data="items" :headers="transferenciasHeaders" :isEditable="!isViewMode"
     @edit="(item) => $emit('edit-item', item)" @delete="(item) => $emit('delete-item', item.index)" />
@@ -19,7 +16,7 @@
 import Tabla from './Tabla.vue';
 export default {
   props: {
-
+    disabled: Boolean,
     items: Array,
     isViewMode: {
       type: Boolean,
@@ -30,7 +27,7 @@ export default {
   components: {
     Tabla,
   },
-  emits: ['close', 'add-item', 'edit-item', 'delete-item'],
+  emits: [ 'close','add-item', 'edit-item', 'delete-item'],
   computed: {
     transferenciasHeaders() {
       return [

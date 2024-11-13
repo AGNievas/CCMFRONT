@@ -135,8 +135,10 @@ export default {
   });
 }},
   async mounted() {
-  await this.loadStockAreas(); // Espera a que stockAreas esté cargado
-  await this.loadOrdenesTransferencias(); // Luego carga las órdenes
+  
+  await this.loadStockAreas();
+  await this.loadOrdenesTransferencias(); 
+ 
 },
  
   methods: {

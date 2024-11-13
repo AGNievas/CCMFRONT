@@ -28,11 +28,12 @@ export default {
   },
    methods:{
     async loadAreasYUsuarios(){
-      const areas = await areaService.getAllArea();
+      if(this.globalStore.getLogueado){ const areas = await areaService.getAllArea();
       const stockAreas = await stockAreaService.getAllStockArea();
       const usuarios = await usuariosService.getAllUsuarios();
       const roles = await rolService.getAllRol()
-      this.globalStore.cargarAreasYUser(areas, usuarios,roles, stockAreas);
+      this.globalStore.cargarAreasYUser(areas, usuarios,roles, stockAreas);}
+     
     }
   }
 };

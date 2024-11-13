@@ -31,7 +31,7 @@ export const useGlobalStore = defineStore('global', {
             this.fullNameUsuario = fullNameUsuario
             this.rolId = rolId
             this.rolName = rolName
-            this.esAdmin = esAdmin
+            this.esAdmin = this.rolId== this.ROL_ID_SUPER_ADMIN|| this.ROL_ID_ADMIN ? true : false
             this.logueado = logueado
             this.usuarioIdYNombre = {id: this.usuarioId, fullName: this.fullNameUsuario}
         }

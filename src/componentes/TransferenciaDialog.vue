@@ -2,33 +2,18 @@
   <v-dialog v-model="localVisible" persistent max-width="400px" @keydown.esc="closeDialog">
     <v-card>
       <v-card-title>
-        <span class="headline">Agregar Item</span>
+        <span class="headline">{{ isEditing ? 'Editar Item' : 'Agregar Item' }}</span>
         <v-spacer></v-spacer>
-        <v-btn icon @click="closeDialog">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+       
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-select v-if="!isEditing"
-            v-model="localTransferencia.sku" 
-            label="SKU" 
-            required 
-            type="number" 
-          ></v-select>
-          <v-select v-if="!isEditing"
-            v-model="localTransferencia.descripcion" 
-            label="Descripcion" 
-            required 
-            type="text" 
-          ></v-select>
-          <v-text-field v-if="!isEditing" 
-            v-model="localTransferencia.cantidad" 
-            label="Cantidad" 
-            required 
-            type="number" 
-            :rules="[cantidadRule]"
-          />
+          <v-select v-model="localTransferencia.sku" :items="medicamentosPorStockArea" item-title="sku" item-value="sku"
+            label="SKU" required></v-select>
+          <v-select v-model="localTransferencia.descripcion" :items="medicamentosPorStockArea" item-title="descripcion"
+            item-value="descripcion" label="Descripcion" required></v-select>
+          <v-text-field v-model="localTransferencia.cantidad" label="Cantidad" required type="number"
+            :rules="[cantidadRule]" />
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -41,28 +26,43 @@
 </template>
 
 <script>
+import { useGlobalStore } from '@/stores/global';
+import itemService from './servicios/itemService';
 export default {
   props: {
-    medicamentos: Array,
+    isEditing: Boolean,
     modelValue: Boolean,
+    isAdmin: Boolean,
+    stockAreaId: Number,
+    areaId: Number
   },
   data() {
     return {
+      globalStore: useGlobalStore(),
+      medicamentos: [],
       localVisible: this.modelValue,
-      localTransferencia: { sku: '', descripcion:'', cantidad: '' },
+      localTransferencia: { sku: '', descripcion: '', cantidad: '' },
     };
   },
+
+  async mounted() {
+    await this.loadMedicamentosByStockAreaId(this.stockAreaId, this.areaId)
+
+  },
+
   computed: {
 
     medicamentosPorStockArea() {
       return this.medicamentos
-        .filter(medicamento => medicamento.StockArea?.id == this.apliqueLocal.stockAreaId)
+        .filter(medicamento => medicamento.StockArea?.id == this.stockAreaId)
         .map(medicamento => ({
-          sku: medicamento.Medicamento.sku,
-          descripcion: medicamento.Medicamento.descripcion,
-          id: medicamento.Medicamento.id,
+          sku: String(medicamento.Medicamento.sku),
+          descripcion: String(medicamento.Medicamento.descripcion),
         }));
+
     },
+
+
     isFormValid() {
       return (
         this.localTransferencia.sku !== '' &&
@@ -75,6 +75,13 @@ export default {
     },
   },
   methods: {
+
+    async loadMedicamentosByStockAreaId() {
+      this.medicamentos = await itemService.getAllItem();
+    },
+
+
+
     saveChanges() {
       if (this.isFormValid) {
         this.$emit('save', { ...this.localTransferencia });
@@ -91,24 +98,26 @@ export default {
       this.localVisible = val;
     },
 
-    'localTransferencia.sku'(newSku){
-      const medicamento = this.medicamentosPorStockArea(
+    'localTransferencia.sku'(newSku) {
+      const medicamento = this.medicamentosPorStockArea.find(
         med => med.sku == newSku
       );
-      if(medicamento){
+
+      if (medicamento) {
         this.localTransferencia.descripcion = medicamento.descripcion;
-      }else{
-        this.apliqueLocal.descripcion= '';
+      } else {
+        this.localTransferencia.descripcion = '';
       }
     },
 
-    'localTransferencia.descripcion'(newDescripcion){
+    'localTransferencia.descripcion'(newDescripcion) {
       const medicamento = this.medicamentosPorStockArea.find(
         med => med.descripcion === newDescripcion
       );
       if (medicamento) {
         this.localTransferencia.sku = medicamento.sku;
       } else {
+        // Asigna un valor vacío a `sku` en caso de que no se encuentre el medicamento
         this.localTransferencia.sku = '';
       }
     }

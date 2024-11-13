@@ -39,17 +39,21 @@
           />
           <ListadoDeTransferencias v-if="!this.isEditing"
             :items="localOrdenTransferencia.items"
-            :item="selectedItem"
             @add-item="openAddItemDialog"
             @edit-item="openEditItemDialog"
             @delete-item="deleteItem"
+            @close="closeDialog"
+            :disabled="!selectedStockArea"
           />
         </v-form>
       </v-card-text>
 
-      <TransferenciaDialog
+      <TransferenciaDialog v-if="itemDialogVisible"
         v-model="itemDialogVisible"
+        :isEditing="isEditingItem"
         :item="selectedItem"
+        :areaId="selectedArea"
+        :stockAreaId="localOrdenTransferencia.stockAreaIdOrigen"
         @save="saveItem"
       />
 
@@ -101,6 +105,8 @@ export default {
         motivo:'',
         listaItems:[],
       },
+      medicamentos:[],
+      isEditingItem: false,
       itemDialogVisible: false,
       selectedItemIndex: null,
       selectedItem: null,
@@ -108,14 +114,22 @@ export default {
       globalStore: useGlobalStore(),
       localErrorMessage: '',
       areasAMostrar :[],
-      // user: !this.isEditing ? this.globalStore.getUsuarioIdYNombre : ''
+     
     };
   },
   computed: {
+
+    selectedStockArea(){
+      return this.localOrdenTransferencia.stockAreaIdOrigen
+    },
+    selectedArea(){
+      return this.stockAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
+    },
+
     mostrarAreasNombre(){
         
-            
-      return this.stockAreas.map(areas => {console.log(areas)
+           
+      return this.stockAreas.map(areas => {
         return {
           id: areas.id,
           nombre:  areas.Area.nombre + " - " + areas.nombre,
@@ -127,6 +141,7 @@ export default {
       }, )
     
     },
+   
  
     areaOrigenLabel() {
       return !this.globalStore.getEsAdmin ? this.userAreaName : 'Área Origen';
@@ -145,8 +160,11 @@ export default {
   async mounted() {
     this.traerAreaUsuario();
   
+  
   },
   methods: {
+
+  
 
     formatearFechaYHora(fecha){
       return formatearFechaYHora(fecha)
@@ -177,6 +195,7 @@ export default {
       this.localErrorMessage = '';
       this.$emit('update:modelValue', false);
     },
+    
     openAddItemDialog() {
       this.selectedItem = null;
       this.itemDialogVisible = true;
@@ -184,6 +203,7 @@ export default {
     openEditItemDialog(item) {
       this.selectedItemIndex = this.localOrdenTransferencia.items.findIndex(i => i.id === item.id);
       this.selectedItem = { ...item };
+      this.isEditingItem = true;
       this.itemDialogVisible = true;
     },
     deleteItem(index) {
@@ -203,15 +223,7 @@ export default {
     },
   },
   watch: {
-  //   'globalStore.getStockAreas': {
-  //   handler(newStockAreas) {
-  //     console.log(newStockAreas, "GLOBALSOTRE EN WATCH EN OPEN DIALOG")
-  //     if (Array.isArray(newStockAreas) && newStockAreas.length > 0) {
-  //       this.stockAreas = newStockAreas;
-  //     }
-  //   },
-  //   immediate: true,
-  // },
+
     modelValue(val) {
       this.localVisible = val;
     },
@@ -225,15 +237,7 @@ export default {
       immediate: true,
       deep: true,
     },
-    // stockAreas: {
-    //   immediate: true,
-    //   handler(newStockAreas) {
-    //     console.log(newStockAreas, "stockAreas Watch en ORDEN DIALOG")
-    //     if (newStockAreas.length > 0) {
-    //       this.traerAreaUsuario();
-    //     }
-    //   }
-    // },
+   
   },
 };
 </script>
