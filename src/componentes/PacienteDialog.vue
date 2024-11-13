@@ -42,14 +42,14 @@
             :error-messages="dniError ? 'El DNI debe tener 8 dígitos' : ''"
           ></v-text-field>
           <v-text-field
-            v-model="pacienteLocal.fechaNacimiento"
-            label="Fecha de Nacimiento (DD-MM-YYYY)"
-            type="date"
-            required
-            @input="pacienteLocal.fechaNacimiento"
-            @keypress="soloNumeros"
-            :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
-          ></v-text-field>
+  v-model="pacienteLocal.fechaNacimiento"
+  label="Fecha de Nacimiento (YYYY-MM-DD)"
+  type="date"
+  required
+  @input="validateFechaNacimiento"
+  :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
+/>
+
           <v-select
             v-model="pacienteLocal.genero"
             :items="['Masculino', 'Femenino', 'No binario']"
@@ -109,15 +109,21 @@ export default {
   },
   watch: {
     paciente: {
-      immediate: true,
-      handler(newPaciente) {
-        if (this.isEditing && newPaciente) {
-          this.pacienteLocal = { ...newPaciente };
-        } else {
-          this.resetPacienteLocal();
+    immediate: true,
+    handler(newPaciente) {
+      if (this.isEditing && newPaciente) {
+        this.pacienteLocal = { ...newPaciente };
+        
+        // Convertir la fecha a formato YYYY-MM-DD si no está en ese formato
+        if (this.pacienteLocal.fechaNacimiento) {
+          const [day, month, year] = this.pacienteLocal.fechaNacimiento.split('-');
+          this.pacienteLocal.fechaNacimiento = `${year}-${month}-${day}`;
         }
-      },
+      } else {
+        this.resetPacienteLocal();
+      }
     },
+  },
     modelValue(val) {
       this.localVisible = val;
     },
