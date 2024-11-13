@@ -25,14 +25,12 @@
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
         <ApliqueDialog v-model="apliqueDialogVisible" :paciente-id="selectedPacienteId"
-        :areas="globalStore.getAreas" :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDeleteAplique" />
+        :areas="globalStore.getAreas" :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDelete" />
       </v-dialog>
       
       <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"  :usuarios="globalStore.getUsuarios"
         :medicamentos="medicamentos"  />
-   
-      <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
-        text="¿Estás seguro de que deseas eliminar este paciente?" @confirm="deletePaciente" />
+        
     </v-card>
   </div>
 </template>
@@ -40,10 +38,10 @@
 <script>
 import Tabla from './Tabla.vue';
 import PacienteDialog from './PacienteDialog.vue';
-import ConfirmDialog from './ConfirmDialog.vue';
+
 import pacienteService from './servicios/pacienteService';
-import { differenceInYears } from 'date-fns'
-import { formatearFecha } from '@/utils/utils';
+
+import { formatearFecha, calcularEdad } from '@/utils/utils';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
@@ -53,7 +51,6 @@ export default {
   components: {
     Tabla,
     PacienteDialog,
-    ConfirmDialog,
     ApliqueDialog,
     ListadoApliques
   },
@@ -64,9 +61,7 @@ export default {
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
       agregarDialog: false,
       editarDialog: false,
-      deleteDialog: false,
       pacienteEdit: {},
-      confirmDeleteId: null,
       apliqueDialogVisible: false,
       listadoApliquesVisible: false,
       selectedPacienteId: null,
@@ -99,32 +94,6 @@ export default {
     }
   },
   
-  watch: {
-    'globalStore.getAreas': {
-      handler(newAreas) {
-        if (newAreas.length) {
-          this.areas = newAreas;
-        }
-      },
-      immediate: true,
-    },
-    'globalStore.getStockAreas': {
-      handler(newStockAreas) {
-        if (newStockAreas.length) {
-          this.StockAreas = newStockAreas;
-        }
-      },
-      immediate: true,
-    },
-    'globalStore.getUsuarios': {
-      handler(newUsuarios) {
-        if (newUsuarios.length) {
-          this.usuarios = newUsuarios;
-        }
-      },
-      immediate: true,
-    },
-  },
   methods: {
     async loadMedicamentos() {
       const response = await itemService.getAllItem()
@@ -137,8 +106,8 @@ export default {
         nombre: paciente.nombre,
         apellido: paciente.apellido,
         genero: paciente.genero,
-        edad: this.calcularEdad(paciente.fechaNacimiento),
-        fechaNacimiento: this.formatearFecha(paciente.fechaNacimiento),
+        edad: calcularEdad(paciente.fechaNacimiento),
+        fechaNacimiento: formatearFecha(paciente.fechaNacimiento),
       }));
     },
     filtrarPacientes() {
@@ -157,12 +126,7 @@ export default {
     async loadPacientes() {
       this.pacientes = await pacienteService.getAllPaciente();
     },
-    formatearFecha(fecha) {
-      return formatearFecha(fecha)
-    },
-    calcularEdad(fechaNacimiento) {
-      return differenceInYears(new Date(), new Date(fechaNacimiento))
-    },
+   
     async addPaciente(nuevoPaciente) {
       try {
         const pacienteCreado = await pacienteService.createPaciente(nuevoPaciente);
@@ -235,15 +199,7 @@ export default {
       this.confirmDeleteId = id;
       this.deleteDialog = true;
     },
-    async deletePaciente() {
-      try {
-        await pacienteService.deletePaciente(this.confirmDeleteId);
-        this.pacientes = this.pacientes.filter(p => p.id !== this.confirmDeleteId);
-        this.deleteDialog = false;
-      } catch (error) {
-        console.error('Error al eliminar paciente:', error);
-      }
-    },
+   
   },
 };
 </script>

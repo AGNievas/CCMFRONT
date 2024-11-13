@@ -1,3 +1,5 @@
+import { differenceInYears } from 'date-fns'
+
 export function formatearFecha(fecha) {
     const date = new Date(fecha);
     const year = date.getFullYear();
@@ -70,4 +72,7 @@ export function formatearFecha(fecha) {
     if (!/[a-zA-Z\s]/.test(key)) {
       event.preventDefault();
     }
+  }
+  export function calcularEdad(fechaNacimiento) {
+    return differenceInYears(new Date(), new Date(fechaNacimiento))
   }

@@ -44,7 +44,7 @@ export default {
     usuarios: Array,
     medicamentos: Array,
     pacienteId: {
-      type: String,
+      type: Object,
       required: true,
     },
   },

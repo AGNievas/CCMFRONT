@@ -9,7 +9,7 @@
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
-      <Tabla :data="valoresTabla" :headers="apliquesHeaders" :usuarios="usuarios" :isListadoApliques="true" @edit="openEditarApliqueDialog"
+      <Tabla :data="valoresTabla" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
         @delete="confirmDeleteAplique" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
