@@ -262,7 +262,7 @@ export default {
       if(this.globalStore.getRolName == "Super Admin" || this.globalStore.getRolName == "Admin" ){
         this.area = this.areasTodo[0].id;
       }else{
-        this.area = this.areas[this.globalStore.getAreaId]
+        this.area = this.areasTodo[this.globalStore.getAreaId].id
       }
       this.onAreaChange(this.area)
     },
