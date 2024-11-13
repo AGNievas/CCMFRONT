@@ -2,64 +2,27 @@
   <div>
     <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          label="Buscar"
-          prepend-inner-icon="mdi-magnify"
-          variant="solo"
-          hide-details
-          single-line
-          class="rounded-search-bar"
-        ></v-text-field>
+        <v-text-field v-model="search" density="compact" label="Buscar" prepend-inner-icon="mdi-magnify" variant="solo"
+          hide-details single-line class="rounded-search-bar"></v-text-field>
         <v-spacer></v-spacer>
         <v-btn @click="openAddUserDialog" class="btn-blue">Agregar Usuario</v-btn>
       </v-card-title>
 
-      
-      <Tabla
-        :data="usuariosFiltradosParaVista"
-        :headers="usuariosHeaders"
-        :isListadoUsuarios="true"
-        :eliminable="false"
-        @edit="openEditDialog"
-        @delete="confirmDelete"
-        @restorePassword="confirmRestorePassword"
-      />
+
+      <Tabla :data="usuariosFiltradosParaVista" :headers="usuariosHeaders" :isListadoUsuarios="true" :eliminable="false"
+        @edit="openEditDialog" @delete="confirmDelete" @restorePassword="confirmRestorePassword" />
     </v-card>
-  
-    <ConfirmDialog
-      v-model="deleteDialog"
-      :isDelete="true"
-      title="Confirmar Eliminación"
-      text="¿Estás seguro de que deseas eliminar este usuario?"
-      @confirm="deleteUsuario"
-    />
 
-    <ConfirmDialog
-      v-model="restoreDialog"
-      title="Restaurar Contraseña"
-      text="¿Estás seguro de que deseas restaurar la contraseña de este usuario?"
-      @confirm="restorePassword"
-    />
+    <ConfirmDialog v-model="deleteDialog" :isDelete="true" title="Confirmar Eliminación"
+      text="¿Estás seguro de que deseas eliminar este usuario?" @confirm="deleteUsuario" />
 
-    <UsuarioDialog
-      v-model="dialog"
-      :is-editing="false"
-      :usuario="newUsuario"
-      @save="addUsuario"
-      :roles="roles"
-      :areas="areas"
-    />
-    <UsuarioDialog
-      v-model="editDialog"
-      :is-editing="true"
-      :usuario="editUsuario"
-      @update:usuario="editUsuario = $event"
-      @save="updateUsuario"
-      :roles="roles"
-      :areas="areas"
-    />
+    <ConfirmDialog v-model="restoreDialog" title="Restaurar Contraseña"
+      text="¿Estás seguro de que deseas restaurar la contraseña de este usuario?" @confirm="restorePassword" />
+
+    <UsuarioDialog v-model="dialog" :is-editing="false" :usuario="newUsuario" @save="addUsuario" :roles="roles"
+      :areas="areas" />
+    <UsuarioDialog v-model="editDialog" :is-editing="true" :usuario="editUsuario" @update:usuario="editUsuario = $event"
+      @save="updateUsuario" :roles="roles" :areas="areas" />
   </div>
 </template>
 
@@ -80,8 +43,7 @@ export default {
     return {
       search: '',
       usuarios: [],
-      // stockAreas: [],
-      areas:[],
+      areas: [],
       roles: [],
       dialog: false,
       editDialog: false,
@@ -120,21 +82,21 @@ export default {
     },
     usuariosFiltradosParaVista() {
       return this.usuariosConArea.map(usuario => ({
-        
+
         cuil: usuario.cuil,
         fullName: usuario.fullName,
-        rolName: usuario.Rol.name, 
-        nombreArea: usuario.Area.nombre, 
-        id: usuario.id, 
-  }));
+        rolName: usuario.Rol.name,
+        nombreArea: usuario.Area.nombre,
+        id: usuario.id,
+      }));
 
 
-},
+    },
 
   },
   async mounted() {
     this.loadUsuarios();
- },
+  },
 
 
   watch: {
@@ -154,7 +116,7 @@ export default {
       },
       immediate: true,
     },
-    
+
   },
   methods: {
 

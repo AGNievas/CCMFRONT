@@ -37,7 +37,7 @@
 <script>
 import loginService from "./servicios/loginService";
 import { useGlobalStore } from "@/stores/global";
-import { formatearCuil } from '@/utils/utils';
+import { formatearCuil , validarCuil } from '@/utils/utils';
 import areaService from "./servicios/areaService";
 import usuariosService from "./servicios/usuariosService";
 import rolService from "./servicios/rolService";
@@ -66,7 +66,7 @@ export default {
 
       if (!this.formData.cuil) {
         this.cuilErrors.push("CUIL es requerido.");
-      } else if (!this.validarCuil()) {
+      } else if (!validarCuil) {
         this.cuilErrors.push("CUIL no es válido. Debe tener el formato 20-12345678-9.");
       }
 
@@ -77,11 +77,7 @@ export default {
       return !this.cuilErrors.length && !this.passwordErrors.length;
     },
 
-    validarCuil() {
-      const re = /^\d{2}-\d{8}-\d{1}$/;
-      return re.test(this.formData.cuil);
-    },
-
+   
     formatearCuil(cuil) {
       return formatearCuil(cuil)
     },

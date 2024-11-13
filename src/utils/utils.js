@@ -27,6 +27,11 @@ export function formatearFecha(fecha) {
   export function validarDni(dni) {
     return /^\d{8}$/.test(dni);
   }
+
+  export function  validarCuil(cuil) {
+    const re = /^\d{2}-\d{8}-\d{1}$/;
+    return re.test(cuil);
+  }
   
 
   export function  extraerNumeroDelCuil(cuil) {

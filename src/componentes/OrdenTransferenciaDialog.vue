@@ -6,10 +6,7 @@
           }}</span>
       </v-card-title>
       <v-card-text>
-        <v-alert v-if="localErrorMessage" type="error" dismissible @input="localErrorMessage = ''">
-          {{ localErrorMessage }}
-        </v-alert>
-
+   
         <v-form ref="form">
           <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdOrigen" :items="mapeoAreas"
             item-title="nombre" item-value="id" :label="areaOrigenLabel" :disabled="!globalStore.getEsAdmin" required />
