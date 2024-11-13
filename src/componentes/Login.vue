@@ -3,18 +3,30 @@
     <v-card>
       <v-card-text class="text-center">
         <v-form @submit.prevent="login">
-          <v-text-field v-model="formData.cuil" placeholder="CUIL" label="CUIL" required type="text"
-            :error-messages="cuilErrors" @input="formData.cuil = formatearCuil(formData.cuil)"></v-text-field>
-          <v-text-field v-model="formData.password" label="Password" required :type="showPassword ? 'text' : 'password'"
-            :error-messages="passwordErrors" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append-inner="toggleShowPassword"></v-text-field>
+          <v-text-field 
+            v-model="formData.cuil"  
+            label="CUIL" 
+            required 
+            type="text"
+            :error-messages="cuilErrors" 
+            @input="formData.cuil = formatearCuil(formData.cuil)">
+          </v-text-field>
+
+          <v-text-field 
+            v-model="formData.password"
+            label="Contraseña" 
+            required 
+            :type="showPassword ? 'text' : 'password'"
+            :error-messages="passwordErrors" 
+            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="toggleShowPassword">
+          </v-text-field>
 
           <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
         </v-form>
         <br>
 
-        <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error
-          }}</v-alert>
+        <v-alert v-if="error" type="error" dense icon="mdi-alert-circle-outline" elevation="1" rounded outlined>{{ error }}</v-alert>
         <RouterLink to="/recuperarPassword" class="recuperar-link">recuperar contraseña</RouterLink>
       </v-card-text>
     </v-card>
@@ -26,7 +38,6 @@
 import loginService from "./servicios/loginService";
 import { useGlobalStore } from "@/stores/global";
 import { formatearCuil } from '@/utils/utils';
-// import stockAreaService from "./servicios/stockAreaService";
 import areaService from "./servicios/areaService";
 import usuariosService from "./servicios/usuariosService";
 import rolService from "./servicios/rolService";
@@ -77,7 +88,6 @@ export default {
 
     async login() {
       this.validateForm()
-
       try {
         const { cuil, password } = this.formData;
         const { payload: response } = await loginService.login(cuil, password);
