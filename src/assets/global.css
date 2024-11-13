@@ -26,14 +26,18 @@
 .table-header {
   background-color: #E5E5E5;
   text-transform: uppercase;
-  white-space: nowrap;
   cursor: pointer;
+  width: 250px !important;
+  max-width: 250px !important;
 }
 
 .acciones-cell {
   width: 250px;
   max-width: 250px;
-  text-align: center !important;}
+  text-align: center !important;
+}
+
+
 
 .btn-blue {
   text-transform: none;
@@ -48,7 +52,7 @@
 .v-data-table{
   border-radius: 16px;
   text-transform: uppercase;
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 
 .home-container {

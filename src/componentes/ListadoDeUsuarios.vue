@@ -21,6 +21,7 @@
         :data="usuariosFiltradosParaVista"
         :headers="usuariosHeaders"
         :isListadoUsuarios="true"
+        :eliminable="false"
         @edit="openEditDialog"
         @delete="confirmDelete"
         @restorePassword="confirmRestorePassword"

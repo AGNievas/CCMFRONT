@@ -13,6 +13,7 @@
         ></v-text-field>
 
         <v-select
+          :disabled="puedeCambiarArea"
           v-model="area"
           :items="areasTodo"
           item-title="nombre"
@@ -165,7 +166,8 @@ export default {
 
     stockHeaderText() {
       const areaSeleccionada = this.areasTodo.find(area => area.id === this.area);
-      return `STOCK - ${areaSeleccionada ? areaSeleccionada.nombre : ''}`;
+      const stockAreaSeleccionada = this.stockAreasTodo.find(stockArea => stockArea.id === this.stockArea)
+      return `STOCK - ${areaSeleccionada ? areaSeleccionada.nombre : ''} ${stockAreaSeleccionada ? stockAreaSeleccionada.nombre : ''}`;
     },
 
     usuariosHeaders() {
@@ -185,6 +187,14 @@ export default {
         const descripcionMatch = medicamento.descripcion.toLowerCase().includes(searchTerm);
         return skuMatch || descripcionMatch;
       });
+    },
+
+    puedeCambiarArea(){
+      let puedeCambiarArea = true;
+      if(this.globalStore.getRolName == "Admin" || this.globalStore.getRolName == "Super Admin"){
+        puedeCambiarArea = false;
+      }
+      return puedeCambiarArea;
     },
   },
 
@@ -249,7 +259,11 @@ export default {
     async loadAreasId(){
       this.areas = await areaService.getAllArea();
       this.areasTodo = [{nombre: "Todo", id: 0}, ...this.areas];
-      this.area = this.areasTodo[0].id;
+      if(this.globalStore.getRolName == "Super Admin" || this.globalStore.getRolName == "Admin" ){
+        this.area = this.areasTodo[0].id;
+      }else{
+        this.area = this.areas[this.globalStore.getAreaId]
+      }
       this.onAreaChange(this.area)
     },
 

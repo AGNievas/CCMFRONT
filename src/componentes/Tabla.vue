@@ -9,11 +9,10 @@
       <thead>
         <tr>
           <th
-            class="table-header"
+            class="table-header celdas"
             v-for="(header, index) in headers"
             :key="index"
             @click="sortTable(header.value)"
-            style="cursor: pointer;"
           >
             {{ header.text }}
             <v-icon small v-if="index !== headers.length - 1">

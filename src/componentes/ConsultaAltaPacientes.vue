@@ -13,7 +13,7 @@
         <v-btn v-if="globalStore.rolId <= 2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
-      <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
+      <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true" :eliminable="false"
         @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="openListadoApliques"
         @crear-aplique="openApliqueDialog" />
 
