@@ -47,7 +47,7 @@
             type="date"
             required
             :input="pacienteLocal.fechaNacimiento"
-            @keypress="soloNumeros"
+           
             :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
           ></v-text-field>
           <v-select

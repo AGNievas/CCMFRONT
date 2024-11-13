@@ -50,13 +50,6 @@ export default {
     };
   },
 
-created(){
-  console.log(this.areas,"create")
-},
-  mounted(){
-    console.log(this.usuario)
- 
-  },
   methods: {
 
     

@@ -155,7 +155,7 @@ export default {
       default: true,
     },  
   },
-  emits:['edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-items'],
+  emits:['close','edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-items'],
  
   data() {
     return {

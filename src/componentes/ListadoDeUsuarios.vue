@@ -118,7 +118,7 @@ export default {
         });
     },
     usuariosFiltradosParaVista() {
-      return this.usuariosConArea.map(usuario => (console.log(usuario),{
+      return this.usuariosConArea.map(usuario => ({
         
         cuil: usuario.cuil,
         fullName: usuario.fullName,

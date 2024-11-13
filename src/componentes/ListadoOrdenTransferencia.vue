@@ -41,7 +41,7 @@
             :isViewMode="true" 
             :items="selectedItems"
             :orderNumber="selectedOrderNumber"  
-            @close="itemsDialogVisible = false" 
+          @close="itemsDialogVisible = false"
           />
       </div> 
     </v-dialog>
@@ -80,11 +80,9 @@ export default {
       search: '',
       ordenesTransferencias: [],
       stockAreas: [],
-      usuarios: [],
       itemsDialogVisible: false,
       selectedItems: [],
       selectedOrderNumber: null,
-      isViewModeEnabled: true,
       dialog: false,
       isEditing: false,
       deleteDialog: false,
@@ -97,14 +95,6 @@ export default {
 
   watch:{
     
-
-    'globalStore.getUsuarioIdYNombre': {
-      handler(newUsuario) {
-          this.usuario = newUsuario;
-        
-      },
-      immediate: true,
-    },
     'globalStore.getStockAreas': {
       handler(newStockAreas) {
         if (newStockAreas.length) {

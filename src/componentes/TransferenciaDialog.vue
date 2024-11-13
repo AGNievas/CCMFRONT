@@ -1,18 +1,28 @@
 <template>
-  <v-dialog v-model="localVisible" persistent max-width="400px">
+  <v-dialog v-model="localVisible" persistent max-width="400px" @keydown.esc="closeDialog">
     <v-card>
       <v-card-title>
         <span class="headline">Agregar Item</span>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-text-field 
+          <v-select v-if="!isEditing"
             v-model="localTransferencia.sku" 
             label="SKU" 
             required 
             type="number" 
-          />
-          <v-text-field 
+          ></v-select>
+          <v-select v-if="!isEditing"
+            v-model="localTransferencia.descripcion" 
+            label="Descripcion" 
+            required 
+            type="text" 
+          ></v-select>
+          <v-text-field v-if="!isEditing" 
             v-model="localTransferencia.cantidad" 
             label="Cantidad" 
             required 
@@ -33,15 +43,26 @@
 <script>
 export default {
   props: {
+    medicamentos: Array,
     modelValue: Boolean,
   },
   data() {
     return {
       localVisible: this.modelValue,
-      localTransferencia: { sku: '', cantidad: '' },
+      localTransferencia: { sku: '', descripcion:'', cantidad: '' },
     };
   },
   computed: {
+
+    medicamentosPorStockArea() {
+      return this.medicamentos
+        .filter(medicamento => medicamento.StockArea?.id == this.apliqueLocal.stockAreaId)
+        .map(medicamento => ({
+          sku: medicamento.Medicamento.sku,
+          descripcion: medicamento.Medicamento.descripcion,
+          id: medicamento.Medicamento.id,
+        }));
+    },
     isFormValid() {
       return (
         this.localTransferencia.sku !== '' &&
@@ -69,6 +90,28 @@ export default {
     modelValue(val) {
       this.localVisible = val;
     },
+
+    'localTransferencia.sku'(newSku){
+      const medicamento = this.medicamentosPorStockArea(
+        med => med.sku == newSku
+      );
+      if(medicamento){
+        this.localTransferencia.descripcion = medicamento.descripcion;
+      }else{
+        this.apliqueLocal.descripcion= '';
+      }
+    },
+
+    'localTransferencia.descripcion'(newDescripcion){
+      const medicamento = this.medicamentosPorStockArea.find(
+        med => med.descripcion === newDescripcion
+      );
+      if (medicamento) {
+        this.localTransferencia.sku = medicamento.sku;
+      } else {
+        this.localTransferencia.sku = '';
+      }
+    }
   },
 };
 </script>
