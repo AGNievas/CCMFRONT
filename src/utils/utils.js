@@ -10,7 +10,6 @@ export function formatearFecha(fecha) {
 
   export function formatearFechaYHora(fecha) {
     const date = new Date(fecha);
-    // Formato de fecha y hora ajustada
     return date.toLocaleString('es-AR', {
       day: '2-digit',
       month: '2-digit',

@@ -5,7 +5,7 @@
         <span class="headline">Historial Apliques</span>
         <span class="headline"> {{ this.pacienteId.nombre }} {{ this.pacienteId.apellido }}</span>
       </v-card-title>
-      <v-card-actions style="justify-content: center;">
+      <v-card-actions class="jcc">
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
       </v-card-actions>
 
@@ -42,7 +42,6 @@ import Tabla from './Tabla.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
-import { useGlobalStore } from '@/stores/global';
  import { formatearFechaYHora } from '@/utils/utils';
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
@@ -85,7 +84,6 @@ export default {
       apliqueToEdit: null,
       confirmDeleteDialog: false,
       apliqueIdToDelete: null,
-      globalStore: useGlobalStore(),
     };
   },
    mounted() {
@@ -171,8 +169,6 @@ export default {
             if (index !== -1) {
             this.apliques.splice(index, 1, resultado);
             }
-        // } else {
-        //   this.apliques.push(resultado);
         }
         this.apliqueDialogVisible = false;
       } catch (error) {

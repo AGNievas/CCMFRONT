@@ -52,7 +52,6 @@
 .v-data-table{
   border-radius: 16px;
   text-transform: uppercase;
-  /* white-space: nowrap; */
 }
 
 .home-container {
@@ -162,6 +161,13 @@
   width: 100%;
 }
 
+.jcc{
+  justify-content: center !important;
+}
+
+.df{
+  display: flex !important;;
+}
 
 @media (max-width: 600px) {
   .v-card-title {
@@ -183,7 +189,6 @@
     height: calc(var(--v-btn-height) + 0px);
   }
 
-    
   .v-card-title .v-text-field,
   .v-card-title .v-select,
   .v-card-title .v-btn {

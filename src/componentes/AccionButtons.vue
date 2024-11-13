@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; justify-content: center;">
+  <div class="df jcc">
     <v-btn title="Editar" class="btn-icon" v-if="canVerEdit && editable" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
       <v-icon>mdi-pencil</v-icon>
     </v-btn>

@@ -115,9 +115,6 @@ export default {
       this.nombreArchivo = "";
       this.archivo = null;
     },
-    cargadosConExito(){
-      return   
-    }
   },
 };
 </script>

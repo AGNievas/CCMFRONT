@@ -89,7 +89,6 @@ export default {
       selectedOrdenTransferencia: {},
       globalStore: useGlobalStore(),
       errorMessage:'',
-      usuario:'',
     };
   },
 
@@ -118,7 +117,7 @@ export default {
 
     valoresTabla() {
   if (!this.stockAreas || this.stockAreas.length == 0) {
-    return []; // Retorna un array vacío si stockAreas no está definido o está vacío
+    return [];
   }
   return this.ordenesTransferencias.map(transferencia => {
     const stockAreaOrigen = this.stockAreas.find(element => element.id == transferencia.stockAreaIdOrigen) || 'Área no encontrada';

@@ -64,7 +64,6 @@ export default {
     isEditing: Boolean,
     area: Number,
     stockArea: Number,
-    tipoMedicamentoOptions: Array,
     medicamento: Object,
     skuError: Boolean
   },

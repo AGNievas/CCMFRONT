@@ -27,18 +27,16 @@ export default {
   components: {
     Tabla,
   },
-  emits: [ 'close','add-item', 'edit-item', 'delete-item'],
-  computed: {
-    transferenciasHeaders() {
-      return [
+  emits: ['add-item', 'edit-item', 'delete-item'],
+  data() {
+    return {
+      transferenciasHeaders: [
         { text: 'SKU', value: 'sku' },
         { text: 'Cantidad', value: 'cantidad' },
         { text: 'Descripcion', value: 'descripcion' },
         { text: '', value: '', sortable: false },
-      ];
-    },
+      ],
+    };
   },
-
-
 };
 </script>

@@ -78,7 +78,6 @@
       :dialogVisible="this.addDialog"
       :isEditing="false"
       :area = this.area
-      :tipoMedicamentoOptions= this.tipoMedicamentoOptions
       :medicamento= this.newMed
       :skuError= skuError
       @closeDialog="closeAddDialog"
@@ -90,7 +89,6 @@
       :isEditing="true"
       :area = this.area
       :stockArea= this.stockArea
-      :tipoMedicamentoOptions= this.tipoMedicamentoOptions
       :medicamento= this.editMed
       @closeDialog="closeEditDialog"
       @confirm="updateMedicamento"
@@ -125,10 +123,8 @@ export default {
       stockAreas: [],
       stockAreasTodo: [],
       itemsMed: [],
-      // medicamentosConStock: [],
       area: null,
       stockArea: null,
-      tipoMedicamentoOptions: [],
       
       addDialog: false,
       skuError: false,
@@ -242,13 +238,8 @@ export default {
         console.error('Error al guardar la transferencia:', error);
         this.errorMessage = error || 'Error al guardar la orden de transferencia';
       } finally {
-        this.selectedOrdenTransferencia = { items: [], stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '' }; // Reiniciar el objeto después de guardar
-        if(this.area == 0){
-          await this.loadMedicamentos();
-        }else{
-          await this.loadItemsMed();
-        await this.loadMedicamentosByAreaId(this.area)
-        }
+        this.selectedOrdenTransferencia = { items: [], stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '' };
+        this.onAreaChange(this.area)
       }
     },
 
@@ -389,17 +380,6 @@ export default {
         tipo_medicamento: "",
         stock: null,
       };
-    },
-
-    resetTransferForm(){
-      this.transfer={
-        sku: "",
-        cantidad: null,
-        stockAreaIdOrigen: "",
-        stockAreaIdDestino: "",
-        motivo: "",
-      };
-      this.transferCantError = false;
     },
   }
 };

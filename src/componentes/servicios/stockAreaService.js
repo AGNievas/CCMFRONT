@@ -16,7 +16,6 @@ const stockAreaService = {
 
   async getStockAreaByArea(areaId) {
     try {
-      //
       const response = await axiosInstance.get(`${URL}/area/${areaId}`, { withCredentials: true });
       return response.data.return;
     } catch (error) {

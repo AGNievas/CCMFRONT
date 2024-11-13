@@ -6,7 +6,6 @@
 <script>
 import Navbar from './Navbar.vue';
 import { useGlobalStore } from '@/stores/global';
-// import { mapStores } from 'pinia'
 import areaService from './servicios/areaService';
 import usuariosService from './servicios/usuariosService';
 import rolService from './servicios/rolService';

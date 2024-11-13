@@ -6,7 +6,10 @@
           }}</span>
       </v-card-title>
       <v-card-text>
-   
+        <v-alert v-if="localErrorMessage" type="error" dismissible @input="localErrorMessage = ''">
+          {{ localErrorMessage }}
+        </v-alert>
+
         <v-form ref="form">
           <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdOrigen" :items="mapeoAreas"
             item-title="nombre" item-value="id" :label="areaOrigenLabel" :disabled="!globalStore.getEsAdmin" required />
@@ -165,7 +168,7 @@ export default {
         this.localOrdenTransferencia.fechaTransferencia = this.formatearFechaYHora(new Date())
       }
 
-      this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); // Evita referencias reactivas
+      this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); 
     },
     closeDialog() {
       this.localVisible = false;

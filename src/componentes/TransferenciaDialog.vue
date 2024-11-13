@@ -32,7 +32,6 @@ export default {
   props: {
     isEditing: Boolean,
     modelValue: Boolean,
-    isAdmin: Boolean,
     stockAreaId: Number,
     areaId: Number
   },
@@ -117,7 +116,6 @@ export default {
       if (medicamento) {
         this.localTransferencia.sku = medicamento.sku;
       } else {
-        // Asigna un valor vacío a `sku` en caso de que no se encuentre el medicamento
         this.localTransferencia.sku = '';
       }
     }

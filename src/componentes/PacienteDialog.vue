@@ -114,7 +114,6 @@ export default {
       if (this.isEditing && newPaciente) {
         this.pacienteLocal = { ...newPaciente };
         
-        // Convertir la fecha a formato YYYY-MM-DD si no está en ese formato
         if (this.pacienteLocal.fechaNacimiento) {
           const [day, month, year] = this.pacienteLocal.fechaNacimiento.split('-');
           this.pacienteLocal.fechaNacimiento = `${year}-${month}-${day}`;

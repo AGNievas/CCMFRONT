@@ -64,7 +64,7 @@
       </div>
     </v-card-text>
 
-    <v-card-actions style="justify-content: center;">
+    <v-card-actions class="jcc">
       <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">
         {{ expandedCards[index] ? 'Cerrar' : 'Acciones' }}
       </v-btn>
@@ -75,7 +75,7 @@
         v-if="expandedCards[index]"
         class="transition-fast-in-fast-out v-card--reveal"
       >
-        <div style="display: flex; justify-content: center;">
+        <div class="df jcc">
           <AccionButtons
             :item="item"
             :editable="editable"
@@ -94,7 +94,7 @@
             @ver-items="$emit('ver-items', item.id)"
           />
         </div>
-        <v-card-actions style="justify-content: center;">
+        <v-card-actions class="jcc">
           <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">Cerrar</v-btn>
         </v-card-actions>
       </v-card>
