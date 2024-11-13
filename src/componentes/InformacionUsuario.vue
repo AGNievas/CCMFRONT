@@ -16,8 +16,7 @@
           <v-text-field v-model="usuarioActual.rolName" label="Rol" readonly></v-text-field>
 
           <v-btn @click="openEditPasswordDialog" class="btn-blue mx-2">Editar Contraseña</v-btn>
-
-          <!-- Diálogo de edición de contraseña (código correcto, no modificado) -->
+          
           <v-dialog v-model="editPasswordDialog" persistent max-width="400px">
             <v-card>
               <v-card-title>
@@ -25,8 +24,7 @@
               </v-card-title>
 
               <v-card-text>
-                <v-form ref="form" v-model="formValid">
-                  <!-- Contraseña Actual -->
+                <v-form ref="form" v-model="formValid">                  
                   <v-text-field 
                   v-model="currentPassword" 
                   :type="showCurrentPassword ? 'text' : 'password'"
@@ -36,8 +34,7 @@
                   @click:append-inner="toggleShowCurrentPassword"
                   >
                   </v-text-field>
-
-                  <!-- Nueva Contraseña -->
+                  
                   <v-text-field v-model="newPassword" 
                   :type="showNewPassword ? 'text' : 'password'"
                   label="Nueva Contraseña" 
@@ -46,8 +43,7 @@
                   @click:append-inner="toggleShowNewPassword"
                   >
                   </v-text-field>
-
-                  <!-- Repetir Nueva Contraseña -->
+                  
                   <v-text-field v-model="repeatNewPassword" 
                   :type="showRepeatNewPassword ? 'text' : 'password'"
                   label="Repetir Nueva Contraseña" 
@@ -56,8 +52,7 @@
                   @click:append-inner="toggleShowRepeatNewPassword"
                   >
                   </v-text-field>
-
-                  <!-- Mostrar errores si faltan campos o las contraseñas no coinciden -->
+                  
                   <v-alert v-if="formError" type="error" dismissible>
                     {{ errorMessage }}
                   </v-alert>
