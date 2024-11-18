@@ -178,6 +178,7 @@ export default {
 
     filteredMedicamentos() {
       const searchTerm = this.search.toLowerCase();
+      
       return this.medicamentos.filter(medicamento => {
         const skuMatch = String(medicamento.sku).includes(searchTerm); 
         const descripcionMatch = medicamento.descripcion.toLowerCase().includes(searchTerm);
@@ -216,10 +217,12 @@ export default {
 
     async loadMedicamentosByStockAreaId(areaId, stockAreaId){
       this.medicamentos = await medicamentosService.getAllMedicamentoByStockAreaId(areaId, stockAreaId)
+     
     },
 
     async loadMedicamentosByAreaId(id){
       this.medicamentos = await medicamentosService.getMedicamentosByAreaId(id)
+   
     },
 
     openAddOrdenTransferDialog() {
@@ -239,6 +242,7 @@ export default {
         this.errorMessage = error || 'Error al guardar la orden de transferencia';
       } finally {
         this.selectedOrdenTransferencia = { items: [], stockAreaIdOrigen: null, stockAreaIdDestino: null, motivo: '' };
+        this.loadItemsMed()
         this.onAreaChange(this.area)
       }
     },
@@ -266,6 +270,7 @@ export default {
 
     async loadItemsMed(){
       this.itemsMed = await itemService.getAllItem();
+      
     },
 
     openAddDialog() {
@@ -299,19 +304,19 @@ export default {
       }
     },
 
-    openEditDialog(medicamento) {
+    async openEditDialog(medicamento) {
+    
       this.editDialog = true;
-      this.editMed = { 
+      this.editMed = { ...medicamento,
         sku: medicamento.sku,
         descripcion: medicamento.descripcion,
         tipo_medicamento: medicamento.tipo_medicamento,
+        stockAreaId: this.stockArea
+      
        };
-      if(this.area != 0 && this.stockArea != 0){
-      let itemMed = this.itemsMed.find(
-        (itemMed) => (itemMed.Medicamento.sku == medicamento.sku) && (itemMed.StockArea.areaId == this.area) && (itemMed.StockArea.id == this.stockArea)
-      );
-      this.editMed.stock = itemMed.stock;
-      }        
+      
+      await this.loadMedicamentos()
+      await this.loadItemsMed()
     },
 
     closeEditDialog() {
@@ -320,26 +325,30 @@ export default {
     },
 
     async updateMedicamento({medicamentoEmitido}) {
-      try {
+      try { await this.loadMedicamentos()
+        await this.loadItemsMed()
         if(this.area != 0 && this.stockArea != 0){
           let itemActualizar = this.itemsMed.find(
             (itemMed) => (itemMed.Medicamento.sku == medicamentoEmitido.sku) && (itemMed.StockArea.areaId == this.area) && (itemMed.StockArea.id == this.stockArea)
           );
-          await itemService.updateItem(itemActualizar.id, medicamentoEmitido.sku, medicamentoEmitido.stock)
+          await itemService.updateItem(itemActualizar.id, medicamentoEmitido.sku, medicamentoEmitido.stock, medicamentoEmitido.stockAreaId)
           this.onStockAreaChange(this.stockArea)
-          this.loadItemsMed()
+        
+         
         }else{
           await medicamentosService.updateMedicamento(medicamentoEmitido.sku, medicamentoEmitido.descripcion, medicamentoEmitido.tipo_medicamento);
           this.onAreaChange(this.area)          
         }
+       
         this.closeEditDialog();
       } catch (error) {
         console.error("Error al actualizar el medicamento:", error);
       }
     },
 
-    confirmDelete(sku) {
-      this.confirmDeleteSku = sku;
+    confirmDelete(medicamento) {
+      const itemAEliminar = this.itemsMed.filter(item => item.Medicamento.sku == medicamento.sku && item.StockArea.id == this.stockArea);
+      this.confirmDeleteSku = itemAEliminar[0].id
       this.deleteDialog = true;
     },
 
@@ -351,8 +360,9 @@ export default {
     async deleteMedicamento() {
       try {
         let itemDelete = this.itemsMed.find(
-          (itemMed) => (itemMed.Medicamento.sku == this.confirmDeleteSku) && (itemMed.StockArea.areaId == this.area) && (itemMed.StockArea.id == this.stockArea)
+          (itemMed) => (itemMed.id == this.confirmDeleteSku)
         );
+        
         await itemService.deleteItem(itemDelete.id);
         this.closeDeleteDialog();
       } catch (error) {

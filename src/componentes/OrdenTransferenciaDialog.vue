@@ -13,9 +13,11 @@
         <v-form ref="form">
           <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdOrigen" :items="mapeoAreas"
             item-title="nombre" item-value="id" :label="areaOrigenLabel" :disabled="!globalStore.getEsAdmin" required />
+            
           <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdDestino"
             :items="mostrarAreasNombre" item-title="nombre" item-value="id" label="Área Destino" required />
           <v-text-field v-model="localOrdenTransferencia.motivo" label="Motivo" required />
+          
           <ListadoDeTransferencias v-if="!this.isEditing" :items="localOrdenTransferencia.items"
             @add-item="openAddItemDialog" @edit-item="openEditItemDialog" @delete-item="deleteItem" @close="closeDialog"
             :disabled="!selectedStockArea" />

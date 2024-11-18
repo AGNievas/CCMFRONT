@@ -13,26 +13,13 @@
         @delete="confirmDeleteAplique" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
-        <ApliqueDialog
-          v-model="apliqueDialogVisible"
-          :is-editing="isEditing"
-          :aplique="apliqueToEdit"
-          :paciente-id="pacienteId"
-          :areas="areas"
-          :stockAreas="stockAreas"
-          :usuarios="usuarios"
-          :medicamentos="medicamentos"
-          @save="saveAplique"
-        />
+        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
+          :paciente-id="pacienteId" :areas="areas" :stockAreas="stockAreas" :usuarios="usuarios"
+          :medicamentos="medicamentos" @save="saveAplique" />
       </v-dialog>
 
-      <ConfirmDialog
-        :isDelete="true"
-        v-model="confirmDeleteDialog"
-        title="Confirmar Eliminación"
-        text="¿Estás seguro de que deseas eliminar este aplique?"
-        @confirm="deleteAplique"
-      />
+      <ConfirmDialog :isDelete="true" v-model="confirmDeleteDialog" title="Confirmar Eliminación"
+        text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deleteAplique" />
     </v-card>
   </v-dialog>
 </template>
@@ -42,7 +29,7 @@ import Tabla from './Tabla.vue';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import apliqueService from './servicios/apliqueService.js';
- import { formatearFechaYHora } from '@/utils/utils';
+import { formatearFechaYHora } from '@/utils/utils';
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 
 export default {
@@ -73,11 +60,11 @@ export default {
         { text: 'Descripcion', value: 'descripcion' },
         { text: 'Cantidad', value: 'cantidad' },
         { text: 'Fecha y Hora Aplique', value: 'fechaAplicacion' },
-        { text: 'Área', value: 'areaNombre'},
+        { text: 'Área', value: 'areaNombre' },
         { text: 'Sub Área', value: 'stockAreaNombre' },
         { text: '', value: '' },
       ],
-      
+
       apliques: [],
       apliqueDialogVisible: false,
       isEditing: false,
@@ -86,33 +73,29 @@ export default {
       apliqueIdToDelete: null,
     };
   },
-   mounted() {
-   
-     this.loadApliques();
-      
-  },
+
   computed: {
-    valoresTabla(){
-      
+    valoresTabla() {
+
       return this.apliques.map(aplique => {
-        
-         return {
-          id: aplique.id, 
+
+        return {
+          id: aplique.id,
           aplicanteNombre: aplique.User.fullName,
           sku: aplique.Medicamento.sku,
-          descripcion : aplique.Medicamento.descripcion,
+          descripcion: aplique.Medicamento.descripcion,
           cantidad: aplique.cantidad,
           fechaAplicacion: this.formatearFecha(aplique.fechaAplicacion),
           areaNombre: aplique.StockArea.Area.nombre,
           stockAreaNombre: aplique.StockArea.nombre,
-     
-         };
-        
-       });
-    },
-    
 
-        isDialogVisible: {
+        };
+
+      });
+    },
+
+
+    isDialogVisible: {
       get() {
         return this.modelValue;
       },
@@ -126,8 +109,8 @@ export default {
       immediate: true,
       handler(newVal) {
         if (newVal) {
-         this.loadApliques();
-          
+          this.loadApliques();
+
         }
       }
     },
@@ -138,14 +121,14 @@ export default {
   },
   methods: {
 
-    formatearFecha(fecha){
+    formatearFecha(fecha) {
       return formatearFechaYHora(fecha)
     },
     closeDialog() {
       this.$emit('update:modelValue', false);
     },
-  
-    
+
+
     async loadApliques() {
       try {
         this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
@@ -153,22 +136,22 @@ export default {
         console.error('Error al cargar apliques:', error);
       }
     },
-   
+
     openEditarApliqueDialog(aplique) {
       this.isEditing = true;
-      const apliqueId= aplique.id
-      const apliqueSinMap = this.apliques.find(apl => apl.id ==apliqueId)
-      this.apliqueToEdit = { ...apliqueSinMap};
-      this.apliqueDialogVisible = true; 
+      const apliqueId = aplique.id
+      const apliqueSinMap = this.apliques.find(apl => apl.id == apliqueId)
+      this.apliqueToEdit = { ...apliqueSinMap };
+      this.apliqueDialogVisible = true;
     },
     async saveAplique(nuevoAplique) {
       try {
         const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId.id, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);
-            if (index !== -1) {
+          if (index !== -1) {
             this.apliques.splice(index, 1, resultado);
-            }
+          }
         }
         this.apliqueDialogVisible = false;
       } catch (error) {

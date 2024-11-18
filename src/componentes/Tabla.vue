@@ -38,7 +38,7 @@
             :canVerHistorial="canVerHistorial"
             :canVerDetail="canVerDetail"
             @edit="$emit('edit', item)"
-            @delete="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)"
+            @delete="$emit('delete', isListadoMedicamentos ? item : item.id ? item.id : item.sku ? item.sku : index)"
             @restorePassword="$emit('restorePassword', item)"
             @ver-historial="$emit('ver-historial', item)"
             @crear-aplique="$emit('crear-aplique', item)"

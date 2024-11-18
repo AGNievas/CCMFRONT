@@ -71,12 +71,13 @@ const usuariosService = {
 
   async updateUsuario(id, cuil, fullName, areaId, rolId) {
     try {
-      const { data: usuarioActualizado } = await axiosInstance.put(
+      const response = await axiosInstance.put(
         `${URL}/${id}`,
         { cuil, fullName, areaId,rolId },
         { withCredentials: true }
       );
-      return usuarioActualizado;
+      console.log(response)
+      return response;
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
       throw error;

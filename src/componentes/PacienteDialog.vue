@@ -6,56 +6,24 @@
       </v-card-title>
 
       <v-card-text>
-        <v-alert
-          v-if="errorMensaje"
-          type="error"
-          dense
-          dismissible
-          @click:close="clearError"
-        >
+        <v-alert v-if="errorMensaje" type="error" dense dismissible @click:close="clearError">
           {{ errorMensaje }}
         </v-alert>
-      
+
         <v-form ref="form">
-          <v-text-field
-            v-model="pacienteLocal.nombre"
-            label="Nombre"
-            required
-            @input="validateNombre"
+          <v-text-field v-model="pacienteLocal.nombre" label="Nombre" required @input="validateNombre"
             @keypress="soloLetras"
-            :error-messages="nombreError ? 'El nombre debe contener solo letras' : ''"
-          ></v-text-field>
-          <v-text-field
-            v-model="pacienteLocal.apellido"
-            label="Apellido"
-            required
-            @input="validateApellido"
+            :error-messages="nombreError ? 'El nombre debe contener solo letras' : ''"></v-text-field>
+          <v-text-field v-model="pacienteLocal.apellido" label="Apellido" required @input="validateApellido"
             @keypress="soloLetras"
-            :error-messages="apellidoError ? 'El apellido debe contener solo letras' : ''"
-          ></v-text-field>
-          <v-text-field
-            v-model="pacienteLocal.dni"
-            label="DNI"
-            required
-            @input="validateDni"
-            @keypress="soloNumeros"
-            :error-messages="dniError ? 'El DNI debe tener 8 dígitos' : ''"
-          ></v-text-field>
-          <v-text-field
-            v-model="pacienteLocal.fechaNacimiento"
-            label="Fecha de Nacimiento (DD-MM-YYYY)"
-            type="date"
-            required
-            :input="pacienteLocal.fechaNacimiento"
-           
-            :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato YYYY-MM-DD' : ''"
-          ></v-text-field>
-          <v-select
-            v-model="pacienteLocal.genero"
-            :items="['Masculino', 'Femenino', 'No binario']"
-            label="Género"
-            required
-          ></v-select>
+            :error-messages="apellidoError ? 'El apellido debe contener solo letras' : ''"></v-text-field>
+          <v-text-field v-model="pacienteLocal.dni" label="DNI" required @input="validateDni" @keypress="soloNumeros"
+            :error-messages="dniError ? 'El DNI debe tener 8 dígitos' : ''"></v-text-field>
+          <v-text-field v-model="pacienteLocal.fechaNacimiento" label="Fecha de Nacimiento (DD-MM-YYYY)" type="date"
+            required :input="pacienteLocal.fechaNacimiento"
+            :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato (DD-MM-YYYY)' : ''"></v-text-field>
+          <v-select v-model="pacienteLocal.genero" :items="['Masculino', 'Femenino', 'No binario']" label="Género"
+            required></v-select>
         </v-form>
       </v-card-text>
 
@@ -99,7 +67,7 @@ export default {
 
   computed: {
     isFormValid() {
-        return (
+      return (
         this.pacienteLocal.nombre &&
         this.pacienteLocal.apellido &&
         this.pacienteLocal.fechaNacimiento &&
@@ -109,20 +77,20 @@ export default {
   },
   watch: {
     paciente: {
-    immediate: true,
-    handler(newPaciente) {
-      if (this.isEditing && newPaciente) {
-        this.pacienteLocal = { ...newPaciente };
-        
-        if (this.pacienteLocal.fechaNacimiento) {
-          const [day, month, year] = this.pacienteLocal.fechaNacimiento.split('-');
-          this.pacienteLocal.fechaNacimiento = `${year}-${month}-${day}`;
+      immediate: true,
+      handler(paciente) {
+        if (this.isEditing && paciente) {
+          this.pacienteLocal = { ...paciente };
+
+          if (this.pacienteLocal.fechaNacimiento) {
+            const [day, month, year] = this.pacienteLocal.fechaNacimiento.split('-');
+            this.pacienteLocal.fechaNacimiento = `${year}-${month}-${day}`;
+          }
+        } else {
+          this.resetPacienteLocal();
         }
-      } else {
-        this.resetPacienteLocal();
-      }
+      },
     },
-  },
     modelValue(val) {
       this.localVisible = val;
     },
@@ -141,14 +109,14 @@ export default {
       };
     },
     soloNumeros(event) {
-    return soloNumeros(event)
+      return soloNumeros(event)
     },
     soloLetras(event) {
       return soloLetras(event)
     },
 
     validateDni() {
-      if(this.pacienteLocal.dni!=0 ){
+      if (this.pacienteLocal.dni != 0) {
         this.dniError = !validarDni(this.pacienteLocal.dni);
       }
     },
@@ -158,7 +126,7 @@ export default {
     validateApellido() {
       this.apellidoError = !validarNombre(this.pacienteLocal.apellido);
     },
-   
+
     validateGenero() {
       this.generoError = !this.pacienteLocal.genero;
     },
@@ -187,7 +155,7 @@ export default {
       this.validateApellido();
       this.validateGenero();
       if (this.dniError || this.nombreError || this.apellidoError || this.fechaNacimientoError || this.generoError) {
-        return; 
+        return;
       }
       const [day, month, year] = this.pacienteLocal.fechaNacimiento.split('/');
       this.pacienteLocal.fechaNacimiento = `${year}-${month}-${day}`;

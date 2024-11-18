@@ -36,13 +36,13 @@ const itemService = {
     }
   },
 
-  async  getItemsYDescripcionByStockAreaId(areaId) {
+  async  getItemsYDescripcionByStockAreaId(stockAreaId) {
     try {
-      const response = await axiosInstance.get(`${API_URL}/listado-items/${areaId}`, {withCredentials:true});
+      const response = await axiosInstance.get(`${API_URL}/listado-items/${stockAreaId}`, {withCredentials:true});
       
       return response.data;
     } catch (error) {
-      console.error(`Error al obtener el items del Stock Area id : ${areaId} `, error);
+      console.error(`Error al obtener el items del Stock Area id : ${stockAreaId} `, error);
       throw error;
     }
   },
@@ -62,9 +62,10 @@ const itemService = {
     }
   },
     
-  async  updateItem(id,sku,stock) {
+  async  updateItem(id,sku,stock, stockAreaId) {
     try {
-      const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, {sku,stock}, {withCredentials:true});
+      
+      const { data: itemActualizado } = await axiosInstance.put(`${API_URL}/${id}`, {sku,stockAreaId,stock}, {withCredentials:true});
       
       return itemActualizado;
     } catch (error) {
@@ -75,7 +76,7 @@ const itemService = {
     
   async  deleteItem(id) {
     try {
-      
+      console.log(id, "id en delete")
       const {data: ItemEliminado} = await axiosInstance.delete(`${API_URL}/${id}`,{withCredentials:true});
       return ItemEliminado;
     } catch (error) {

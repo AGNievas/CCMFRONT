@@ -8,13 +8,14 @@
 
         <v-select v-model="searchGenero" :items="generos" label="Género" density="compact" variant="solo"
           hide-details></v-select>
-
         <v-spacer></v-spacer>
-        <v-btn v-if="globalStore.rolId <= 2" @click="openAgregarDialog" class="mx-2 btn-blue">Agregar Paciente</v-btn>
+
+        <v-btn v-if="globalStore.rolId <= globalStore.getRolAutorizante" @click="openAgregarDialog"
+          class="mx-2 btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
-      <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true" :eliminable="false"
-        @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="openListadoApliques"
+      <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
+        :eliminable="false" @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="openListadoApliques"
         @crear-aplique="openApliqueDialog" />
 
       <PacienteDialog ref="pacienteDialog" v-model="agregarDialog" :is-editing="false" @save="addPaciente"
@@ -24,13 +25,14 @@
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
-        <ApliqueDialog v-model="apliqueDialogVisible" :paciente-id="selectedPacienteId"
-        :areas="globalStore.getAreas" :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDelete" />
+        <ApliqueDialog v-model="apliqueDialogVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"
+          :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos"
+          @save="saveApliqueFromDialog" @delete="confirmDelete" />
       </v-dialog>
-      
-      <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"  :usuarios="globalStore.getUsuarios"
-        :medicamentos="medicamentos"  />
-        
+
+      <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId"
+        :areas="globalStore.getAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" />
+
     </v-card>
   </div>
 </template>
@@ -38,15 +40,14 @@
 <script>
 import Tabla from './Tabla.vue';
 import PacienteDialog from './PacienteDialog.vue';
-
 import pacienteService from './servicios/pacienteService';
-
 import { formatearFecha, calcularEdad } from '@/utils/utils';
 import ApliqueDialog from './ApliqueDialog.vue';
 import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
 import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 import itemService from './servicios/itemService';
+
 export default {
   components: {
     Tabla,
@@ -54,6 +55,7 @@ export default {
     ApliqueDialog,
     ListadoApliques
   },
+
   data() {
     return {
       searchDni: '',
@@ -79,6 +81,7 @@ export default {
   computed: {
     pacientesHeaders() {
       return [
+
         { text: 'DNI', value: 'dni' },
         { text: 'Nombre', value: 'nombre' },
         { text: 'Apellido', value: 'apellido' },
@@ -86,6 +89,7 @@ export default {
         { text: 'Edad', value: 'edad' },
         { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
         { text: '', value: '' }
+
       ];
     },
     pacientesFiltradosFormateados() {
@@ -93,7 +97,7 @@ export default {
       return this.formatearPacientes(pacientesFiltrados);
     }
   },
-  
+
   methods: {
     async loadMedicamentos() {
       const response = await itemService.getAllItem()
@@ -126,7 +130,7 @@ export default {
     async loadPacientes() {
       this.pacientes = await pacienteService.getAllPaciente();
     },
-   
+
     async addPaciente(nuevoPaciente) {
       try {
         const pacienteCreado = await pacienteService.createPaciente(nuevoPaciente);
@@ -143,6 +147,7 @@ export default {
       this.loadPacientes();
     },
     async editarPaciente(pacienteEditado) {
+
       try {
         const pacienteActualizado = await pacienteService.updatePaciente(pacienteEditado);
         const index = this.pacientes.findIndex(p => p.id === pacienteActualizado.id);
@@ -173,7 +178,7 @@ export default {
     async saveApliqueFromDialog(nuevoAplique) {
       try {
         const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
-       
+
         if (!this.isEditing) {
           console.log(resultado);
         }
@@ -181,9 +186,9 @@ export default {
       } catch (error) {
         console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
       }
-      
+
     },
- 
+
     openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();
       this.pacienteEdit = {};
@@ -199,7 +204,7 @@ export default {
       this.confirmDeleteId = id;
       this.deleteDialog = true;
     },
-   
+
   },
 };
 </script>

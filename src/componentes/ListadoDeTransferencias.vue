@@ -1,6 +1,6 @@
 <template>
   <v-card-title class="d-flex align-center pe-2">
-    <span v-if="isViewMode" class="headline">Listado de Medicamentos Orden N°: {{ orderNumber }}</span>
+    <span v-if="isViewMode" class="headline">Lista Items Orden N°: {{ orderNumber }}</span>
     <v-spacer></v-spacer>
     <v-btn v-if="!isViewMode" @click="$emit('add-item')" class="btn-blue" :disabled="disabled">Agregar Item</v-btn>
     <v-spacer></v-spacer>

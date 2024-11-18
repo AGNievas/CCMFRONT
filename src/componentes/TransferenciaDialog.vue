@@ -8,10 +8,13 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-select v-model="localTransferencia.sku" :items="medicamentosPorStockArea" item-title="sku" item-value="sku"
-            label="SKU" required></v-select>
+
+          <v-text-field v-model="localTransferencia.sku" :items="medicamentosPorStockArea" item-title="sku" item-value="sku"
+            label="SKU" required/>
+
           <v-select v-model="localTransferencia.descripcion" :items="medicamentosPorStockArea" item-title="descripcion"
-            item-value="descripcion" label="Descripcion" required></v-select>
+            item-value="descripcion" label="Descripcion" required/>
+
           <v-text-field v-model="localTransferencia.cantidad" label="Cantidad" required type="number"
             :rules="[cantidadRule]" />
         </v-form>
@@ -46,6 +49,7 @@ export default {
 
   async mounted() {
     await this.loadMedicamentosByStockAreaId(this.stockAreaId, this.areaId)
+    console.log(this.medicamentos, "MEDICAMENTOS")
 
   },
 
@@ -57,7 +61,7 @@ export default {
         .map(medicamento => ({
           sku: String(medicamento.Medicamento.sku),
           descripcion: String(medicamento.Medicamento.descripcion),
-        }));
+        }))
 
     },
 
