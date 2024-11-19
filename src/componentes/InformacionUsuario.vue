@@ -15,7 +15,7 @@
 
           <v-text-field v-model="usuarioActual.rolName" label="Rol" readonly></v-text-field>
 
-          <v-btn @click="openEditPasswordDialog" class="btn-blue mx-2">Editar Contraseña</v-btn>
+          <v-btn @click="openEditPasswordDialog" class="btn-blue">Editar Contraseña</v-btn>
           
           <v-dialog v-model="editPasswordDialog" persistent max-width="400px">
             <v-card>
@@ -66,9 +66,9 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn text @click="closeEditPasswordDialog" class="btn-blue mx-2">Cancelar</v-btn>
-                <v-btn text @click="updatePassword" class="btn-blue mx-2">Confirmar</v-btn>
+                
+                <v-btn text @click="closeEditPasswordDialog" class="btn-blue">Cancelar</v-btn>
+                <v-btn text @click="updatePassword" class="btn-blue">Confirmar</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -194,7 +194,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

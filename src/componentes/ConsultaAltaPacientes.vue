@@ -11,7 +11,7 @@
         <v-spacer></v-spacer>
 
         <v-btn v-if="globalStore.rolId <= globalStore.getRolAutorizante" @click="openAgregarDialog"
-          class="mx-2 btn-blue">Agregar Paciente</v-btn>
+          class="btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
@@ -88,7 +88,7 @@ export default {
         { text: 'Genero', value: 'genero' },
         { text: 'Edad', value: 'edad' },
         { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
-        { text: '', value: '' }
+        { text: '', value: '', sortable: false}
 
       ];
     },

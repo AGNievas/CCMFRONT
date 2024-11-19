@@ -13,7 +13,7 @@
           class="rounded-search-bar"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn @click="openAddOrdenTransferDialog" class="mx-2 btn-blue">Agregar Orden Transferencia</v-btn>
+        <v-btn @click="openAddOrdenTransferDialog" class="btn-blue">Agregar Orden Transferencia</v-btn>
       </v-card-title>
 
     <Tabla
@@ -35,7 +35,7 @@
       @save="saveTransferencia"
     />
 
-    <v-dialog v-model="itemsDialogVisible" max-width="800px">
+    <v-dialog persistent v-model="itemsDialogVisible" max-width="800px">
       <div class="v-card">
           <ListadoDeTransferencias 
             :isViewMode="true" 

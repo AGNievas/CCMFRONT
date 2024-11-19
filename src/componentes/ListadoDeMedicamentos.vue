@@ -22,7 +22,6 @@
           density="compact"
           variant="solo"
           hide-details
-          class="mx-2"
           @update:modelValue="onAreaChange"
         ></v-select>
 
@@ -36,13 +35,12 @@
           density="compact"
           variant="solo"
           hide-details
-          class="mx-2"
           @update:modelValue="onStockAreaChange"
         ></v-select>
 
         <v-spacer></v-spacer>
         <v-btn @click="openAddOrdenTransferDialog" class=" btn-blue">Transferir Stock</v-btn>
-        <v-btn @click="openAddDialog" class="mx-2 btn-blue">Agregar Medicamento</v-btn>
+        <v-btn @click="openAddDialog" class="btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
       <Tabla

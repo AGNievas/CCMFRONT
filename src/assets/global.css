@@ -169,6 +169,10 @@
   display: flex !important;;
 }
 
+.tac{
+  text-align: center !important;
+}
+
 @media (max-width: 600px) {
   .v-card-title {
     flex-direction: column; 

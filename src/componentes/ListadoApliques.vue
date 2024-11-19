@@ -62,7 +62,7 @@ export default {
         { text: 'Fecha y Hora Aplique', value: 'fechaAplicacion' },
         { text: 'Área', value: 'areaNombre' },
         { text: 'Sub Área', value: 'stockAreaNombre' },
-        { text: '', value: '' },
+        { text: '', value: '', sortable: false },
       ],
 
       apliques: [],

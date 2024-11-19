@@ -11,10 +11,9 @@
           <v-text-field
             v-model="mail"
             prepend-inner-icon="mdi-email"
-            outlined
             readonly
-            class="mail-field"
-            @click="copyToClipboard"
+            :append-inner-icon="'mdi-content-copy'"
+            @click:append-inner="copyToClipboard"
           ></v-text-field>
 
           <RouterLink to="/login" class="recuperar-link">Volver al inicio de sesión</RouterLink>

@@ -230,8 +230,12 @@ export default {
       });
       return visibleData;
     },
-
     sortTable(column) {
+      const header = this.headers.find((h) => h.value === column);
+      if (header && header.sortable === false) {
+        return;
+      }
+
       if (this.sortKey === column) {
         this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
       } else {

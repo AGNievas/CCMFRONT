@@ -9,6 +9,11 @@
 
   <Tabla :data="items" :headers="transferenciasHeaders" :isEditable="!isViewMode"
     @edit="(item) => $emit('edit-item', item)" @delete="(item) => $emit('delete-item', item.index)" />
+<v-card-actions>
+  <v-btn v-if="isViewMode" class="btn-blue" text @click="$emit('close')">Cerrar</v-btn>
+</v-card-actions>  
+  
+
 
 </template>
 
@@ -27,7 +32,7 @@ export default {
   components: {
     Tabla,
   },
-  emits: ['add-item', 'edit-item', 'delete-item'],
+  emits: ['add-item', 'edit-item', 'delete-item', 'close'],
   data() {
     return {
       transferenciasHeaders: [
