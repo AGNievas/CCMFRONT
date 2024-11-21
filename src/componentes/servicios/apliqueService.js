@@ -13,12 +13,14 @@ const apliqueService = {
     }
   },
 
-  async getApliqueById(id) {
+  async getApliquesByVisitaId(visitaId) {
     try {
-      const response = await axiosInstance.get(`${URL}/${id}`, {
+      console.log(visitaId)
+      const response = await axiosInstance.get(`${URL}/visita/${visitaId}`, {
         withCredentials: true,
       });
-      return response.data.return;
+      console.log(response)
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Aplique:", error);
       return [];

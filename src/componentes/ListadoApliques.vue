@@ -136,7 +136,10 @@ export default {
     async loadApliques() {
       try {
         console.log(this.apliques,"APLIQUES")
-        this.apliques = await apliqueService.getApliquesByPacienteId(this.paciente.id);
+        console.log(this.visita,"VIIISIIIIITAAAAA")
+        const visitaId = this.visita.id
+        console.log(visitaId, "ID DE LA VISITA")
+        this.apliques = await apliqueService.getApliquesByVisitaId(visitaId);
         console.log(this.apliques,"APLIQUES")
       } catch (error) {
         console.error('Error al cargar apliques:', error);
