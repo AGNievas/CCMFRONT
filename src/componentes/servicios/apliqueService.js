@@ -53,14 +53,15 @@ const apliqueService = {
     }
   },
 
-  async createAplique(pacienteId, nuevoAplique) {
+  async createAplique(pacienteId, nuevoAplique,visitaId) {
     try {
+      console.log("CREATE APLIQUE", pacienteId, visitaId, nuevoAplique)
       const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
       const response = await axiosInstance.post(
         `${URL}`,
-        { pacienteId, sku, cantidad, User, stockAreaId, fechaAplicacion },
+        { pacienteId, sku, cantidad, User, stockAreaId, fechaAplicacion, visitaId },
         { withCredentials: true }
       );
 
@@ -72,14 +73,18 @@ const apliqueService = {
   },
 
   async updateAplique(pacienteId, aplique) {
-    try {
-      const { User, fechaAplicacion, id } = aplique;
+    try {console.log(pacienteId, aplique, "UPDATE")
       
+      const { visitaId, fechaAplicacion, id } = aplique;
+      const userId = aplique.User
+      
+      console.log(userId, visitaId, fechaAplicacion,"AHORAAAAAA")
       const response = await axiosInstance.put(
         `${URL}/${id}`,
         {
-          User,
+          userId,
           fechaAplicacion,
+          visitaId
         },
         { withCredentials: true }
       );

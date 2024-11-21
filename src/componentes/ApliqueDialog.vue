@@ -5,20 +5,25 @@
 
       <v-select v-if="!isEditing" v-model="areaId" :items="areas" item-title="nombre" item-value="id" label="Área"
         :disabled="!puedeSeleccionarArea" :readonly="!puedeSeleccionarArea" required></v-select>
+
       <v-select v-if="!isEditing" v-model="apliqueLocal.stockAreaId" :items="stockAreasDeArea" item-title="nombre"
         item-value="id" label="Sub Área de Stock" required></v-select>
 
       <v-select v-if="!isEditing" v-model="apliqueLocal.sku" :items="medicamentosPorStockArea" item-title="sku"
         item-value="sku" label="SKU" required></v-select>
+
       <v-select v-if="!isEditing" v-model="apliqueLocal.descripcion" :items="medicamentosPorStockArea"
         item-title="descripcion" item-value="descripcion" label="Medicamento" required></v-select>
 
       <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1"
         required></v-text-field>
-      <v-select v-model="apliqueLocal.User" :items="usuariosPorArea" item-title="fullName" item-value="id"
-        label="Aplicante"  required></v-select>
 
-      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha y Hora de Aplicación" type="datetime-local" required></v-text-field>
+      <v-select v-model="apliqueLocal.User" :items="usuariosPorArea" item-title="fullName" item-value="id"
+        label="Aplicante" required></v-select>
+
+      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha y Hora de Aplicación" type="datetime-local"
+        required></v-text-field>
+
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -37,13 +42,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    visita: {
+      type : Object,
+      required: true,
+    },
     isEditing: Boolean,
     aplique: Object,
     areas: Array,
     stockAreas: Array,
     usuarios: Array,
     medicamentos: Array,
-    pacienteId: {
+    paciente: {
       type: Object,
       required: true,
     },
@@ -60,8 +69,9 @@ export default {
         User: '',
         stockAreaId: '',
         fechaAplicacion: '',
-        areaId:'',
-        pacienteId: this.pacienteId,
+        areaId: '',
+        visitaId:'',
+        paciente: this.paciente,
       },
       globalStore: useGlobalStore(),
     };
@@ -76,16 +86,14 @@ export default {
       return this.globalStore.getRolId == 1 || this.globalStore.getRolId == 2;
     },
 
-
     usuariosPorArea() {
-     let areaId
-     
-      if(this.isEditing){
+      let areaId
+      if (this.isEditing) {
         areaId = this.aplique.StockArea.Area.id
-      }else{  
+      } else {
         areaId = this.areaId
       }
-      return this.usuarios.filter(usuario => usuario.areaId == areaId )
+      return this.usuarios.filter(usuario => usuario.areaId == areaId)
     },
 
     stockAreasDeArea() {
@@ -104,7 +112,7 @@ export default {
     },
     isFormValid() {
       if (!this.isEditing) {
-              return (
+        return (
           this.apliqueLocal.descripcion &&
           this.apliqueLocal.sku &&
           this.apliqueLocal.cantidad &&
@@ -126,7 +134,6 @@ export default {
       this.$emit('update:modelValue', val);
     },
 
-
     'apliqueLocal.sku'(newSku) {
       const medicamento = this.medicamentosPorStockArea.find(
         med => med.sku === newSku
@@ -137,7 +144,6 @@ export default {
         this.apliqueLocal.descripcion = '';
       }
     },
-
 
     'apliqueLocal.descripcion'(newDescripcion) {
       const medicamento = this.medicamentosPorStockArea.find(
@@ -153,18 +159,19 @@ export default {
     aplique: {
       immediate: true,
       handler(newAplique) {
-       
+
         if (this.isEditing && newAplique) {
-        this.apliqueLocal = { id: newAplique.id, ...newAplique };
+          this.apliqueLocal = { id: newAplique.id, ...newAplique };
         } else {
-         this.resetApliqueLocal();
+          this.resetApliqueLocal();
         }
-        
+
       },
     },
   },
   methods: {
-    usuarioBaseEdit(){
+
+    usuarioBaseEdit() {
       this.apliqueLocal.User = this.isEditing ? this.aplique.User.id : ''
     },
     definirArea() {
@@ -173,6 +180,17 @@ export default {
       }
     },
     save() {
+      console.log(this.apliqueLocal,"aplique locaaaaal")
+      console.log(this.visita,"VISITA")
+      if(this.isEditing){
+        this.apliqueLocal.visitaId = this.apliqueLocal.Visitum.id
+       
+        
+      } else{
+        this.apliqueLocal.visitaId = this.visita.id
+      }
+      
+      console.log(this.apliqueLocal,"aplique locaaaaal")
       this.$emit('save', this.apliqueLocal);
       this.closeDialog();
     },
@@ -184,7 +202,8 @@ export default {
         User: '',
         stockAreaId: '',
         fechaAplicacion: '',
-        pacienteId: this.pacienteId,
+        visitaId: '',
+        paciente: this.paciente,
       };
     },
     closeDialog() {

@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>
         <span class="headline">Historial Apliques</span>
-        <span class="headline"> {{ this.pacienteId.nombre }} {{ this.pacienteId.apellido }}</span>
+        <span class="headline"> {{ this.paciente.nombre }} {{ this.paciente.apellido }}</span>
       </v-card-title>
       <v-card-actions class="jcc">
         <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
@@ -14,7 +14,7 @@
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
         <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
-          :paciente-id="pacienteId" :areas="areas" :stockAreas="stockAreas" :usuarios="usuarios"
+          :paciente-id="paciente" :areas="areas" :stockAreas="stockAreas" :usuarios="usuarios"
           :medicamentos="medicamentos" @save="saveAplique" />
       </v-dialog>
 
@@ -38,10 +38,14 @@ export default {
       type: Boolean,
       default: false
     },
+    visita: {
+      type: Object,
+      required: true
+    },
     areas: Array,
     stockAreas: Array,
     usuarios: Array,
-    pacienteId: {
+    paciente: {
       type: Object,
       required: true,
     },
@@ -105,7 +109,7 @@ export default {
     }
   },
   watch: {
-    pacienteId: {
+    paciente: {
       immediate: true,
       handler(newVal) {
         if (newVal) {
@@ -131,7 +135,9 @@ export default {
 
     async loadApliques() {
       try {
-        this.apliques = await apliqueService.getApliquesByPacienteId(this.pacienteId.id);
+        console.log(this.apliques,"APLIQUES")
+        this.apliques = await apliqueService.getApliquesByPacienteId(this.paciente.id);
+        console.log(this.apliques,"APLIQUES")
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
@@ -146,7 +152,8 @@ export default {
     },
     async saveAplique(nuevoAplique) {
       try {
-        const resultado = await saveApliqueHelper(this.isEditing, this.pacienteId.id, nuevoAplique);
+        
+        const resultado = await saveApliqueHelper(this.isEditing, this.paciente.id, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);
           if (index !== -1) {

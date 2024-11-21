@@ -15,8 +15,8 @@
       </v-card-title>
 
       <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
-        :eliminable="false" @edit="openEditarDialog" @delete="confirmDelete" @ver-historial="openListadoApliques"
-        @crear-aplique="openApliqueDialog" />
+        :eliminable="false" @edit="openEditarDialog" @delete="confirmDelete" @ver-visitas="openListadoVisitas"
+        />
 
       <PacienteDialog ref="pacienteDialog" v-model="agregarDialog" :is-editing="false" @save="addPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
@@ -24,14 +24,20 @@
       <PacienteDialog v-model="editarDialog" :is-editing="true" :paciente="pacienteEdit" @save="editarPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
-      <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
+      <!-- <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
         <ApliqueDialog v-model="apliqueDialogVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"
           :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos"
           @save="saveApliqueFromDialog" @delete="confirmDelete" />
-      </v-dialog>
+      </v-dialog> -->
 
-      <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId"
-        :areas="globalStore.getAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" />
+      <!-- <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId"
+        :areas="globalStore.getAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" /> -->
+
+
+      
+        <ListadoVisitas v-if="listadoVisitasVisible" v-model="listadoVisitasVisible" :paciente="selectedPaciente" :areas="globalStore.getAreas"
+          :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" />
+      
 
     </v-card>
   </div>
@@ -42,22 +48,39 @@ import Tabla from './Tabla.vue';
 import PacienteDialog from './PacienteDialog.vue';
 import pacienteService from './servicios/pacienteService';
 import { formatearFecha, calcularEdad } from '@/utils/utils';
-import ApliqueDialog from './ApliqueDialog.vue';
-import ListadoApliques from './ListadoApliques.vue';
+// import ApliqueDialog from './ApliqueDialog.vue';
+// import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
-import { saveApliqueHelper } from '../utils/apliqueHelper.js';
+// import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 import itemService from './servicios/itemService';
+import visitaService from './servicios/visitaService';
+import ListadoVisitas from './ListadoVisitas.vue';
 
 export default {
   components: {
     Tabla,
     PacienteDialog,
-    ApliqueDialog,
-    ListadoApliques
+    // ApliqueDialog,
+    // ListadoApliques,
+    ListadoVisitas
   },
 
   data() {
     return {
+
+      pacientesHeaders:
+       [
+
+        { text: 'DNI', value: 'dni' },
+        { text: 'Nombre', value: 'nombre' },
+        { text: 'Apellido', value: 'apellido' },
+        { text: 'Genero', value: 'genero' },
+        { text: 'Edad', value: 'edad' },
+        { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
+        { text: '', value: '', sortable: false }
+
+      ],
+    
       searchDni: '',
       searchGenero: 'Todos',
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
@@ -66,32 +89,24 @@ export default {
       pacienteEdit: {},
       apliqueDialogVisible: false,
       listadoApliquesVisible: false,
+      listadoVisitasVisible: false,
       selectedPacienteId: null,
       errorMensaje: '',
       pacientes: [],
       medicamentos: [],
-      globalStore: useGlobalStore()
+      globalStore: useGlobalStore(),
+      visitas: [],
+      selectedPaciente: {}
     };
   },
   async mounted() {
     this.loadPacientes();
     this.loadMedicamentos();
 
+
   },
   computed: {
-    pacientesHeaders() {
-      return [
-
-        { text: 'DNI', value: 'dni' },
-        { text: 'Nombre', value: 'nombre' },
-        { text: 'Apellido', value: 'apellido' },
-        { text: 'Genero', value: 'genero' },
-        { text: 'Edad', value: 'edad' },
-        { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
-        { text: '', value: '', sortable: false}
-
-      ];
-    },
+   
     pacientesFiltradosFormateados() {
       const pacientesFiltrados = this.filtrarPacientes();
       return this.formatearPacientes(pacientesFiltrados);
@@ -99,6 +114,15 @@ export default {
   },
 
   methods: {
+
+    async loadVisitas() {
+      try {
+        this.visitas = await visitaService.getAllVisitas()
+      } catch (error) {
+        console.log('Error al cargar las visitas: ', error)
+      }
+    },
+
     async loadMedicamentos() {
       const response = await itemService.getAllItem()
       this.medicamentos = response
@@ -164,30 +188,39 @@ export default {
       this.loadPacientes();
     },
 
-    openApliqueDialog(pacienteId) {
-      this.selectedPacienteId = pacienteId;
-      this.isEditing = false;
-      this.apliqueDialogVisible = true;
-    },
+    // openApliqueDialog(pacienteId) {
+    //   this.selectedPacienteId = pacienteId;
+    //   this.isEditing = false;
+    //   this.apliqueDialogVisible = true;
+    // },
 
-    openListadoApliques(pacienteId) {
-      this.selectedPacienteId = pacienteId;
-      this.listadoApliquesVisible = true;
-    },
+    // openListadoApliques(pacienteId) {
+    //   this.selectedPacienteId = pacienteId;
+    //   this.listadoApliquesVisible = true;
+    // },
 
-    async saveApliqueFromDialog(nuevoAplique) {
-      try {
-        const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
-
-        if (!this.isEditing) {
-          console.log(resultado);
-        }
-        this.apliqueDialogVisible = false;
-      } catch (error) {
-        console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
+    openListadoVisitas(paciente) {
+      if (paciente && Object.keys(paciente).length) {
+        this.selectedPaciente = paciente;
+        this.listadoVisitasVisible = true;
+      } else {
+        console.warn('Paciente inválido al intentar abrir el diálogo de visitas:', paciente);
       }
-
     },
+
+    // async saveApliqueFromDialog(nuevoAplique) {
+    //   try {
+    //     const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
+
+    //     if (!this.isEditing) {
+    //       console.log(resultado);
+    //     }
+    //     this.apliqueDialogVisible = false;
+    //   } catch (error) {
+    //     console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
+    //   }
+
+    // },
 
     openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();

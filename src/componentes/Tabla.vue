@@ -37,12 +37,16 @@
             :canCreateAplique="canCreateAplique"
             :canVerHistorial="canVerHistorial"
             :canVerDetail="canVerDetail"
+            :canVerVisitas="canVerVisitas"
+            :puedeDarAlta="puedeDarAlta"
             @edit="$emit('edit', item)"
             @delete="$emit('delete', isListadoMedicamentos ? item : item.id ? item.id : item.sku ? item.sku : index)"
             @restorePassword="$emit('restorePassword', item)"
             @ver-historial="$emit('ver-historial', item)"
             @crear-aplique="$emit('crear-aplique', item)"
             @ver-items="$emit('ver-items', item.id)"
+            @ver-visitas="$emit('ver-visitas', item)"
+            @dar-alta="$emit('dar-alta', item)"
           />
         </td>
       </tr>
@@ -86,12 +90,16 @@
             :canCreateAplique="canCreateAplique"
             :canVerHistorial="canVerHistorial"
             :canVerDetail="canVerDetail"
+            :canVerVisitas="canVerVisitas"
+            :puedeDarAlta="puedeDarAlta"
             @edit="$emit('edit', item)"
             @delete="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)"
             @restorePassword="$emit('restorePassword', item)"
             @ver-historial="$emit('ver-historial', item)"
             @crear-aplique="$emit('crear-aplique', item)"
             @ver-items="$emit('ver-items', item.id)"
+            @ver-visitas="$emit('ver-visitas', item)"
+            @dar-alta="$emit('dar-alta', item)"
           />
         </div>
         <v-card-actions class="jcc">
@@ -141,6 +149,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isListadoVisitas: {
+      type: Boolean,
+      default: false,
+    },
     isEditable: {
       type: Boolean,
       default: false,
@@ -154,7 +166,7 @@ export default {
       default: true,
     },  
   },
-  emits:['close','edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-items'],
+  emits:['close','edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-items', 'ver-visitas', 'dar-alta'],
  
   data() {
     return {
@@ -170,6 +182,7 @@ export default {
     this.checkScreenSize();
     window.addEventListener("resize", this.checkScreenSize);
     this.loadExpandedCards();
+    
   },
   beforeUnmount() {
     window.removeEventListener("resize", this.checkScreenSize);
@@ -189,10 +202,14 @@ export default {
     },
 
     canCreateAplique() {
-      return this.isListadoPacientes && this.globalStore.rolId != this.globalStore.getRolDataEntry
+      return this.isListadoVisitas && this.globalStore.rolId != this.globalStore.getRolDataEntry
     },
 
     canVerHistorial() {
+      return this.isListadoVisitas
+    },
+
+    canVerVisitas() {
       return this.isListadoPacientes
     },
 
@@ -205,12 +222,19 @@ export default {
              (this.isListadoMedicamentos && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
              (this.isListadoPacientes && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
              (this.isListadoApliques && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
-             (this.isListadoOrdenTransferencia && this.globalStore.getEsAdmin) || this.isEditable;
+             (this.isListadoOrdenTransferencia && this.globalStore.getEsAdmin) || (this.isListadoVisitas && this.globalStore.getRolId!=this.globalStore.getRolDataEntry) || this.isEditable;
     },
 
     canVerDelete() {
       return this.canVerEdit;
+    },
+
+    puedeDarAlta(){
+      
+      return this.isListadoVisitas 
     }
+
+
   },
 
   methods: {
