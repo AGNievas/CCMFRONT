@@ -2,16 +2,7 @@
   <div>
     <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
-        <v-text-field
-          v-model="search"
-          density="compact"
-          label="Buscar"
-          prepend-inner-icon="mdi-magnify"
-          variant="solo"
-          hide-details
-          single-line
-          class="rounded-search-bar"
-        ></v-text-field>
+
         <v-spacer></v-spacer>
         <v-btn @click="openAddOrdenTransferDialog" class="btn-blue">Agregar Orden Transferencia</v-btn>
       </v-card-title>
@@ -77,7 +68,6 @@ export default {
   },
   data() {
     return {
-      search: '',
       ordenesTransferencias: [],
       stockAreas: [],
       itemsDialogVisible: false,
