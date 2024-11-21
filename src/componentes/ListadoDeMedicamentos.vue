@@ -197,6 +197,7 @@ export default {
     async onAreaChange(selectedArea) {
       this.area = selectedArea; 
       if(this.area == 0){
+        this.stockArea = 0;
         this.loadMedicamentos()
       } else {
         await this.loadStockAreasId()
