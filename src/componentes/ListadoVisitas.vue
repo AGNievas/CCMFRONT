@@ -307,15 +307,15 @@ export default {
 
     async saveApliqueFromDialog(nuevoAplique) {
       try {console.log(nuevoAplique, "aplique")
-      console.log(this.selectedVisita, "VISISTA SELECCIONADA")
-        const resultado = await saveApliqueHelper(this.isEditing, this.paciente.id, this.selectedVisita.id, nuevoAplique);
+      console.log(this.selectedVisita,this.paciente, "VISISTA SELECCIONADA")
+        const resultado = await saveApliqueHelper(this.isEditing, this.paciente.id,  nuevoAplique, this.selectedVisita.id,);
 
         if (!this.isEditing) {
           console.log(resultado);
         }
         this.apliqueDialogVisible = false;
       } catch (error) {
-        console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
+        console.error('Error al guardar aplique desde ListadoVisitas:', error);
       }
 
     },
