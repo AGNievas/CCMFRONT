@@ -24,7 +24,7 @@
       <v-icon>mdi-history</v-icon>
     </v-btn>
 
-    <v-btn title="Dar Alta" class="btn-icon" v-show="puedeMostrarAlta" icon @click="$emit('dar-alta', item)">
+    <v-btn title="Dar Alta" class="btn-icon" v-if="puedeDarAlta" :disabled="!puedeMostrarAlta" icon @click="$emit('dar-alta', item)">
       <v-icon>mdi-arrow-up</v-icon>
     </v-btn>
 
