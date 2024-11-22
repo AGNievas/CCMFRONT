@@ -9,7 +9,7 @@
       </v-card-title>
 
 
-      <Tabla :data="usuariosFiltradosParaVista" :headers="usuariosHeaders" :isListadoUsuarios="true" :eliminable="false"
+      <Tabla :data="usuariosFiltradosParaVista" :headers="usuariosHeaders" :isListadoUsuarios="true" :eliminable="true"
         @edit="openEditDialog" @delete="confirmDelete" @restorePassword="confirmRestorePassword" />
     </v-card>
 

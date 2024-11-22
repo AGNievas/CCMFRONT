@@ -79,10 +79,11 @@ const pacienteService = {
     }
   },
 
-  async deletePaciente(dni) {
+  async deletePaciente(id) {
     try {
+      console.log(id,"en servicio")
       const { data: pacienteEliminado } = await axiosInstance.delete(
-        `${URL}/${dni}`,
+        `${URL}/${id}`,
         { withCredentials: true }
       );
       return pacienteEliminado;

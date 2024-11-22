@@ -156,7 +156,7 @@ export default {
     async saveAplique(nuevoAplique) {
       try {
         
-        const resultado = await saveApliqueHelper(this.isEditing, this.paciente.id, nuevoAplique);
+        const resultado = await saveApliqueHelper(this.isEditing, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);
           if (index !== -1) {

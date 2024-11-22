@@ -73,16 +73,16 @@ const apliqueService = {
     }
   },
 
-  async createAplique(pacienteId, nuevoAplique, visitaId) {
+  async createAplique( nuevoAplique, visitaId) {
     try {
-      console.log("CREATE APLIQUE", pacienteId, visitaId, nuevoAplique);
+      console.log("CREATE APLIQUE",  visitaId, nuevoAplique);
       const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
       const response = await axiosInstance.post(
         `${URL}`,
         {
-          pacienteId,
+          
           sku,
           cantidad,
           User,
@@ -100,9 +100,9 @@ const apliqueService = {
     }
   },
 
-  async updateAplique(pacienteId, aplique) {
+  async updateAplique( aplique) {
     try {
-      console.log(pacienteId, aplique, "UPDATE");
+      console.log( aplique, "UPDATE");
 
       const { visitaId, fechaAplicacion, id } = aplique;
       const userId = aplique.User;

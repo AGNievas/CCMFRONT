@@ -21,7 +21,7 @@
     <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
-        <v-list-item>
+        <v-list-item >
           <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
         </v-list-item>
         <v-list-item>

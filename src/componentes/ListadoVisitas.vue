@@ -308,7 +308,7 @@ export default {
     async saveApliqueFromDialog(nuevoAplique) {
       try {console.log(nuevoAplique, "aplique")
       console.log(this.selectedVisita,this.paciente, "VISISTA SELECCIONADA")
-        const resultado = await saveApliqueHelper(this.isEditing, this.paciente.id,  nuevoAplique, this.selectedVisita.id,);
+        const resultado = await saveApliqueHelper(this.isEditing,   nuevoAplique, this.selectedVisita.id,);
 
         if (!this.isEditing) {
           console.log(resultado);
