@@ -8,7 +8,7 @@ import InformacionUsuario from "./componentes/InformacionUsuario.vue";
 import ConsultaAltaPacientes from "./componentes/ConsultaAltaPacientes.vue";
 import ListadoDeUsuarios from "./componentes/ListadoDeUsuarios.vue";
 import ListadoApliques from "./componentes/ListadoApliques.vue";
-
+import Reportes from "./componentes/Reportes.vue";
 import ListadoOrdenTransferencia from "./componentes/ListadoOrdenTransferencia.vue";
 const routes = [
   { path: "/", redirect: "/login" },
@@ -22,6 +22,7 @@ const routes = [
   { path: "/listadoDeUsuarios", name: "ListadoDeUsuarios", component: ListadoDeUsuarios , meta: { title: "Listado de Usuarios"} },
   
   { path: "/listadoDeOrdenesTransferencias", name: "ListadoDeOrdenesTransferencias", component: ListadoOrdenTransferencia , meta: { title: "Listado de Ordenes de Transferencias"} },
+  { path: "/reportes", name: "Reportes", component: Reportes , meta: { title: "Reportes de Apliques por fechas"} },
   {
     path: '/apliques/:pacienteId',
     name: 'ListadoDeApliques',

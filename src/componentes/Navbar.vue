@@ -36,6 +36,10 @@
         <v-list-item>
           <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado De Orden Transferencias</RouterLink>
         </v-list-item>
+
+        <v-list-item>
+          <RouterLink to="/reportes" class="drawer-item-title">Reportes</RouterLink>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   </div>

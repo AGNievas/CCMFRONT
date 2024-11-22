@@ -15,11 +15,11 @@ const apliqueService = {
 
   async getApliquesByVisitaId(visitaId) {
     try {
-      console.log(visitaId)
+      console.log(visitaId);
       const response = await axiosInstance.get(`${URL}/visita/${visitaId}`, {
         withCredentials: true,
       });
-      console.log(response)
+      console.log(response);
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Aplique:", error);
@@ -29,7 +29,7 @@ const apliqueService = {
 
   async getApliquesByPacienteId(pacienteId) {
     try {
-           const response = await axiosInstance.get(
+      const response = await axiosInstance.get(
         `${URL}/paciente/${pacienteId}`,
         {
           withCredentials: true,
@@ -55,15 +55,41 @@ const apliqueService = {
     }
   },
 
-  async createAplique(pacienteId, nuevoAplique,visitaId) {
+  async getApliquesByDateRange(startDate, endDate) {
     try {
-      console.log("CREATE APLIQUE", pacienteId, visitaId, nuevoAplique)
+      const response = await axiosInstance.get(
+        `${URL}/reporte`,
+        {
+          params: { startDate, endDate },
+          withCredentials: true,
+        },
+        
+      );
+      console.log(response)
+      return response.data.message;
+    } catch (error) {
+      console.error("Error al obtener Apliques:", error);
+      return [];
+    }
+  },
+
+  async createAplique(pacienteId, nuevoAplique, visitaId) {
+    try {
+      console.log("CREATE APLIQUE", pacienteId, visitaId, nuevoAplique);
       const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
       const response = await axiosInstance.post(
         `${URL}`,
-        { pacienteId, sku, cantidad, User, stockAreaId, fechaAplicacion, visitaId },
+        {
+          pacienteId,
+          sku,
+          cantidad,
+          User,
+          stockAreaId,
+          fechaAplicacion,
+          visitaId,
+        },
         { withCredentials: true }
       );
 
@@ -75,18 +101,19 @@ const apliqueService = {
   },
 
   async updateAplique(pacienteId, aplique) {
-    try {console.log(pacienteId, aplique, "UPDATE")
-      
+    try {
+      console.log(pacienteId, aplique, "UPDATE");
+
       const { visitaId, fechaAplicacion, id } = aplique;
-      const userId = aplique.User
-      
-      console.log(userId, visitaId, fechaAplicacion,"AHORAAAAAA")
+      const userId = aplique.User;
+
+      console.log(userId, visitaId, fechaAplicacion, "AHORAAAAAA");
       const response = await axiosInstance.put(
         `${URL}/${id}`,
         {
           userId,
           fechaAplicacion,
-          visitaId
+          visitaId,
         },
         { withCredentials: true }
       );
