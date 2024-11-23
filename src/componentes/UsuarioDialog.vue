@@ -3,23 +3,62 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ isEditing ? 'Editar Usuario' : 'Agregar Nuevo Usuario' }}</span>
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-text-field v-model="localUsuario.cuil" label="CUIL" required :rules="[cuilRule]"
-            @input="formatAndCheckCuil" />
-          <v-text-field v-model="localUsuario.fullName" label="Nombre Completo" required :rules="[fullNameRule]"
-            @input="checkFormValidity" @keypress="soloLetras" />
-          <v-select v-model="localUsuario.rolId" :items="roles" item-title="name" item-value="id" label="Rol" required
-            :rules="[rolRule]" @change="checkFormValidity" />
-          <v-select v-model="localUsuario.areaId" :items="areas" item-title="nombre" item-value="id" label="Área"
-            required :rules="[areaRule]" @change="checkFormValidity" />
+          <v-text-field
+            v-model="localUsuario.cuil"
+            label="CUIL"
+            required
+            :rules="[cuilRule]"
+            @input="formatAndCheckCuil"
+            variant="solo"
+            rounded
+            dense
+          />
+          <v-text-field
+            v-model="localUsuario.fullName"
+            label="Nombre Completo"
+            required
+            :rules="[fullNameRule]"
+            @input="checkFormValidity"
+            @keypress="soloLetras"
+            variant="solo"
+            rounded
+            dense
+          />
+          <v-select
+            v-model="localUsuario.rolId"
+            :items="roles"
+            item-title="name"
+            item-value="id"
+            label="Rol"
+            required
+            :rules="[rolRule]"
+            @change="checkFormValidity"
+            variant="solo"
+            rounded
+            dense
+          />
+          <v-select
+            v-model="localUsuario.areaId"
+            :items="areas"
+            item-title="nombre"
+            item-value="id"
+            label="Área"
+            required :rules="[areaRule]"
+            @change="checkFormValidity"
+            variant="solo"
+            rounded
+            dense
+          />
         </v-form>
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
         <v-btn class="btn-blue" text @click="saveChanges" :disabled="!checkFormValidity()">Guardar</v-btn>
       </v-card-actions>
     </v-card>

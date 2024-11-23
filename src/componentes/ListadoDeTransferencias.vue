@@ -9,8 +9,8 @@
 
   <Tabla :data="items" :headers="transferenciasHeaders" :isEditable="!isViewMode"
     @edit="(item) => $emit('edit-item', item)" @delete="(item) => $emit('delete-item', item.index)" />
-<v-card-actions>
-  <v-btn v-if="isViewMode" class="btn-blue" text @click="$emit('close')">Cerrar</v-btn>
+<v-card-actions v-if="isViewMode">
+  <v-btn  class="btn-blue" text @click="$emit('close')">Cerrar</v-btn>
 </v-card-actions>  
   
 

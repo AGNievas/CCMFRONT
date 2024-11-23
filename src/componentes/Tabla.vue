@@ -9,6 +9,7 @@
       <thead>
         <tr>
           <th
+            :class="{ sorted: sortKey === header.value }"
             class="table-header celdas"
             v-for="(header, index) in headers"
             :key="index"
@@ -16,7 +17,7 @@
           >
             {{ header.text }}
             <v-icon small v-if="index !== headers.length - 1">
-              {{ sortKey === header.value ? (sortOrder === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down') : 'mdi-filter-variant' }}
+              {{ sortKey === header.value ? (sortOrder === 'asc' ? 'mdi-sort-ascending' : 'mdi-sort-descending') : 'mdi-sort' }}
             </v-icon>
           </th>
         </tr>
@@ -55,59 +56,57 @@
 
   <div style="max-height: 600px; overflow-y: auto;" v-if="isMobile">
   <v-card
-    class="mx-auto"
-    max-width="400"
-    v-for="(item, index) in sortedData"
-    :key="index"
-    style="margin-bottom: 20px; padding: 10px;"
-  >
-    <v-card-text>
-      <div v-for="(header, index) in headers" :key="header.value">
-        <div v-if="index < (headers.length - 1)">{{ header.text }}:</div>
-        <p class="text-h5 text--primary">{{ item[header.value] }}</p>
+  class="mx-auto"
+  max-width="400"
+  v-for="(item, index) in sortedData"
+  :key="index"
+  style="margin-bottom: 20px; padding: 20px;"
+>
+  <v-card-text>
+    <div v-for="(header, index) in headers" :key="header.value">
+      <div v-if="index < (headers.length - 1)" class="text-caption text-muted">{{ header.text }}:</div>
+      <p class="text-h5 text--primary">{{ item[header.value] }}</p>
+    </div>
+  </v-card-text>
+
+  <v-card-actions>
+    <v-btn class="btn-cards" text color="teal accent-4" @click="toggleCardExpansion(index)">
+       Acciones
+    </v-btn>
+  </v-card-actions>
+
+  <v-expand-transition>
+    <v-card v-if="expandedCards[index]" class="v-card--reveal">
+      <div class="df jcc">
+        <AccionButtons
+          :item="item"
+          :editable="editable"
+          :eliminable="eliminable"
+          :canVerEdit="canVerEdit"
+          :canVerDelete="canVerDelete"
+          :canRestorePassword="canRestorePassword"
+          :canCreateAplique="canCreateAplique"
+          :canVerHistorial="canVerHistorial"
+          :canVerDetail="canVerDetail"
+          :canVerVisitas="canVerVisitas"
+          :puedeDarAlta="puedeDarAlta"
+          @edit="$emit('edit', item)"
+          @delete="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)"
+          @restorePassword="$emit('restorePassword', item)"
+          @ver-historial="$emit('ver-historial', item)"
+          @crear-aplique="$emit('crear-aplique', item)"
+          @ver-items="$emit('ver-items', item.id)"
+          @ver-visitas="$emit('ver-visitas', item)"
+          @dar-alta="$emit('dar-alta', item)"
+        />
       </div>
-    </v-card-text>
+      <v-card-actions>
+        <v-btn class="btn-cards" text color="teal accent-4" @click="toggleCardExpansion(index)">Cerrar</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-expand-transition>
+</v-card>
 
-    <v-card-actions class="jcc">
-      <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">
-        {{ expandedCards[index] ? 'Cerrar' : 'Acciones' }}
-      </v-btn>
-    </v-card-actions>
-
-    <v-expand-transition>
-      <v-card
-        v-if="expandedCards[index]"
-        class="transition-fast-in-fast-out v-card--reveal"
-      >
-        <div class="df jcc">
-          <AccionButtons
-            :item="item"
-            :editable="editable"
-            :eliminable="eliminable"
-            :canVerEdit="canVerEdit"
-            :canVerDelete="canVerDelete"
-            :canRestorePassword="canRestorePassword"
-            :canCreateAplique="canCreateAplique"
-            :canVerHistorial="canVerHistorial"
-            :canVerDetail="canVerDetail"
-            :canVerVisitas="canVerVisitas"
-            :puedeDarAlta="puedeDarAlta"
-            @edit="$emit('edit', item)"
-            @delete="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)"
-            @restorePassword="$emit('restorePassword', item)"
-            @ver-historial="$emit('ver-historial', item)"
-            @crear-aplique="$emit('crear-aplique', item)"
-            @ver-items="$emit('ver-items', item.id)"
-            @ver-visitas="$emit('ver-visitas', item)"
-            @dar-alta="$emit('dar-alta', item)"
-          />
-        </div>
-        <v-card-actions class="jcc">
-          <v-btn text color="teal accent-4" @click="toggleCardExpansion(index)">Cerrar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-expand-transition>
-  </v-card>
 </div>
 </template>
 

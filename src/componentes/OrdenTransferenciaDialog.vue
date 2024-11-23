@@ -1,9 +1,12 @@
 <template>
-  <v-dialog v-model="localVisible" persistent max-width="600px">
+  <v-dialog v-model="localVisible" persistent max-width="700px">
     <v-card>
       <v-card-title>
-        <span class="headline">{{ isEditing ? 'Editar Orden de Transferencia' : 'Agregar Nueva Orden de Transferencia'
+        <span class="headline">{{ isEditing ? 'Editar Orden de Transferencia' : 'Agregar Orden de Transferencia'
           }}</span>
+          <v-btn class="btn-icon" icon small @click="closeDialog">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
       </v-card-title>
       <v-card-text>
         <v-alert v-if="localErrorMessage" type="error" dismissible @input="localErrorMessage = ''">
@@ -11,12 +14,41 @@
         </v-alert>
 
         <v-form ref="form">
-          <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdOrigen" :items="mapeoAreas"
-            item-title="nombre" item-value="id" :label="areaOrigenLabel" :disabled="!globalStore.getEsAdmin" required />
+          <v-select 
+            v-if="!this.isEditing" 
+            v-model="localOrdenTransferencia.stockAreaIdOrigen" 
+            :items="mapeoAreas"
+            item-title="nombre" 
+            item-value="id" 
+            :label="areaOrigenLabel" 
+            :disabled="!globalStore.getEsAdmin" 
+            required 
+            variant="solo"
+            rounded
+            dense
+          />
             
-          <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdDestino"
-            :items="mostrarAreasNombre" item-title="nombre" item-value="id" label="Área Destino" required />
-          <v-text-field v-model="localOrdenTransferencia.motivo" label="Motivo" required />
+          <v-select 
+            v-if="!this.isEditing" 
+            v-model="localOrdenTransferencia.stockAreaIdDestino"
+            :items="mostrarAreasNombre" 
+            item-title="nombre" 
+            item-value="id" 
+            label="Área Destino" 
+            required 
+            variant="solo"
+            rounded
+            dense
+          />
+
+          <v-text-field 
+            v-model="localOrdenTransferencia.motivo" 
+            label="Motivo" 
+            required 
+            variant="solo"
+            rounded
+            dense
+          />
           
           <ListadoDeTransferencias v-if="!this.isEditing" :items="localOrdenTransferencia.items"
             @add-item="openAddItemDialog" @edit-item="openEditItemDialog" @delete-item="deleteItem" @close="closeDialog"
@@ -29,8 +61,6 @@
         @save="saveItem" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
         <v-btn class="btn-blue" text @click="saveChanges" :disabled="!isFormValid">Guardar</v-btn>
       </v-card-actions>
     </v-card>
@@ -223,3 +253,4 @@ export default {
   },
 };
 </script>
+

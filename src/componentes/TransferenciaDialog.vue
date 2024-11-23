@@ -9,14 +9,41 @@
       <v-card-text>
         <v-form ref="form">
 
-          <v-text-field v-model="localTransferencia.sku" :items="medicamentosPorStockArea" item-title="sku" item-value="sku"
-            label="SKU" required/>
+          <v-text-field 
+            v-model="localTransferencia.sku" 
+            :items="medicamentosPorStockArea" 
+            item-title="sku" 
+            item-value="sku"
+            label="SKU" 
+            required
+            variant="solo"
+            rounded
+            dense
+          />
 
-          <v-select v-model="localTransferencia.descripcion" :items="medicamentosPorStockArea" item-title="descripcion"
-            item-value="descripcion" label="Descripcion" required/>
+          <v-select 
+            v-model="localTransferencia.descripcion" 
+            :items="medicamentosPorStockArea" 
+            item-title="descripcion"
+            item-value="descripcion" 
+            label="Descripcion" 
+            required
+            variant="solo"
+            rounded
+            dense
+          />
 
-          <v-text-field v-model="localTransferencia.cantidad" label="Cantidad" required type="number"
-            :rules="[cantidadRule]" />
+          <v-text-field 
+            v-model="localTransferencia.cantidad"
+            label="Cantidad"
+            required
+            type="number"
+            :rules="[cantidadRule]"
+            variant="solo"
+            rounded
+            dense
+          />
+
         </v-form>
       </v-card-text>
       <v-card-actions>

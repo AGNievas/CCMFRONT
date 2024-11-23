@@ -2,20 +2,31 @@
   <v-dialog v-model="isDialogVisible" persistent max-width="1200px">
     <v-card>
       <v-card-title>
-        <span class="headline">Historial Apliques</span>
-        <span class="headline"> {{ this.paciente.nombre }} {{ this.paciente.apellido }}</span>
+        <span class="headline">Historial de Apliques de {{ this.paciente.nombre }} {{ this.paciente.apellido }}</span>
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        
       </v-card-title>
-      <v-card-actions class="jcc">
-        <v-btn class="btn-blue" text @click="closeDialog">Cerrar</v-btn>
-      </v-card-actions>
 
-      <Tabla :data="valoresTabla" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
-        @delete="confirmDeleteAplique" />
+      <Tabla
+        :data="valoresTabla"
+        :headers="apliquesHeaders"
+        :isListadoApliques="true"
+        @edit="openEditarApliqueDialog"
+        @delete="confirmDeleteAplique"
+      />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
-        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
-          :paciente-id="paciente" :areas="areas" :stockAreas="stockAreas" :usuarios="usuarios"
-          :medicamentos="medicamentos" @save="saveAplique" />
+        <ApliqueDialog
+          v-model="apliqueDialogVisible"
+          :is-editing="isEditing"
+          :aplique="apliqueToEdit"
+          :paciente-id="paciente"
+          :areas="areas" :stockAreas="stockAreas"
+          :usuarios="usuarios"
+          :medicamentos="medicamentos" @save="saveAplique"
+        />
       </v-dialog>
 
       <ConfirmDialog :isDelete="true" v-model="confirmDeleteDialog" title="Confirmar Eliminación"

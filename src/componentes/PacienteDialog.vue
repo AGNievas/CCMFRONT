@@ -3,6 +3,9 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ isEditing ? 'Editar Paciente' : 'Agregar Paciente' }}</span>
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
 
       <v-card-text>
@@ -11,25 +14,67 @@
         </v-alert>
 
         <v-form ref="form">
-          <v-text-field v-model="pacienteLocal.nombre" label="Nombre" required @input="validateNombre"
+          <v-text-field
+            v-model="pacienteLocal.nombre"
+            label="Nombre"
+            required
+            @input="validateNombre"
             @keypress="soloLetras"
-            :error-messages="nombreError ? 'El nombre debe contener solo letras' : ''"></v-text-field>
-          <v-text-field v-model="pacienteLocal.apellido" label="Apellido" required @input="validateApellido"
+            :error-messages="nombreError ? 'El nombre debe contener solo letras' : ''"
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
+
+          <v-text-field
+            v-model="pacienteLocal.apellido"
+            label="Apellido"
+            required
+            @input="validateApellido"
             @keypress="soloLetras"
-            :error-messages="apellidoError ? 'El apellido debe contener solo letras' : ''"></v-text-field>
-          <v-text-field v-model="pacienteLocal.dni" label="DNI" required @input="validateDni" @keypress="soloNumeros"
-            :error-messages="dniError ? 'El DNI debe tener 8 dígitos' : ''"></v-text-field>
-          <v-text-field v-model="pacienteLocal.fechaNacimiento" label="Fecha de Nacimiento (DD-MM-YYYY)" type="date"
-            required :input="pacienteLocal.fechaNacimiento"
-            :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato (DD-MM-YYYY)' : ''"></v-text-field>
-          <v-select v-model="pacienteLocal.genero" :items="['Masculino', 'Femenino', 'No binario']" label="Género"
-            required></v-select>
+            :error-messages="apellidoError ? 'El apellido debe contener solo letras' : ''"
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
+
+          <v-text-field
+            v-model="pacienteLocal.dni"
+            label="DNI"
+            required
+            @input="validateDni"
+            @keypress="soloNumeros"
+            :error-messages="dniError ? 'El DNI debe tener 8 dígitos' : ''"
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
+
+          <v-text-field 
+            v-model="pacienteLocal.fechaNacimiento"
+            label="Fecha de Nacimiento (DD-MM-YYYY)"
+            type="date"
+            required
+            :input="pacienteLocal.fechaNacimiento"
+            :error-messages="fechaNacimientoError ? 'La fecha debe tener el formato (DD-MM-YYYY)' : ''"
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
+
+          <v-select
+            v-model="pacienteLocal.genero"
+            :items="['Masculino', 'Femenino', 'No binario']"
+            label="Género"
+            required
+            variant="solo"
+            rounded
+            dense
+          ></v-select>
         </v-form>
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
         <v-btn class="btn-blue" text @click="save" :disabled="!isFormValid">Guardar</v-btn>
       </v-card-actions>
     </v-card>

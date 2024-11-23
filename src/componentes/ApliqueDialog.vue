@@ -1,33 +1,104 @@
 <template>
   <v-card>
-    <v-card-title>{{ isEditing ? 'Editar Aplique' : 'Agregar Aplique' }}</v-card-title>
+    <v-card-title>
+      <span class="headline">{{ isEditing ? 'Editar Aplique' : 'Agregar Aplique' }}</span>
+      <v-btn class="btn-icon" icon small @click="closeDialog">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-card-title>
+
     <v-card-text>
 
-      <v-select v-if="!isEditing" v-model="areaId" :items="areas" item-title="nombre" item-value="id" label="Área"
-        :disabled="!puedeSeleccionarArea" :readonly="!puedeSeleccionarArea" required></v-select>
+      <v-select
+        v-if="!isEditing"
+        v-model="areaId"
+        :items="areas"
+        item-title="nombre"
+        item-value="id"
+        label="Área"
+        :disabled="!puedeSeleccionarArea"
+        :readonly="!puedeSeleccionarArea"
+        required
+        variant="solo"
+        rounded
+        dense
+      ></v-select>
 
-      <v-select v-if="!isEditing" v-model="apliqueLocal.stockAreaId" :items="stockAreasDeArea" item-title="nombre"
-        item-value="id" label="Sub Área de Stock" required></v-select>
+      <v-select
+        v-if="!isEditing"
+        v-model="apliqueLocal.stockAreaId"
+        :items="stockAreasDeArea"
+        item-title="nombre"
+        item-value="id"
+        label="Sub Área de Stock"
+        required
+        variant="solo"
+        rounded
+        dense
+      ></v-select>
 
-      <v-select v-if="!isEditing" v-model="apliqueLocal.sku" :items="medicamentosPorStockArea" item-title="sku"
-        item-value="sku" label="SKU" required></v-select>
+      <v-select
+        v-if="!isEditing"
+        v-model="apliqueLocal.sku"
+        :items="medicamentosPorStockArea"
+        item-title="sku"
+        item-value="sku"
+        label="SKU"
+        require
+        variant="solo"
+        rounded
+        dense
+      ></v-select>
 
-      <v-select v-if="!isEditing" v-model="apliqueLocal.descripcion" :items="medicamentosPorStockArea"
-        item-title="descripcion" item-value="descripcion" label="Medicamento" required></v-select>
+      <v-select
+        v-if="!isEditing"
+        v-model="apliqueLocal.descripcion"
+        :items="medicamentosPorStockArea"
+        item-title="descripcion"
+        item-value="descripcion"
+        label="Medicamento"
+        required
+        variant="solo"
+        rounded
+        dense
+      ></v-select>
 
-      <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1"
-        required></v-text-field>
+      <v-text-field
+        v-if="!isEditing"
+        v-model="apliqueLocal.cantidad"
+        label="Cantidad"
+        type="number"
+        min="1"
+        required
+        variant="solo"
+        rounded
+        dense
+      ></v-text-field>
 
-      <v-select v-model="apliqueLocal.User" :items="usuariosPorArea" item-title="fullName" item-value="id"
-        label="Aplicante" required></v-select>
+      <v-select
+        v-model="apliqueLocal.User"
+        :items="usuariosPorArea"
+        item-title="fullName"
+        item-value="id"
+        label="Aplicante"
+        required
+        variant="solo"
+        rounded
+        dense
+      ></v-select>
 
-      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha y Hora de Aplicación" type="datetime-local"
-        required></v-text-field>
+      <v-text-field
+        v-model="apliqueLocal.fechaAplicacion"
+        label="Fecha y Hora de Aplicación"
+        type="datetime-local"
+        required
+        variant="solo"
+        rounded
+        dense
+      ></v-text-field>
 
     </v-card-text>
     <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
       <v-btn class="btn-blue" text @click="save" :disabled="!isFormValid">Guardar</v-btn>
     </v-card-actions>
   </v-card>

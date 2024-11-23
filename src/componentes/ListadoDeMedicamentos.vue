@@ -39,7 +39,7 @@
         ></v-select>
 
         <v-spacer></v-spacer>
-        <v-btn @click="openAddOrdenTransferDialog" class=" btn-blue">Transferir Stock</v-btn>
+        <v-btn @click="openAddOrdenTransferDialog" class=" btn-blue">Agregar Orden Transferencia</v-btn>
         <v-btn @click="openAddDialog" class="btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
@@ -169,7 +169,7 @@ export default {
         { text: 'SKU', value: 'sku' },
         { text: 'DESCRIPCIÓN', value: 'descripcion' },
         { text: 'TIPO DE MEDICAMENTO', value: 'tipo_medicamento' },
-        { text: this.stockHeaderText, value: 'cantidad' },
+        { text: this.stockHeaderText, value: 'stock' },
         { text: '', value: 'acciones', sortable: false },
       ];
     },

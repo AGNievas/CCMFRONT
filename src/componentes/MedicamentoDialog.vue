@@ -3,6 +3,9 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ dialogTitle }}</span>
+         <v-btn class="btn-icon" icon small @click="closeDialog">
+            <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
 
       <v-card-text>
@@ -12,6 +15,9 @@
             label="SKU"
             :readonly="isEditing"
             required
+            variant="solo"
+            rounded
+            dense
           ></v-text-field>
 
           <v-text-field
@@ -19,6 +25,9 @@
             label="Descripción"
             required
             :readonly="isEditing && area !== 0"
+            variant="solo"
+            rounded
+            dense
           ></v-text-field>
 
           <v-text-field
@@ -26,6 +35,9 @@
             label="Tipo de Medicamento"
             :readonly="isEditing && area !== 0"
             required
+            variant="solo"
+            rounded
+            dense
           ></v-text-field>
 
           <v-text-field
@@ -35,6 +47,9 @@
             required
             type="number"
             min="0"
+            variant="solo"
+            rounded
+            dense
           ></v-text-field>
 
           <v-alert v-if="formError" type="error" dismissible>
@@ -48,8 +63,6 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
         <v-btn class="btn-blue" text @click="confirmAction">{{ dialogButton }}</v-btn>
       </v-card-actions>
     </v-card>
