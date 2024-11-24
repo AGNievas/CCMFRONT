@@ -63,7 +63,9 @@ export default {
     isEditing: Boolean,
     modelValue: Boolean,
     stockAreaId: Number,
-    areaId: Number
+    areaId: Number,
+    medicamentosHoja: Array,
+    isHojaInternacion: Boolean,
   },
   data() {
     return {
@@ -75,22 +77,41 @@ export default {
   },
 
   async mounted() {
+    console.log(this.isHojaInternacion,"es hoja internacion?")
+   if(!this.isHojaInternacion){
     await this.loadMedicamentosByStockAreaId(this.stockAreaId, this.areaId)
-    console.log(this.medicamentos, "MEDICAMENTOS")
+
+   } else {
+    this.medicamentos = this.medicamentosHoja
+   }
+    
+   
 
   },
 
   computed: {
 
     medicamentosPorStockArea() {
-      return this.medicamentos
+
+      if(!this.isHojaInternacion){
+        return this.medicamentos
         .filter(medicamento => medicamento.StockArea?.id == this.stockAreaId)
         .map(medicamento => ({
           sku: String(medicamento.Medicamento.sku),
           descripcion: String(medicamento.Medicamento.descripcion),
         }))
+      } else {
+        console.log("entro?")
+        return this.medicamentosHoja.map(medicamento =>({
+          sku: String(medicamento.Medicamento.sku),
+          descripcion: String(medicamento.Medicamento.descripcion),
+        }))
+      }
+      
 
     },
+
+  
 
 
     isFormValid() {

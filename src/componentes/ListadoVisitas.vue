@@ -7,7 +7,9 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-
+        <v-card-actions class="jcc">
+          <v-btn v-if="puedeAgregarVisita" class="btn-blue" text @click="openAddVisitaDialog">Agregar Visita</v-btn>
+        </v-card-actions>
         <Tabla
           :data="valoresTabla"
           :headers="visitasHeader"
@@ -18,10 +20,6 @@
           @ver-historial="openListadoApliques"
           @crear-aplique="openApliqueDialog"
         />
-
-        <v-card-actions class="jcc">
-          <v-btn class="btn-blue" text @click="openAddVisitaDialog">Agregar Visita</v-btn>
-        </v-card-actions>
 
         <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
           <ApliqueDialog
@@ -159,6 +157,9 @@ export default {
       set(value) {
         this.$emit('update:modelValue', value);
       }
+    },
+    puedeAgregarVisita(){
+      return this.globalStore.getAreaId != this.globalStore.getFarmaciaId || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     }
   },
   watch: {

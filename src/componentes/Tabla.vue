@@ -201,7 +201,7 @@ export default {
     },
 
     canCreateAplique() {
-      return this.isListadoVisitas && this.globalStore.rolId != this.globalStore.getRolDataEntry
+      return this.isListadoVisitas && ((this.globalStore.rolId != this.globalStore.getRolAdmin && this.globalStore.getAreaId != this.globalStore.getFarmaciaId) || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin)
     },
 
     canVerHistorial() {
@@ -213,15 +213,16 @@ export default {
     },
 
     canVerDetail() {
-      return this.isListadoOrdenTransferencia && this.globalStore.rolId != this.globalStore.getRolDataEntry;
+      return this.isListadoOrdenTransferencia && this.globalStore.areaId == this.globalStore.getFarmaciaId;
     },
 
     canVerEdit() {
-      return (this.isListadoUsuarios && this.globalStore.getEsAdmin) ||
-             (this.isListadoMedicamentos && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
-             (this.isListadoPacientes && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
-             (this.isListadoApliques && this.globalStore.rolId !== this.globalStore.getRolDataEntry) ||
-             (this.isListadoOrdenTransferencia && this.globalStore.getEsAdmin) || (this.isListadoVisitas && this.globalStore.getRolId!=this.globalStore.getRolDataEntry) || this.isEditable;
+      return ((this.isListadoUsuarios && this.globalStore.getRolId== this.globalStore.getRolSuperAdmin) ||
+             ((this.isListadoMedicamentos && this.globalStore.rolId !== this.globalStore.getRolDataEntry && this.globalStore.rolId !== this.globalStore.getRolAutorizante) && this.globalStore.getAreaId == this.globalStore.getFarmaciaId)||
+             (this.isListadoPacientes && (this.globalStore.rolId == this.globalStore.getRolSuperAdmin || (this.globalStore.getAreaId !== this.globalStore.getFarmaciaId ))) ||
+             (this.isListadoApliques && (this.globalStore.rolId == this.globalStore.getRolSuperAdmin || (this.globalStore.getAreaId !== this.globalStore.getFarmaciaId ))) ||
+             (this.isListadoOrdenTransferencia && (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin )) || 
+             (this.isListadoVisitas && (this.globalStore.rolId == this.globalStore.getRolSuperAdmin || (this.globalStore.getAreaId !== this.globalStore.getFarmaciaId )))) || this.isEditable;
     },
 
     canVerDelete() {
@@ -230,7 +231,7 @@ export default {
 
     puedeDarAlta(){
       
-      return this.isListadoVisitas 
+      return this.isListadoVisitas && ( this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || (this.globalStore.getAreaId !=this.globalStore.getFarmaciaId))
     }
 
 

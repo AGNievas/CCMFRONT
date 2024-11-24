@@ -63,7 +63,7 @@ const ordenTransferenciaService = {
         { stockAreaIdOrigen, stockAreaIdDestino, motivo,  areaIdDestino, areaIdOrigen, userId, listaItems },
         { withCredentials: true }
       );
-     
+     console.log(response)
       return response;
     } catch (error) {
       console.error("Al crear Orden de Transferencia:", error);

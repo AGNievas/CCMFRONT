@@ -21,24 +21,28 @@
     <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
-        <v-list-item >
+        <v-list-item v-if="puedeVerCargaMasiva" >
           <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
         </v-list-item>
-        <v-list-item>
+        <v-list-item v-if="puedeVerListadoMedicamentos">
           <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado De Medicamentos</RouterLink>
         </v-list-item>
         <v-list-item >
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
-        <v-list-item>
+        <v-list-item v-if="puedeVerListadoUsuarios">
           <RouterLink to="/listadoDeUsuarios" class="drawer-item-title">Listado De Usuarios</RouterLink>
         </v-list-item>
-        <v-list-item>
+        <v-list-item v-if="puedeVerListadoOrdenesTransferencias">
           <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado De Orden Transferencias</RouterLink>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item v-if="puedeVerReportes">
           <RouterLink to="/reportes" class="drawer-item-title">Reportes</RouterLink>
+        </v-list-item>
+
+        <v-list-item v-if="puedeGenerarPedido">
+          <RouterLink to="/hojaInternacion" class="drawer-item-title">Generar Pedido Medicamentos</RouterLink>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -69,7 +73,28 @@ export default {
     },
   },
   computed: {
-    ...mapStores(useGlobalStore)
+    ...mapStores(useGlobalStore),
+
+    puedeVerCargaMasiva(){
+      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin ) && this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    },
+    puedeVerListadoMedicamentos(){
+      return this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    },
+
+    puedeVerListadoUsuarios(){
+      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin ) && this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    },
+
+    puedeVerListadoOrdenesTransferencias(){
+      return this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    },
+    puedeVerReportes(){
+      return this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
+    },
+    puedeGenerarPedido(){
+      return this.globalStore.getAreaId != this.globalStore.getFarmaciaId || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
+    }
   },
   mounted() {
     this.isSessionActive = sessionStorage.length > 1

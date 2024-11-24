@@ -10,12 +10,12 @@
           hide-details></v-select>
         <v-spacer></v-spacer>
 
-        <v-btn v-if="globalStore.rolId <= globalStore.getRolAutorizante" @click="openAgregarDialog"
+        <v-btn v-if="puedeAgregarPaciente" @click="openAgregarDialog"
           class="btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
-        :eliminable="false" @edit="openEditarDialog" @delete="confirmDelete" @ver-visitas="openListadoVisitas"
+        :eliminable="true" @edit="openEditarDialog" @delete="confirmDelete" @ver-visitas="openListadoVisitas"
         />
 
       <PacienteDialog ref="pacienteDialog" v-model="agregarDialog" :is-editing="false" @save="addPaciente"
@@ -24,20 +24,11 @@
       <PacienteDialog v-model="editarDialog" :is-editing="true" :paciente="pacienteEdit" @save="editarPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
-      <!-- <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
-        <ApliqueDialog v-model="apliqueDialogVisible" :paciente-id="selectedPacienteId" :areas="globalStore.getAreas"
-          :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos"
-          @save="saveApliqueFromDialog" @delete="confirmDelete" />
-      </v-dialog> -->
-
-      <!-- <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :paciente-id="selectedPacienteId"
-        :areas="globalStore.getAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" /> -->
-
-
-      
-        <ListadoVisitas v-if="listadoVisitasVisible" v-model="listadoVisitasVisible" :paciente="selectedPaciente" :areas="globalStore.getAreas"
+      <ListadoVisitas v-if="listadoVisitasVisible" v-model="listadoVisitasVisible" :paciente="selectedPaciente" :areas="globalStore.getAreas"
           :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" />
-      
+          
+          <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
+          text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deletePaciente" />
 
     </v-card>
   </div>
@@ -48,21 +39,17 @@ import Tabla from './Tabla.vue';
 import PacienteDialog from './PacienteDialog.vue';
 import pacienteService from './servicios/pacienteService';
 import { formatearFecha, calcularEdad } from '@/utils/utils';
-// import ApliqueDialog from './ApliqueDialog.vue';
-// import ListadoApliques from './ListadoApliques.vue';
 import { useGlobalStore } from '@/stores/global';
-// import { saveApliqueHelper } from '../utils/apliqueHelper.js';
 import itemService from './servicios/itemService';
 import visitaService from './servicios/visitaService';
 import ListadoVisitas from './ListadoVisitas.vue';
-
+import ConfirmDialog from './ConfirmDialog.vue';
 export default {
   components: {
     Tabla,
     PacienteDialog,
-    // ApliqueDialog,
-    // ListadoApliques,
-    ListadoVisitas
+    ListadoVisitas,
+    ConfirmDialog
   },
 
   data() {
@@ -96,7 +83,9 @@ export default {
       medicamentos: [],
       globalStore: useGlobalStore(),
       visitas: [],
-      selectedPaciente: {}
+      selectedPaciente: {},
+      deleteDialog: false
+
     };
   },
   async mounted() {
@@ -106,7 +95,10 @@ export default {
 
   },
   computed: {
-   
+    puedeAgregarPaciente(){
+      return (this.globalStore.getRolId != this.globalStore.getRolAdmin && this.globalStore.getAreaId != this.globalStore.getFarmaciaId) || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
+    },
+
     pacientesFiltradosFormateados() {
       const pacientesFiltrados = this.filtrarPacientes();
       return this.formatearPacientes(pacientesFiltrados);
@@ -188,18 +180,7 @@ export default {
       this.loadPacientes();
     },
 
-    // openApliqueDialog(pacienteId) {
-    //   this.selectedPacienteId = pacienteId;
-    //   this.isEditing = false;
-    //   this.apliqueDialogVisible = true;
-    // },
-
-    // openListadoApliques(pacienteId) {
-    //   this.selectedPacienteId = pacienteId;
-    //   this.listadoApliquesVisible = true;
-    // },
-
-    openListadoVisitas(paciente) {
+     openListadoVisitas(paciente) {
       if (paciente && Object.keys(paciente).length) {
         this.selectedPaciente = paciente;
         this.listadoVisitasVisible = true;
@@ -208,21 +189,7 @@ export default {
       }
     },
 
-    // async saveApliqueFromDialog(nuevoAplique) {
-    //   try {
-    //     const resultado = await saveApliqueHelper(this.isEditing, this.selectedPacienteId.id, nuevoAplique);
-
-    //     if (!this.isEditing) {
-    //       console.log(resultado);
-    //     }
-    //     this.apliqueDialogVisible = false;
-    //   } catch (error) {
-    //     console.error('Error al guardar aplique desde ConsultaAltaPacientes:', error);
-    //   }
-
-    // },
-
-    openAgregarDialog() {
+     openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();
       this.pacienteEdit = {};
       this.errorMensaje = '';
@@ -234,10 +201,21 @@ export default {
       this.editarDialog = true;
     },
     confirmDelete(id) {
+      console.log(id,"id paciente")
       this.confirmDeleteId = id;
       this.deleteDialog = true;
     },
 
+    async deletePaciente(){
+      try{
+        console.log(this.confirmDeleteId,"en delete")
+        await pacienteService.deletePaciente(this.confirmDeleteId)
+        this.deleteDialog=false;
+      }catch(error){
+        console.error('Error al eliminar aplique:', error);
+      }
+      this.loadPacientes();
+    }
   },
 };
 </script>

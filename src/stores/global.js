@@ -20,6 +20,7 @@ export const useGlobalStore = defineStore('global', {
         ROL_ID_ADMIN:2,
         ROL_ID_AUTORIZANTE:3,
         ROL_ID_DATA_ENTRY: 4,
+        FARMACIA_ID: 1,
 
     }),
     actions: {
@@ -73,6 +74,7 @@ export const useGlobalStore = defineStore('global', {
         getRolAdmin:(state)=> state.ROL_ID_ADMIN,
         getRolAutorizante:(state) => state.ROL_ID_AUTORIZANTE,
         getRolDataEntry:(state) => state.ROL_ID_DATA_ENTRY,
-        getUsuarioIdYNombre:(state) => {state.usuarioId, state.fullNameUsuario} 
+        getUsuarioIdYNombre:(state) => {state.usuarioId, state.fullNameUsuario} ,
+        getFarmaciaId:(state) => state.FARMACIA_ID
       }
 })

@@ -97,7 +97,7 @@ export default {
             Diagnostico: apl.Visita.diagnostico,
             Descripcion_Medicamento: apl.Medicamento.descripcion,
             Sku_Medicamento: apl.Medicamento.sku,
-            Fecha_Aplicacion: apl.fechaAplicacion,
+            Fecha_Aplicacion: this.tiempoUniversalATiempoLocal(apl.fechaAplicacion),
             Cantidad: apl.cantidad,
             Medico_Autorizante: apl.User.fullName,
       }));
@@ -114,6 +114,11 @@ export default {
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
+    },
+
+    tiempoUniversalATiempoLocal(fecha) {
+      const fechaLocal =  new Date (fecha)
+      return fechaLocal.toLocaleString(); 
     },
 
     searchApliques() {

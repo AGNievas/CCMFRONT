@@ -7,9 +7,9 @@ import Login from "./componentes/Login.vue";
 import InformacionUsuario from "./componentes/InformacionUsuario.vue";
 import ConsultaAltaPacientes from "./componentes/ConsultaAltaPacientes.vue";
 import ListadoDeUsuarios from "./componentes/ListadoDeUsuarios.vue";
-// import ListadoApliques from "./componentes/ListadoApliques.vue";
 import Reportes from "./componentes/Reportes.vue";
 import ListadoOrdenTransferencia from "./componentes/ListadoOrdenTransferencia.vue";
+import HojaInternacion from "./componentes/HojaInternacion.vue";
 import { useGlobalStore } from "./stores/global";
 
 const routes = [
@@ -70,7 +70,7 @@ const routes = [
     name: "ListadoDeUsuarios",
     component: ListadoDeUsuarios,
     meta: { title: "Listado de Usuarios",
-      rolesPermitidos:["Super Admin"]
+      rolesPermitidos:["Super Admin", "Admin"]
      },
   },
 
@@ -88,6 +88,15 @@ const routes = [
     component: Reportes,
     meta: { title: "Reportes de Apliques por fechas",
       rolesPermitidos:["Super Admin"]
+     },
+  },
+  
+  {
+    path: "/hojaInternacion",
+    name: "HojaInternacion",
+    component: HojaInternacion,
+    meta: { title: "Hoja de Internacion",
+     
      },
   },
   // {

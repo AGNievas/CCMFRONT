@@ -6,7 +6,6 @@ const visitaService = {
   async getAllVisitas() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
-      console.log(response);
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Visitas: ", error);
@@ -19,7 +18,6 @@ const visitaService = {
       const response = await axiosInstance.get(`${URL}/${pacienteId}`, {
         withCredentials: true,
       });
-      console.log(response, "respuesta back");
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Visitas: ", error);
@@ -29,7 +27,6 @@ const visitaService = {
 
   async createVisita(visita, pacienteId) {
     try {
-      console.log(visita, "visita en create");
       const userId = visita.User.id;
       const { fechaIngreso, diagnostico, seInterno } = visita;
       const fechaAlta = !seInterno ? fechaIngreso : null;
@@ -58,7 +55,6 @@ const visitaService = {
 
   async updateVisita(visita) {
     try {
-      console.log(visita, "visita en update");
       const userId = visita.User.id;
       const { fechaIngreso, diagnostico, seInterno, id } = visita;
       const fechaAlta = visita.fechaAlta;

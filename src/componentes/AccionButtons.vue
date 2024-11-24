@@ -3,7 +3,7 @@
     <v-btn title="Editar" class="btn-icon" v-if="canVerEdit && editable" icon dense x-small color="#0E3746" @click="$emit('edit', item)">
       <v-icon>mdi-pencil</v-icon>
     </v-btn>
-    <v-btn title="Eliminar" class="btn-icon" v-if="canVerDelete && eliminable" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">
+    <v-btn title="Eliminar" class="btn-icon" v-if="canVerDelete" icon small color="red" @click="$emit('delete', item.id ? item.id : item.sku ? item.sku : index)">
       <v-icon>mdi-delete</v-icon>
     </v-btn>
     <v-btn title="Restaurar Contraseña" class="btn-icon" v-if="canRestorePassword" icon small color="blue" @click="$emit('restorePassword', item)">
@@ -55,8 +55,6 @@ emits:['edit', 'delete', 'restorePassword','ver-historial','crear-aplique','ver-
 computed:{
 
     puedeMostrarAlta(){
-      console.log(this.puedeDarAlta,"puedeDARALTA")
-      console.log(this.item.fechaAlta, "FECHA ALTA ITEM")
       return !this.item.fechaAlta && this.puedeDarAlta
     }
   }

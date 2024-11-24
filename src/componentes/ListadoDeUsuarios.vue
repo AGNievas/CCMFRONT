@@ -5,7 +5,7 @@
         <v-text-field v-model="search" density="compact" label="Buscar" prepend-inner-icon="mdi-magnify" variant="solo"
           hide-details single-line class="rounded-search-bar"></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn @click="openAddUserDialog" class="btn-blue">Agregar Usuario</v-btn>
+        <v-btn v-if="globalStore.getRolId == globalStore.getRolSuperAdmin" @click="openAddUserDialog" class="btn-blue">Agregar Usuario</v-btn>
       </v-card-title>
 
 

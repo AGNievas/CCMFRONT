@@ -1,5 +1,5 @@
 <template >
-  <v-container v-if="globalStore.getRolId<=2">
+  <v-container v-if="puedeVerCargaMasiva">
     <v-card>
       <div v-if="!archivoCargado">
         <v-row class="d-flex flex-column align-center">
@@ -53,6 +53,12 @@ export default {
         .join("\n")
     };
     
+  },
+
+  computed:{
+    puedeVerCargaMasiva(){
+      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin ) && this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    }
   },
   methods: {
     subirArchivo() {
@@ -115,6 +121,8 @@ export default {
       this.nombreArchivo = "";
       this.archivo = null;
     },
+
+    
   },
 };
 </script>
