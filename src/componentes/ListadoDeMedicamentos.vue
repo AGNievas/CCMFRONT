@@ -40,7 +40,7 @@
 
         <v-spacer></v-spacer>
         <v-btn @click="openAddOrdenTransferDialog" class=" btn-blue">Agregar Orden Transferencia</v-btn>
-        <v-btn @click="openAddDialog" class="btn-blue">Agregar Medicamento</v-btn>
+        <v-btn v-if="puedeAgregarMedicamento" @click="openAddDialog" class="btn-blue">Agregar Medicamento</v-btn>
       </v-card-title>
 
       <Tabla
@@ -191,6 +191,10 @@ export default {
       }
       return puedeCambiarArea;
     },
+
+    puedeAgregarMedicamento(){
+      return this.globalStore.getRolId == this.globalStore.getRolAdmin || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
+    }
   },
 
   methods: {
@@ -361,7 +365,7 @@ export default {
         let itemDelete = this.itemsMed.find(
           (itemMed) => (itemMed.id == this.confirmDeleteSku)
         );
-        
+        console.log("AVERSI ENTRO")
         await itemService.deleteItem(itemDelete.id);
         this.closeDeleteDialog();
       } catch (error) {

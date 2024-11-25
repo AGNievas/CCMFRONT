@@ -77,7 +77,8 @@ export default {
   },
 
   async mounted() {
-    console.log(this.isHojaInternacion,"es hoja internacion?")
+
+      console.log(this.isHojaInternacion,"es hoja internacion?")
    if(!this.isHojaInternacion){
     await this.loadMedicamentosByStockAreaId(this.stockAreaId, this.areaId)
 
@@ -92,24 +93,14 @@ export default {
   computed: {
 
     medicamentosPorStockArea() {
+    // Determina el array base dependiendo de la condición
+    const baseArray = this.isHojaInternacion
+      ? this.medicamentosHoja
+      : this.medicamentos.filter(medicamento => medicamento.StockArea?.id == this.stockAreaId);
 
-      if(!this.isHojaInternacion){
-        return this.medicamentos
-        .filter(medicamento => medicamento.StockArea?.id == this.stockAreaId)
-        .map(medicamento => ({
-          sku: String(medicamento.Medicamento.sku),
-          descripcion: String(medicamento.Medicamento.descripcion),
-        }))
-      } else {
-        console.log("entro?")
-        return this.medicamentosHoja.map(medicamento =>({
-          sku: String(medicamento.Medicamento.sku),
-          descripcion: String(medicamento.Medicamento.descripcion),
-        }))
-      }
-      
-
-    },
+    // Aplica el mapeo sobre el array base
+    return this.mapMedicamentos(baseArray);
+  },
 
   
 
@@ -131,7 +122,12 @@ export default {
       this.medicamentos = await itemService.getAllItem();
     },
 
-
+    mapMedicamentos(array) {
+    return array.map(medicamento => ({
+      sku: String(medicamento.Medicamento.sku),
+      descripcion: String(medicamento.Medicamento.descripcion),
+    }));
+  },
 
     saveChanges() {
       if (this.isFormValid) {
