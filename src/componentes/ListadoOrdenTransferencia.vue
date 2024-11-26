@@ -1,6 +1,9 @@
 <template>
-  <div>
     <v-card class="custom-container">
+      <v-card-title class="d-flex align-center pe-2">
+        <span class="headline">Listado de Ordenes de Transferencia</span>
+        <v-divider></v-divider>
+      </v-card-title>
       <v-card-title class="d-flex align-center pe-2">
 
         <v-spacer></v-spacer>
@@ -45,7 +48,6 @@
       @confirm="deleteTransferencia"
     />
     </v-card>
-  </div>
 </template>
 
 <script>

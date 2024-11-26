@@ -22,19 +22,19 @@
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
         <v-list-item v-if="puedeVerCargaMasiva" >
-          <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga De Medicamentos</RouterLink>
+          <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga de Medicamentos</RouterLink>
         </v-list-item>
         <v-list-item v-if="puedeVerListadoMedicamentos">
-          <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado De Medicamentos</RouterLink>
+          <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado de Medicamentos</RouterLink>
         </v-list-item>
         <v-list-item >
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
         <v-list-item v-if="puedeVerListadoUsuarios">
-          <RouterLink to="/listadoDeUsuarios" class="drawer-item-title">Listado De Usuarios</RouterLink>
+          <RouterLink to="/listadoDeUsuarios" class="drawer-item-title">Listado de Usuarios</RouterLink>
         </v-list-item>
         <v-list-item v-if="puedeVerListadoOrdenesTransferencias">
-          <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado De Orden Transferencias</RouterLink>
+          <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado de Ordenes de Transferencias</RouterLink>
         </v-list-item>
 
         <v-list-item v-if="puedeVerReportes">
@@ -42,7 +42,7 @@
         </v-list-item>
 
         <v-list-item v-if="puedeGenerarPedido">
-          <RouterLink to="/hojaInternacion" class="drawer-item-title">Generar Pedido Medicamentos</RouterLink>
+          <RouterLink to="/hojaInternacion" class="drawer-item-title">Generar Pedido de Medicamentos</RouterLink>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>

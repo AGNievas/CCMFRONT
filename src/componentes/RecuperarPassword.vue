@@ -14,6 +14,9 @@
             readonly
             :append-inner-icon="'mdi-content-copy'"
             @click:append-inner="copyToClipboard"
+            variant="solo"
+            rounded
+            dense
           ></v-text-field>
 
           <RouterLink to="/login" class="recuperar-link">Volver al inicio de sesión</RouterLink>

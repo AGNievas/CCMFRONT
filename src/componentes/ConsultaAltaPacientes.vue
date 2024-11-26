@@ -2,6 +2,10 @@
   <div>
     <v-card class="custom-container ">
       <v-card-title class="d-flex align-center pe-2">
+        <span class="headline">Consulta y Alta de Pacientes</span>
+        <v-divider></v-divider>
+      </v-card-title>
+      <v-card-title class="d-flex align-center pe-2">
         <v-text-field v-model="searchDni" density="compact" label="Buscar por DNI o Apellido"
           prepend-inner-icon="mdi-magnify" variant="solo" hide-details single-line
           class="rounded-search-bar"></v-text-field>

@@ -1,6 +1,9 @@
 <template>
-  <div>
     <v-card class="custom-container">
+      <v-card-title class="d-flex align-center pe-2">
+        <span class="headline">Listado de Usuarios</span>
+        <v-divider></v-divider>
+      </v-card-title>
       <v-card-title class="d-flex align-center pe-2">
         <v-text-field v-model="search" density="compact" label="Buscar" prepend-inner-icon="mdi-magnify" variant="solo"
           hide-details single-line class="rounded-search-bar"></v-text-field>
@@ -23,7 +26,6 @@
       :areas="areas" />
     <UsuarioDialog v-model="editDialog" :is-editing="true" :usuario="editUsuario" @update:usuario="editUsuario = $event"
       @save="updateUsuario" :roles="roles" :areas="areas" />
-  </div>
 </template>
 
 <script>

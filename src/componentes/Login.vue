@@ -9,8 +9,11 @@
             required 
             type="text"
             :error-messages="cuilErrors" 
-            @input="formData.cuil = formatearCuil(formData.cuil)">
-          </v-text-field>
+            @input="formData.cuil = formatearCuil(formData.cuil)"
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
 
           <v-text-field 
             v-model="formData.password"
@@ -19,8 +22,11 @@
             :type="showPassword ? 'text' : 'password'"
             :error-messages="passwordErrors" 
             :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append-inner="toggleShowPassword">
-          </v-text-field>
+            @click:append-inner="toggleShowPassword"
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
 
           <v-btn class="btn-blue" type="submit">Iniciar Sesión</v-btn>
         </v-form>

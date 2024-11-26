@@ -23,6 +23,10 @@
   width: 100%;
 }  
 
+.v-divider{
+  margin-bottom: 10px;
+}
+
 .table-header {
   background-color: #E5E5E5;
   text-transform: uppercase;
@@ -275,6 +279,18 @@
 .tac{
   text-align: center !important;
 }
+
+.v-list-item:hover {
+  background-color: #0E3746; /* Cambia el fondo */
+  transition: background-color 0.3s ease; /* Suaviza la transición */
+}
+
+.v-list-item:hover .drawer-item-title {
+  color: #A3DEC3; /* Cambia el color del texto */
+  transition: color 0.3s ease; /* Suaviza la transición */
+}
+
+
 
 @media (max-width: 600px) {
   .v-card-title {

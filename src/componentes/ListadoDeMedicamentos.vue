@@ -1,15 +1,18 @@
 <template>
     <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
+        <span class="headline">Listado de Medicamentos</span>
+        <v-divider></v-divider>
+      </v-card-title>
+      <v-card-title class="d-flex align-center pe-2">
         <v-text-field
           v-model="search"
-          density="compact"
           label="Buscar"
           prepend-inner-icon="mdi-magnify"
+          density="compact"
           variant="solo"
           hide-details
-          single-line
-          class="rounded-search-bar"
+          rounded
         ></v-text-field>
 
         <v-select
@@ -22,6 +25,7 @@
           density="compact"
           variant="solo"
           hide-details
+          rounded
           @update:modelValue="onAreaChange"
         ></v-select>
 
@@ -35,6 +39,7 @@
           density="compact"
           variant="solo"
           hide-details
+          rounded
           @update:modelValue="onStockAreaChange"
         ></v-select>
 
@@ -49,20 +54,20 @@
         :isListadoMedicamentos="true"
         @edit="openEditDialog"
         @delete="confirmDelete"
-        :eliminable="this.area != 0 && this.stockArea != 0"
+        :eliminable="(this.area != 0 && this.stockArea != 0)"
         :editable="!(this.area != 0 && this.stockArea == 0)"
       />
-
-      <OrdenTransferenciaDialog
-        v-model="dialog"
-        :is-editing="false"
-        :user="globalStore.getUsuarioIdYNombre"
-        :ordenTransferencia="selectedOrdenTransferencia"
-        :stockAreas="this.globalStore.getStockAreas"
-        :errorMessage="errorMessage"
-        @save="saveTransferencia"
-      />
     </v-card>
+
+    <OrdenTransferenciaDialog
+      v-model="dialog"
+      :is-editing="false"
+      :user="globalStore.getUsuarioIdYNombre"
+      :ordenTransferencia="selectedOrdenTransferencia"
+      :stockAreas="this.globalStore.getStockAreas"
+      :errorMessage="errorMessage"
+      @save="saveTransferencia"
+    />
 
     <ConfirmDialog
       v-model="deleteDialog"

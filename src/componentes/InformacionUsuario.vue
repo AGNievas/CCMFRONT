@@ -1,19 +1,48 @@
 <template>
   <v-container >
     <v-card >
-      <v-card-title class="d-flex align-center">
-        <h3>Información del Usuario</h3>
+      <v-card-title class="d-flex align-center pe-2">
+        <span class="headline">Informacion de Usuario</span>
+        <v-divider></v-divider>
       </v-card-title>
 
       <v-card-text class="text-center">
         <div v-if="usuarioActual" class="user-details">
-          <v-text-field v-model="usuarioActual.fullNameUsuario" label="Nombre" readonly></v-text-field>
+          <v-text-field
+            v-model="usuarioActual.fullNameUsuario"
+            label="Nombre"
+            readonl
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
 
-          <v-text-field v-model="usuarioActual.cuil" label="Cuil" readonly></v-text-field>
+          <v-text-field
+            v-model="usuarioActual.cuil"
+            label="Cuil"
+            readonl
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
 
-          <v-text-field v-model="usuarioActual.nombreArea" label="Área" readonly></v-text-field>
+          <v-text-field
+            v-model="usuarioActual.nombreArea"
+            label="Área"
+            readonl
+            variant="solo"
+            rounded
+            dense
+          ></v-text-field>
 
-          <v-text-field v-model="usuarioActual.rolName" label="Rol" readonly></v-text-field>
+          <v-text-field
+            v-model="usuarioActual.rolName"
+            label="Rol"
+            readonl
+            variant="solo"
+            rounded
+            dense
+            ></v-text-field>
 
           <v-btn @click="openEditPasswordDialog" class="btn-blue">Editar Contraseña</v-btn>
           
@@ -32,6 +61,9 @@
                   required
                   :append-inner-icon="showCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append-inner="toggleShowCurrentPassword"
+                  variant="solo"
+                  rounded
+                  dense
                   >
                   </v-text-field>
                   
@@ -41,6 +73,9 @@
                   required
                   :append-inner-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append-inner="toggleShowNewPassword"
+                  variant="solo"
+                  rounded
+                  dense
                   >
                   </v-text-field>
                   
@@ -50,6 +85,9 @@
                   required
                   :append-inner-icon="showRepeatNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append-inner="toggleShowRepeatNewPassword"
+                  variant="solo"
+                  rounded
+                  dense
                   >
                   </v-text-field>
                   

@@ -1,21 +1,30 @@
 <template>
-    <v-container v-if="puedeVerOrdenPedido">
-        <v-card class="custom-container">
-            <v-card-title class="d-flex align-center pe-2">
-                <span class="headline">Pedido de Medicamentos</span>
-                <v-spacer></v-spacer>
+  <v-card v-if="puedeVerOrdenPedido" class="custom-container">
+      <v-card-title class="d-flex align-center pe-2">
+          <span class="headline">Pedido de Medicamentos</span>
+          <v-divider></v-divider>
+      </v-card-title>
+      <ListadoDeTransferencias
+        :items="items"
+        :isViewMode="false"
+        @add-item="openDialog"
+        @edit-item="editItem"
+        @delete-item="deleteItem"
+      />
 
-            </v-card-title>
-            <v-divider></v-divider>
-            <ListadoDeTransferencias :items="items" :isViewMode="false" @add-item="openDialog" @edit-item="editItem"
-                @delete-item="deleteItem" />
+      <v-card-actions>
+        <v-btn :disabled="items.length == 0" class="btn-blue" @click="generatePdf">Exportar PDF</v-btn>
+      </v-card-actions>
+  </v-card>
 
-            <v-btn :disabled="items.length == 0" class="btn-blue" @click="generatePdf">Exportar PDF</v-btn>
-        </v-card>
-
-        <TransferenciaDialog v-if="isDialogOpen" v-model="isDialogOpen" :isEditing="isEditing"
-            :medicamentosHoja="medicamentosPorArea" :isHojaInternacion="true" @save="saveItem" />
-    </v-container>
+  <TransferenciaDialog
+    v-if="isDialogOpen"
+    v-model="isDialogOpen"
+    :isEditing="isEditing"
+    :medicamentosHoja="medicamentosPorArea"
+    :isHojaInternacion="true"
+    @save="saveItem"
+  />
 </template>
 
 <script>

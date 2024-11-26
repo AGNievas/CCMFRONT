@@ -1,6 +1,10 @@
 <template >
   <v-container v-if="puedeVerCargaMasiva">
     <v-card>
+      <v-card-title class="d-flex align-center pe-2">
+          <span class="headline">Carga de Medicamentos</span>
+          <v-divider></v-divider>
+      </v-card-title>
       <div v-if="!archivoCargado">
         <v-row class="d-flex flex-column align-center">
           <v-btn @click="subirArchivo" class="my-2 mx-5 btn-blue btn-tamano">Subir Archivo</v-btn>

@@ -1,34 +1,35 @@
 <template>
   <v-card class="custom-container" v-if="globalStore.getRolId == globalStore.getRolSuperAdmin">
     <v-card-title class="d-flex align-center pe-2">
-      <h3>Reporte Apliques</h3>
+      <span class="headline">Reportes</span>
+      <v-divider></v-divider>
     </v-card-title>
-            
-    <v-card-text>
+    <v-card-title class="d-flex align-center pe-2">
       <v-text-field
         v-model="startDate"
         label="Fecha Desde"
         type="date"
         required
+        density="compact"
         variant="solo"
+        hide-details
         rounded
-        dense
       />
 
       <v-text-field
-       v-model="endDate"
+        v-model="endDate"
         label="Fecha Hasta"
         type="date"
         required
+        density="compact"
         variant="solo"
+        hide-details
         rounded
-        dense
       />
 
-      <v-card-actions>
-        <v-btn class="btn-blue" text @click="searchApliques">Buscar</v-btn>
-      </v-card-actions>
-    </v-card-text>
+      <v-spacer></v-spacer>
+      <v-btn class="btn-blue" text @click="searchApliques">Buscar</v-btn>
+    </v-card-title>
             
     <Tabla
       v-if="mostrarReporte"
