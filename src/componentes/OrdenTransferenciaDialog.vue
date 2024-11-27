@@ -15,7 +15,7 @@
 
         <v-form ref="form">
           <v-select 
-            v-if="!this.isEditing" 
+            v-if="puedeSeleccionarStockArea" 
             v-model="localOrdenTransferencia.stockAreaIdOrigen" 
             :items="mapeoAreas"
             item-title="nombre" 
@@ -52,12 +52,12 @@
           
           <ListadoDeTransferencias v-if="!this.isEditing" :items="localOrdenTransferencia.items"
             @add-item="openAddItemDialog" @edit-item="openEditItemDialog" @delete-item="deleteItem" @close="closeDialog"
-            :disabled="!selectedStockArea" />
+            :disabled="deshabilitar" />
         </v-form>
       </v-card-text>
 
       <TransferenciaDialog v-if="itemDialogVisible" v-model="itemDialogVisible" :isEditing="isEditingItem"
-        :item="selectedItem" :areaId="selectedArea" :stockAreaId="localOrdenTransferencia.stockAreaIdOrigen"
+        :item="selectedItem" :areaId="selectedArea" :stockAreaId="selectedStockArea"
         @save="saveItem" />
 
       <v-card-actions>
@@ -94,7 +94,10 @@ export default {
     TransferenciaDialog,
   },
   data() {
+
     return {
+      STOCK_AREA_DEPOSITO_FARMACIA : 1,
+      AREA_FARMACIA : 1,
       localVisible: this.modelValue,
       localOrdenTransferencia: {
         stockAreaIdOrigen: '',
@@ -120,13 +123,21 @@ export default {
   },
   computed: {
 
-    selectedStockArea() {
-      return this.localOrdenTransferencia.stockAreaIdOrigen
-    },
-    selectedArea() {
-      return this.stockAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
+    puedeSeleccionarStockArea(){
+      return !this.isEditing && this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     },
 
+    selectedStockArea() {
+      return this.puedeSeleccionarStockArea ? this.localOrdenTransferencia.stockAreaIdOrigen : this.STOCK_AREA_DEPOSITO_FARMACIA
+    },
+    selectedArea() {
+      return this.puedeSeleccionarStockArea ? this.stockAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id : this.AREA_FARMACIA
+    },
+
+    // deshabilitar(){
+
+    //   return !this.selectedArea || !this.selectedArea && this.puedeSeleccionarStockArea
+    // },
     mostrarAreasNombre() {
 
       if (this.localOrdenTransferencia.stockAreaIdOrigen) {
@@ -142,17 +153,26 @@ export default {
     },
 
     mapeoAreas() {
-      return this.stockAreas.map(areas => {
-        return {
-          id: areas.id,
-          nombre: areas.Area.nombre + " - " + areas.nombre,
-          Area: {
-            id: areas.Area.id,
-            nombre: areas.Area.nombre
-          }
+  return this.stockAreas
+    .filter(areas => {
+      
+      if (!this.puedeSeleccionarStockArea) {
+        return areas.id !== this.STOCK_AREA_DEPOSITO_FARMACIA &&
+               areas.Area.id !== this.AREA_FARMACIA;
+      }
+      return true; 
+    })
+    .map(areas => {
+      return {
+        id: areas.id,
+        nombre: areas.Area.nombre + " - " + areas.nombre,
+        Area: {
+          id: areas.Area.id,
+          nombre: areas.Area.nombre
         }
-      },)
-    },
+      };
+    });
+},
 
 
     areaOrigenLabel() {
@@ -160,8 +180,8 @@ export default {
     },
     isFormValid() {
       if (!this.isEditing) {
-        const { stockAreaIdOrigen, stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
-        return stockAreaIdOrigen && stockAreaIdDestino && motivo && items ? items.length != 0 : false
+        const {  stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
+        return this.selectedStockArea && stockAreaIdDestino && motivo && items ? items.length != 0 : false
       } else {
         const { motivo } = this.localOrdenTransferencia;
         return motivo;
@@ -194,8 +214,11 @@ export default {
     saveChanges() {
 
       if (!this.isEditing) {
+        if(!this.puedeSeleccionarStockArea){
+          this.localOrdenTransferencia.stockAreaIdOrigen = this.STOCK_AREA_DEPOSITO_FARMACIA
+        }
         this.localOrdenTransferencia.userId = this.globalStore.getUsuarioId,
-          this.localOrdenTransferencia.areaIdOrigen = this.mapeoAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id
+          this.localOrdenTransferencia.areaIdOrigen = this.puedeSeleccionarStockArea ? this.mapeoAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id : this.AREA_FARMACIA
         this.localOrdenTransferencia.areaIdDestino = this.mostrarAreasNombre.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdDestino).Area.id
         this.localOrdenTransferencia.fechaTransferencia = this.formatearFechaYHora(new Date())
       }

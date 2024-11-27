@@ -37,8 +37,8 @@ export default {
     return {
       transferenciasHeaders: [
         { text: 'SKU', value: 'sku' },
-        { text: 'Cantidad', value: 'cantidad' },
         { text: 'Descripcion', value: 'descripcion' },
+        { text: 'Cantidad', value: 'cantidad' },
         { text: '', value: '', sortable: false },
       ],
     };

@@ -69,6 +69,8 @@ export default {
   },
   data() {
     return {
+      AREA_FARMACIA:1,
+      STOCK_AREA_FARMACIA_DEPOSITO:1,
       globalStore: useGlobalStore(),
       medicamentos: [],
       localVisible: this.modelValue,
@@ -78,15 +80,8 @@ export default {
 
   async mounted() {
 
-      console.log(this.isHojaInternacion,"es hoja internacion?")
-   if(!this.isHojaInternacion){
-    await this.loadMedicamentosByStockAreaId(this.stockAreaId, this.areaId)
-
-   } else {
-    this.medicamentos = this.medicamentosHoja
-   }
-    
-   
+ 
+    await this.loadMedicamentosByStockAreaId()
 
   },
 
@@ -94,9 +89,7 @@ export default {
 
     medicamentosPorStockArea() {
     // Determina el array base dependiendo de la condición
-    const baseArray = this.isHojaInternacion
-      ? this.medicamentosHoja
-      : this.medicamentos.filter(medicamento => medicamento.StockArea?.id == this.stockAreaId);
+    const baseArray =  this.medicamentos.filter(medicamento => medicamento.StockArea?.id == !this.isHojaInternacion ? this.stockAreaId: this.STOCK_AREA_FARMACIA_DEPOSITO);
 
     // Aplica el mapeo sobre el array base
     return this.mapMedicamentos(baseArray);
@@ -119,13 +112,17 @@ export default {
   methods: {
 
     async loadMedicamentosByStockAreaId() {
-      this.medicamentos = await itemService.getAllItem();
-    },
+      const arrayMedicamentos = await itemService.getAllItem();
+      let stockArea = this.isHojaInternacion ? this.STOCK_AREA_FARMACIA_DEPOSITO : this.stockAreaId
+      this.medicamentos = arrayMedicamentos.filter(med => med.StockArea.id == stockArea)
+
+      } ,
+    
 
     mapMedicamentos(array) {
     return array.map(medicamento => ({
       sku: String(medicamento.Medicamento.sku),
-      descripcion: String(medicamento.Medicamento.descripcion),
+      descripcion: String( medicamento.Medicamento.descripcion ),
     }));
   },
 

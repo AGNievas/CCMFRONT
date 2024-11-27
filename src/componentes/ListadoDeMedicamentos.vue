@@ -191,7 +191,7 @@ export default {
 
     puedeCambiarArea(){
       let puedeCambiarArea = true;
-      if(this.globalStore.getRolName == "Admin" || this.globalStore.getRolName == "Super Admin"){
+      if(this.globalStore.getAreaId == this.globalStore.getFarmaciaId){
         puedeCambiarArea = false;
       }
       return puedeCambiarArea;

@@ -119,7 +119,7 @@ export default {
       id: transferencia.id,
       usuarioAutorizante: transferencia.User.fullName,
       nombreAreaOrigen : stockAreaOrigen.Area.nombre,
-      nombreAreaDestino: stockAreaDestino.Area.nombre,
+      nombreAreaDestino: stockAreaDestino.Area.nombre + ' - ' + stockAreaDestino.nombre,
       fecha: this.formatearFecha(transferencia.fechaTransferencia),
       motivo: transferencia.motivo
     };

@@ -99,58 +99,96 @@ export default {
         async generatePdf() {
   const doc = new jsPDF();
 
-  // Función para agregar una página con una etiqueta específica
-  const addPage = (label) => {
-    doc.setFontSize(14);
-    doc.text(`Pedido de Medicamentos a Farmacia (${label})`, 10, 10);
+  // Dimensiones de la página
+  const pageHeight = doc.internal.pageSize.height;
+  const pageWidth = doc.internal.pageSize.width;
 
-    // Usuario y fecha actual
+  // Alturas fijas
+  const headerHeight = pageHeight * 0.15; // 15% del alto total
+  const footerHeight = pageHeight * 0.23; // 23% del alto total
+
+  // Encabezado
+  const addHeader = (label) => {
+    doc.setFontSize(16);
+    doc.text('Hospital Penna', pageWidth / 2, 10, { align: 'center' });
+    doc.setFontSize(12);
     const currentDate = new Date().toLocaleDateString('es-AR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
     });
-    const currentTime = new Date().toLocaleTimeString('es-AR', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
     const fullName = this.globalStore.getFullNameUsuario || 'Usuario Desconocido';
-    doc.setFontSize(12);
-    doc.text(`Usuario: ${fullName} Fecha: ${currentDate} ${currentTime}`, 10, 20);
+    doc.text(`Usuario: ${fullName}`, 10, 20);
+    doc.text(`Fecha: ${currentDate}`, 10, 30);
+    doc.text(`Pedido de Medicamentos (${label})`, pageWidth / 2, headerHeight - 10, { align: 'center' });
 
-    // Tabla con los ítems
-    doc.autoTable({
-      head: [['SKU', 'Descripción', 'Cantidad']],
-      body: this.items.map((item) => [item.sku, item.descripcion, item.cantidad]),
-      startY: 30,
-    });
-
-    // Campo de autorización y retiro
-    const finalY = doc.lastAutoTable.finalY + 10;
-    doc.text('Autoriza:', 10, finalY);
-    doc.text('Firma: __________________________', 10, finalY + 10);
-    doc.text('Aclaración: ______________________', 10, finalY + 20);
-    doc.text('Fecha: _________________', 10, finalY + 30);
-
-    const rightColumnX = 110;
-    doc.text('Retira:', rightColumnX, finalY);
-    doc.text('Firma: __________________________', rightColumnX, finalY + 10);
-    doc.text('Aclaración: ______________________', rightColumnX, finalY + 20);
-    doc.text('Fecha: _________________', rightColumnX, finalY + 30);
+    // Línea divisoria debajo del header
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.5);
+    doc.line(10, headerHeight, pageWidth - 10, headerHeight);
   };
 
-  // Agregar la primera página (Original)
-  addPage('Original');
+  // Footer
+  const addFooter = () => {
+    const footerY = pageHeight - footerHeight;
 
-  // Agregar una nueva página para el duplicado
-  doc.addPage();
-  addPage('Duplicado');
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.5);
+    doc.line(10, footerY, pageWidth - 10, footerY); // Línea divisoria
 
-  // Crear Blob del PDF
+    doc.setFontSize(10);
+    doc.text(
+      'NOTA: El médico que autoriza este pedido se hace responsable por los medicamentos solicitados, y la persona que retira asume la responsabilidad del traslado hasta el área de destino.',
+      10,
+      footerY + 10,
+      { maxWidth: pageWidth - 20 }
+    );
+
+    doc.setFontSize(12);
+    doc.text('Autoriza:', 10, footerY + 30);
+    doc.text('Firma: __________________________', 10, footerY + 40);
+    doc.text('Aclaración: ______________________', 10, footerY + 50);
+    doc.text('Fecha: _________________', 10, footerY + 60);
+
+    const rightColumnX = pageWidth - 100;
+    doc.text('Retira:', rightColumnX, footerY + 30);
+    doc.text('Firma: __________________________', rightColumnX, footerY + 40);
+    doc.text('Aclaración: ______________________', rightColumnX, footerY + 50);
+    doc.text('Fecha: _________________', rightColumnX, footerY + 60);
+  };
+
+  // Cuerpo
+  const addBody = (label) => {
+    doc.autoTable({
+      startY: headerHeight + 5, // Inicia después del header
+      margin: { left: 10, right: 10, bottom: footerHeight }, // Respeta el espacio del footer
+      head: [['SKU', 'Descripción', 'Cantidad']],
+      body: this.items.map((item) => [item.sku, item.descripcion, item.cantidad]),
+      tableWidth: pageWidth - 20,
+      styles: { fontSize: 10 },
+      bodyStyles: { valign: 'middle' },
+      pageBreak: 'auto', // Permite que la tabla se divida automáticamente en nuevas páginas
+      didDrawPage: () => {
+        addHeader(label); // Dibuja el header en cada página
+        addFooter(); // Dibuja el footer en cada página
+      },
+    });
+  };
+
+  // Generar contenido para Original
+  addHeader('Original'); // Dibujar header de la primera página
+  addFooter(); // Dibujar footer de la primera página
+  addBody('Original');
+
+  // Generar contenido para Duplicado
+  doc.addPage(); // Nueva página para Duplicado
+  addHeader('Duplicado'); // Dibujar header en la primera página del Duplicado
+  addFooter(); // Dibujar footer en la primera página del Duplicado
+  addBody('Duplicado');
+
+  // Descargar o guardar PDF
   const pdfBlob = doc.output('blob');
 
-  // Guardar archivo usando File System Access API
   if (window.showSaveFilePicker) {
     try {
       const fileHandle = await window.showSaveFilePicker({
@@ -165,12 +203,10 @@ export default {
       const writableStream = await fileHandle.createWritable();
       await writableStream.write(pdfBlob);
       await writableStream.close();
-      console.log('Archivo guardado exitosamente.');
     } catch (err) {
       console.error('El usuario canceló la acción o ocurrió un error:', err);
     }
   } else {
-    // Fallback
     const blobUrl = URL.createObjectURL(pdfBlob);
     const link = document.createElement('a');
     link.href = blobUrl;
@@ -178,6 +214,7 @@ export default {
     link.click();
   }
 },
+
     },
 };
 </script>
