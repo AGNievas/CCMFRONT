@@ -281,13 +281,13 @@
 }
 
 .v-list-item:hover {
-  background-color: #0E3746; /* Cambia el fondo */
-  transition: background-color 0.3s ease; /* Suaviza la transición */
+  background-color: #0E3746; 
+  transition: background-color 0.3s ease; 
 }
 
 .v-list-item:hover .drawer-item-title {
-  color: #A3DEC3; /* Cambia el color del texto */
-  transition: color 0.3s ease; /* Suaviza la transición */
+  color: #A3DEC3; 
+  transition: color 0.3s ease; 
 }
 
 

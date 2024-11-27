@@ -3,8 +3,9 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ isEditing ? 'Editar Item' : 'Agregar Item' }}</span>
-        <v-spacer></v-spacer>
-       
+          <v-btn class="btn-icon" icon small @click="closeDialog">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>       
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
@@ -47,8 +48,6 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="btn-blue" text @click="closeDialog">Cancelar</v-btn>
         <v-btn class="btn-blue" text :disabled="!isFormValid" @click="saveChanges">Guardar</v-btn>
       </v-card-actions>
     </v-card>
