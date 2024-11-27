@@ -99,15 +99,14 @@ export default {
         async generatePdf() {
   const doc = new jsPDF();
 
-  // Dimensiones de la página
+
   const pageHeight = doc.internal.pageSize.height;
   const pageWidth = doc.internal.pageSize.width;
 
-  // Alturas fijas
-  const headerHeight = pageHeight * 0.15; // 15% del alto total
-  const footerHeight = pageHeight * 0.23; // 23% del alto total
+  const headerHeight = pageHeight * 0.15; 
+  const footerHeight = pageHeight * 0.23; 
 
-  // Encabezado
+  
   const addHeader = (label) => {
     doc.setFontSize(16);
     doc.text('Hospital Penna', pageWidth / 2, 10, { align: 'center' });
@@ -122,19 +121,19 @@ export default {
     doc.text(`Fecha: ${currentDate}`, 10, 30);
     doc.text(`Pedido de Medicamentos (${label})`, pageWidth / 2, headerHeight - 10, { align: 'center' });
 
-    // Línea divisoria debajo del header
+   
     doc.setDrawColor(0, 0, 0);
     doc.setLineWidth(0.5);
     doc.line(10, headerHeight, pageWidth - 10, headerHeight);
   };
 
-  // Footer
+
   const addFooter = () => {
     const footerY = pageHeight - footerHeight;
 
     doc.setDrawColor(0, 0, 0);
     doc.setLineWidth(0.5);
-    doc.line(10, footerY, pageWidth - 10, footerY); // Línea divisoria
+    doc.line(10, footerY, pageWidth - 10, footerY); 
 
     doc.setFontSize(10);
     doc.text(
@@ -160,33 +159,33 @@ export default {
   // Cuerpo
   const addBody = (label) => {
     doc.autoTable({
-      startY: headerHeight + 5, // Inicia después del header
-      margin: { left: 10, right: 10, bottom: footerHeight }, // Respeta el espacio del footer
+      startY: headerHeight,
+      margin: { top: headerHeight, bottom: footerHeight, left: 10, right: 10 }, 
       head: [['SKU', 'Descripción', 'Cantidad']],
       body: this.items.map((item) => [item.sku, item.descripcion, item.cantidad]),
       tableWidth: pageWidth - 20,
       styles: { fontSize: 10 },
       bodyStyles: { valign: 'middle' },
-      pageBreak: 'auto', // Permite que la tabla se divida automáticamente en nuevas páginas
+      pageBreak: 'auto', 
       didDrawPage: () => {
-        addHeader(label); // Dibuja el header en cada página
-        addFooter(); // Dibuja el footer en cada página
+        addHeader(label); 
+        addFooter(); 
       },
     });
   };
 
-  // Generar contenido para Original
-  addHeader('Original'); // Dibujar header de la primera página
-  addFooter(); // Dibujar footer de la primera página
+ 
+  addHeader('Original'); 
+  addFooter();
   addBody('Original');
 
-  // Generar contenido para Duplicado
-  doc.addPage(); // Nueva página para Duplicado
-  addHeader('Duplicado'); // Dibujar header en la primera página del Duplicado
-  addFooter(); // Dibujar footer en la primera página del Duplicado
+ 
+  doc.addPage();
+  addHeader('Duplicado'); 
+  addFooter(); 
   addBody('Duplicado');
 
-  // Descargar o guardar PDF
+
   const pdfBlob = doc.output('blob');
 
   if (window.showSaveFilePicker) {
@@ -214,6 +213,7 @@ export default {
     link.click();
   }
 },
+
 
     },
 };
