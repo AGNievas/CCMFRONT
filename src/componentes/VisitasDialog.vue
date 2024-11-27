@@ -172,18 +172,18 @@ export default {
     visita: {
       immediate: true,
       handler(newVisita) {
+        console.log(newVisita,"VISTA")
         if (this.isEditing && newVisita) {
           this.visitaLocal = { id: newVisita.id, ...newVisita };
           // Convertir fechaIngreso al formato 'YYYY-MM-DD'
           if (this.visitaLocal.fechaIngreso) {
-            const fechaIngreso = new Date(this.visitaLocal.fechaIngreso);
-            this.visitaLocal.fechaIngreso = fechaIngreso.toISOString().slice(0, 10); // Solo fecha sin tiempo
-          }
-          // Convertir fechaAlta al formato 'YYYY-MM-DD' si no es null
-          if (this.visitaLocal.fechaAlta) {
-            const fechaAlta = new Date(this.visitaLocal.fechaAlta);
-            this.visitaLocal.fechaAlta = fechaAlta.toISOString().slice(0, 10); // Solo fecha sin tiempo
-          }
+  const fechaIngreso = new Date(this.visitaLocal.fechaIngreso);
+  this.visitaLocal.fechaIngreso = fechaIngreso.toISOString().split('.')[0];
+}
+if (this.visitaLocal.fechaAlta) {
+  const fechaAlta = new Date(this.visitaLocal.fechaAlta);
+  this.visitaLocal.fechaAlta = fechaAlta.toISOString().split('.')[0];
+}
         } else {
           this.resetVisitaLocal();
         }

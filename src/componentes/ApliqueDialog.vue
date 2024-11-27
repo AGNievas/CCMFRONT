@@ -228,17 +228,20 @@ export default {
     },
 
     aplique: {
-      immediate: true,
-      handler(newAplique) {
+   immediate: true,
+   handler(newAplique) {
+      if (this.isEditing && newAplique) {
+         this.apliqueLocal = { id: newAplique.id, ...newAplique };
 
-        if (this.isEditing && newAplique) {
-          this.apliqueLocal = { id: newAplique.id, ...newAplique };
-        } else {
-          this.resetApliqueLocal();
-        }
-
-      },
-    },
+         if (this.apliqueLocal.fechaAplicacion) {
+            const fechaAplicacion = new Date(this.apliqueLocal.fechaAplicacion);
+            this.apliqueLocal.fechaAplicacion = fechaAplicacion.toISOString().split('.')[0];
+         }
+      } else {
+         this.resetApliqueLocal();
+      }
+   },
+},
   },
   methods: {
 

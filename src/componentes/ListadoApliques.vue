@@ -158,12 +158,19 @@ export default {
     },
 
     openEditarApliqueDialog(aplique) {
-      this.isEditing = true;
-      const apliqueId = aplique.id
-      const apliqueSinMap = this.apliques.find(apl => apl.id == apliqueId)
-      this.apliqueToEdit = { ...apliqueSinMap };
-      this.apliqueDialogVisible = true;
-    },
+   this.isEditing = true;
+   const apliqueId = aplique.id;
+   const apliqueSinMap = this.apliques.find(apl => apl.id == apliqueId);
+   const formattedAplique = { ...apliqueSinMap };
+   
+   if (formattedAplique.fechaAplicacion) {
+      const fechaAplicacion = new Date(formattedAplique.fechaAplicacion);
+      formattedAplique.fechaAplicacion = fechaAplicacion.toISOString().split('.')[0];
+   }
+
+   this.apliqueToEdit = formattedAplique;
+   this.apliqueDialogVisible = true;
+},
     async saveAplique(nuevoAplique) {
       try {
         
