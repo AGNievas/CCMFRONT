@@ -134,10 +134,7 @@ export default {
       return this.puedeSeleccionarStockArea ? this.stockAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id : this.AREA_FARMACIA
     },
 
-    // deshabilitar(){
-
-    //   return !this.selectedArea || !this.selectedArea && this.puedeSeleccionarStockArea
-    // },
+     
     mostrarAreasNombre() {
 
       if (this.localOrdenTransferencia.stockAreaIdOrigen) {
@@ -151,6 +148,11 @@ export default {
 
 
     },
+
+    deshabilitar(){
+
+return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
+},
 
     mapeoAreas() {
   return this.stockAreas
@@ -196,7 +198,7 @@ export default {
   },
   methods: {
 
-
+   
 
     formatearFechaYHora(fecha) {
       return formatearFechaYHora(fecha)
