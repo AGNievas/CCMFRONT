@@ -230,6 +230,7 @@ export default {
     aplique: {
    immediate: true,
    handler(newAplique) {
+   console.log(newAplique)
       if (this.isEditing && newAplique) {
          this.apliqueLocal = { id: newAplique.id, ...newAplique };
 
@@ -257,7 +258,7 @@ export default {
       console.log(this.apliqueLocal,"aplique locaaaaal")
       console.log(this.visita,"VISITA")
       if(this.isEditing){
-        this.apliqueLocal.visitaId = this.apliqueLocal.Visitum.id
+        this.apliqueLocal.visitaId = this.apliqueLocal.Visita.id
        
         
       } else{
