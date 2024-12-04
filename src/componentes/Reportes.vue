@@ -77,6 +77,7 @@ export default {
         { text: 'Fecha Aplique', value: 'Fecha_Aplicacion' },
         { text: 'Cantidad Aplicada', value: 'Cantidad' },
         { text: 'Medico Autorizante', value: 'Medico_Autorizante' },
+        { text: '', value: 'acciones', sortable: false },
       ],
       apliques: [],
       startDate: '',
