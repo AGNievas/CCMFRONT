@@ -164,8 +164,8 @@ export default {
           const descripcion = (await MedicamentosService.getMedicamentoBySku(item.sku)).descripcion;
           this.selectedItems.push({
             sku: item.sku,
+            descripcion: descripcion,
             cantidad: item.cantidad,
-            descripcion: descripcion
           });
         }
         this.itemsDialogVisible = true;

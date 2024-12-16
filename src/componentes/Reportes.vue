@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     apliquesFiltrados() {
-      return this.apliques.map((apl) => ({
+      return this.apliques.map((apl) => (console.log(apl),{
             id: apl.id,
             Area: apl.StockArea.Area.nombre,
             Sub_Area: apl.StockArea.nombre,
