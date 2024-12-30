@@ -1,73 +1,37 @@
 <template>
   <v-dialog v-model="isDialogVisible" persistent max-width="1500px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Historial de Visitas de {{ this.paciente.nombre }} {{ this.paciente.apellido }}</span>
-          <v-btn class="btn-icon" icon small @click="closeDialog">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-actions class="jcc">
-          <v-btn v-if="puedeAgregarVisita" class="btn-blue" text @click="openAddVisitaDialog">Agregar Visita</v-btn>
-        </v-card-actions>
-        <Tabla
-          :data="valoresTabla"
-          :headers="visitasHeader"
-          :isListadoVisitas="true"
-          @darAlta="openAltaDialog"
-          @edit="openEditarVisitaDialog"
-          @delete="confirmDeleteVisita" 
-          @ver-historial="openListadoApliques"
-          @crear-aplique="openApliqueDialog"
-        />
+    <v-card>
+      <v-card-title>
+        <span class="headline">Historial de Visitas de {{ this.paciente.nombre }} {{ this.paciente.apellido }}</span>
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+      <v-card-actions class="jcc">
+        <v-btn v-if="puedeAgregarVisita" class="btn-blue" text @click="openAddVisitaDialog">Agregar Visita</v-btn>
+      </v-card-actions>
+      <Tabla :data="valoresTabla" :headers="visitasHeader" :isListadoVisitas="true" @darAlta="openAltaDialog"
+        @edit="openEditarVisitaDialog" @delete="confirmDeleteVisita" @ver-historial="openListadoApliques"
+        @crear-aplique="openApliqueDialog" />
 
-        <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
-          <ApliqueDialog
-            v-model="apliqueDialogVisible"
-            :paciente="paciente"
-            :visita="selectedVisita"
-            :areas="globalStore.getAreas"
-            :stockAreas="globalStore.getStockAreas"
-            :usuarios="globalStore.getUsuarios"
-            :medicamentos="medicamentos"
-            @save="saveApliqueFromDialog"
-            @delete="confirmDelete"
-          />
-        </v-dialog> 
+      <v-dialog persistent v-model="apliqueDialogVisible" max-width="600px">
+        <ApliqueDialog v-model="apliqueDialogVisible" :paciente="paciente" :visita="selectedVisita"
+          :areas="globalStore.getAreas" :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios"
+          :medicamentos="medicamentos" @save="saveApliqueFromDialog" @delete="confirmDelete" />
+      </v-dialog>
 
-        <ListadoApliques
-          v-if="listadoApliquesVisible"
-          v-model="listadoApliquesVisible"
-          :visita="selectedVisita"
-          :areas="globalStore.getAreas"
-          :usuarios="globalStore.getUsuarios"
-          :paciente="paciente"
-          :medicamentos="medicamentos"
-        /> 
-  
-        <VisitasDialog
-          v-if="visitaDialogVisible"
-          v-model="visitaDialogVisible"
-          :isEditing="isEditing"
-          :visita="selectedVisita"
-          :paciente="paciente"
-          :usuarios="usuarios"
-          :darAlta="darAlta"
-          :stockAreas="stockAreas"
-          :areas="areas" @save="saveVisita"
-          :errorMensaje="errorMensaje"
-          @update:errorMensaje="errorMensaje = ''"
-        />
+      <ListadoApliques v-if="listadoApliquesVisible" v-model="listadoApliquesVisible" :visita="selectedVisita"
+        :areas="globalStore.getAreas" :usuarios="globalStore.getUsuarios" :paciente="paciente"
+        :medicamentos="medicamentos" />
 
-        <ConfirmDialog
-          :isDelete="true"
-          v-model="visitaDeleteDialog"
-          title="Confirmar Eliminación"
-          text="¿Estás seguro de que deseas eliminar esta visita?"
-          @confirm="deleteVisita"
-        />
-      </v-card>
-    </v-dialog>
+      <VisitasDialog v-if="visitaDialogVisible" v-model="visitaDialogVisible" :isEditing="isEditing"
+        :visita="selectedVisita" :paciente="paciente" :usuarios="usuarios" :darAlta="darAlta" :stockAreas="stockAreas"
+        :areas="areas" @save="saveVisita" :errorMensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
+
+      <ConfirmDialog :isDelete="true" v-model="visitaDeleteDialog" title="Confirmar Eliminación"
+        text="¿Estás seguro de que deseas eliminar esta visita?" @confirm="deleteVisita" />
+    </v-card>
+  </v-dialog>
 </template>
 
 
@@ -84,7 +48,7 @@ export default {
   props: {
     modelValue: {
       type: Boolean,
-        default: false
+      default: false
     },
     areas: Array,
     stockAreas: Array,
@@ -128,7 +92,7 @@ export default {
       darAlta: false,
       globalStore: useGlobalStore(),
       apliqueDialogVisible: false,
-      listadoApliquesVisible:false,
+      listadoApliquesVisible: false,
       editingAplique: false,
     }
   },
@@ -143,7 +107,7 @@ export default {
           usuarioFullName: vis.User.fullName,
           diagnostico: vis.diagnostico,
           fechaIngreso: this.tiempoUniversalATiempoLocal(vis.fechaIngreso),
-          fechaAlta: vis.fechaAlta!= null ? this.tiempoUniversalATiempoLocal(vis.fechaAlta): '',
+          fechaAlta: vis.fechaAlta != null ? this.tiempoUniversalATiempoLocal(vis.fechaAlta) : '',
           seInterno: vis.seInterno ? 'Si' : 'No',
           stockAreaNombre: vis.StockArea.nombre,
           areaNombre: vis.StockArea.Area.nombre,
@@ -158,27 +122,27 @@ export default {
         this.$emit('update:modelValue', value);
       }
     },
-    puedeAgregarVisita(){
+    puedeAgregarVisita() {
       return this.globalStore.getAreaId != this.globalStore.getFarmaciaId || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     }
   },
   watch: {
-      paciente: {
-        immediate: true,
-        handler(newVal) {
-          if (newVal) {
-            this.loadVisitas()
-          }
+    paciente: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.loadVisitas()
         }
-      },
-      modelValue(val) {
-        if (!val) this.closeDialog();
       }
-  },  
+    },
+    modelValue(val) {
+      if (!val) this.closeDialog();
+    }
+  },
   methods: {
     tiempoUniversalATiempoLocal(fecha) {
-      const fechaLocal =  new Date (fecha)
-      return fechaLocal.toLocaleString(); 
+      const fechaLocal = new Date(fecha)
+      return fechaLocal.toLocaleString();
     },
     closeDialog() {
       this.$emit('update:modelValue', false);
@@ -193,11 +157,11 @@ export default {
     openAddVisitaDialog() {
       this.darAlta = false;
       this.isEditing = false,
-      this.selectedVisita = {},
-      this.errorMensaje = '',
-      this.visitaDialogVisible = true
+        this.selectedVisita = {},
+        this.errorMensaje = '',
+        this.visitaDialogVisible = true
     },
-    openEditarVisitaDialog(visita) {     
+    openEditarVisitaDialog(visita) {
       this.darAlta = false;
       this.isEditing = true;
       const visitaId = visita.id;
@@ -207,14 +171,14 @@ export default {
         formattedVisita.fechaIngreso = new Date(formattedVisita.fechaIngreso)
           .toISOString()
           .slice(0, 16);
-        }
-        if (formattedVisita.fechaAlta) {
-          formattedVisita.fechaAlta = new Date(formattedVisita.fechaAlta)
+      }
+      if (formattedVisita.fechaAlta) {
+        formattedVisita.fechaAlta = new Date(formattedVisita.fechaAlta)
           .toISOString()
           .slice(0, 16);
-        }
-        this.selectedVisita = formattedVisita;
-        this.visitaDialogVisible = true;
+      }
+      this.selectedVisita = formattedVisita;
+      this.visitaDialogVisible = true;
     },
     openAltaDialog(visita) {
       this.darAlta = true;
@@ -223,13 +187,13 @@ export default {
       this.selectedVisita = { ...visitaSinMap };
       this.visitaDialogVisible = true;
     },
-    confirmDeleteVisita(visita){
-      console.log(visita,"visita en  confirmDeleteVisita ")
+    confirmDeleteVisita(visita) {
+
       this.visitaToDelete = visita;
       this.visitaDeleteDialog = true;
     },
     async deleteVisita() {
-      try {console.log(this.visitaToDelete, "DELETE VISITA")
+      try {
         await visitaService.delete(this.visitaToDelete);
         this.visitas = this.visitas.filter(visita => visita.id !== this.visitaToDelete);
         this.visitaDeleteDialog = false;
@@ -241,10 +205,10 @@ export default {
       try {
         if (!this.isEditing && !this.darAlta) {
           const visitaCreada = await visitaService.createVisita(nuevaVisita, this.paciente.id);
-            if (visitaCreada) {
-              this.agregarDialog = false;
-              this.errorMensaje = '';
-            }
+          if (visitaCreada) {
+            this.agregarDialog = false;
+            this.errorMensaje = '';
+          }
         }
         if (this.isEditing) {
           const visitaModificada = await visitaService.updateVisita(nuevaVisita, this.paciente.id);
@@ -271,7 +235,7 @@ export default {
       }
     },
     async editarVisita(selectedVisita) {
-      try {  
+      try {
         const visitaActualizar = await visitaService.updateVisita(selectedVisita);
         const index = this.visitas.findIndex(vis => vis.id == visitaActualizar.id);
         if (index !== -1) {
@@ -298,15 +262,15 @@ export default {
       this.listadoApliquesVisible = true;
     },
     async saveApliqueFromDialog(nuevoAplique) {
-      try {console.log(nuevoAplique, "aplique")
-        console.log(this.selectedVisita,this.paciente, "VISISTA SELECCIONADA")
-        const resultado = await saveApliqueHelper(this.isEditing,   nuevoAplique, this.selectedVisita.id,);
+      try {
+
+        const resultado = await saveApliqueHelper(this.isEditing, nuevoAplique, this.selectedVisita.id,);
         if (!this.isEditing) {
           console.log(resultado);
         }
         this.apliqueDialogVisible = false;
       } catch (error) {
-        console.error('Error al guardar aplique desde ListadoVisitas:', error);
+        console.error('Error al guardar aplique desde Listado Visitas:', error);
       }
     },
   }

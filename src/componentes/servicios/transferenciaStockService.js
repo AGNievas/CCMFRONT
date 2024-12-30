@@ -15,9 +15,12 @@ const transferenciaStockService = {
 
   async getTransferenciasStockByOrdenId(ordenTransferenciaId) {
     try {
-      const response = await axiosInstance.get(`${URL}/orden/${ordenTransferenciaId}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${URL}/orden/${ordenTransferenciaId}`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
@@ -51,9 +54,12 @@ const transferenciaStockService = {
 
   async getTransferenciasStockByStockAreaIdOrigen(stockAreaIdOrigen) {
     try {
-      const response = await axiosInstance.get(`${URL}/origen/${stockAreaIdOrigen}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${URL}/origen/${stockAreaIdOrigen}`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
@@ -63,9 +69,12 @@ const transferenciaStockService = {
 
   async getTransferenciasStockByStockAreaIdDestino(stockAreaIdDestino) {
     try {
-      const response = await axiosInstance.get(`${URL}/destino/${stockAreaIdDestino}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${URL}/destino/${stockAreaIdDestino}`,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
@@ -73,23 +82,27 @@ const transferenciaStockService = {
     }
   },
 
-  async updateTransferenciaStock(id,
+  async updateTransferenciaStock(
+    id,
     sku,
     cantidad,
     stockAreaIdOrigen,
     stockAreaIdDestino,
     motivo,
-    ordenTransferenciaId) {
+    ordenTransferenciaId
+  ) {
     try {
       const { data: transferenciaStockActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
-        { id,
-            sku,
-            cantidad,
-            stockAreaIdOrigen,
-            stockAreaIdDestino,
-            motivo,
-            ordenTransferenciaId },
+        {
+          id,
+          sku,
+          cantidad,
+          stockAreaIdOrigen,
+          stockAreaIdDestino,
+          motivo,
+          ordenTransferenciaId,
+        },
         { withCredentials: true }
       );
       return transferenciaStockActualizado;

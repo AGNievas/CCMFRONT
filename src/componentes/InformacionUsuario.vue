@@ -1,6 +1,6 @@
 <template>
-  <v-container >
-    <v-card >
+  <v-container>
+    <v-card>
       <v-card-title class="d-flex align-center pe-2">
         <span class="headline">Informacion de Usuario</span>
         <v-divider></v-divider>
@@ -8,44 +8,18 @@
 
       <v-card-text class="text-center">
         <div v-if="usuarioActual" class="user-details">
-          <v-text-field
-            v-model="usuarioActual.fullNameUsuario"
-            label="Nombre"
-            readonl
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-model="usuarioActual.fullNameUsuario" label="Nombre" readonl variant="solo" rounded
+            dense></v-text-field>
 
-          <v-text-field
-            v-model="usuarioActual.cuil"
-            label="Cuil"
-            readonl
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-model="usuarioActual.cuil" label="Cuil" readonl variant="solo" rounded dense></v-text-field>
 
-          <v-text-field
-            v-model="usuarioActual.nombreArea"
-            label="Área"
-            readonl
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-model="usuarioActual.nombreArea" label="Área" readonl variant="solo" rounded
+            dense></v-text-field>
 
-          <v-text-field
-            v-model="usuarioActual.rolName"
-            label="Rol"
-            readonl
-            variant="solo"
-            rounded
-            dense
-            ></v-text-field>
+          <v-text-field v-model="usuarioActual.rolName" label="Rol" readonl variant="solo" rounded dense></v-text-field>
 
           <v-btn @click="openEditPasswordDialog" class="btn-blue">Editar Contraseña</v-btn>
-          
+
           <v-dialog v-model="editPasswordDialog" persistent max-width="400px">
             <v-card>
               <v-card-title>
@@ -53,44 +27,24 @@
               </v-card-title>
 
               <v-card-text>
-                <v-form ref="form" v-model="formValid">                  
-                  <v-text-field 
-                  v-model="currentPassword" 
-                  :type="showCurrentPassword ? 'text' : 'password'"
-                  label="Contraseña Actual" 
-                  required
-                  :append-inner-icon="showCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append-inner="toggleShowCurrentPassword"
-                  variant="solo"
-                  rounded
-                  dense
-                  >
+                <v-form ref="form" v-model="formValid">
+                  <v-text-field v-model="currentPassword" :type="showCurrentPassword ? 'text' : 'password'"
+                    label="Contraseña Actual" required
+                    :append-inner-icon="showCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-inner="toggleShowCurrentPassword" variant="solo" rounded dense>
                   </v-text-field>
-                  
-                  <v-text-field v-model="newPassword" 
-                  :type="showNewPassword ? 'text' : 'password'"
-                  label="Nueva Contraseña" 
-                  required
-                  :append-inner-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append-inner="toggleShowNewPassword"
-                  variant="solo"
-                  rounded
-                  dense
-                  >
+
+                  <v-text-field v-model="newPassword" :type="showNewPassword ? 'text' : 'password'"
+                    label="Nueva Contraseña" required :append-inner-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-inner="toggleShowNewPassword" variant="solo" rounded dense>
                   </v-text-field>
-                  
-                  <v-text-field v-model="repeatNewPassword" 
-                  :type="showRepeatNewPassword ? 'text' : 'password'"
-                  label="Repetir Nueva Contraseña" 
-                  required
-                  :append-inner-icon="showRepeatNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append-inner="toggleShowRepeatNewPassword"
-                  variant="solo"
-                  rounded
-                  dense
-                  >
+
+                  <v-text-field v-model="repeatNewPassword" :type="showRepeatNewPassword ? 'text' : 'password'"
+                    label="Repetir Nueva Contraseña" required
+                    :append-inner-icon="showRepeatNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append-inner="toggleShowRepeatNewPassword" variant="solo" rounded dense>
                   </v-text-field>
-                  
+
                   <v-alert v-if="formError" type="error" dismissible>
                     {{ errorMessage }}
                   </v-alert>
@@ -104,7 +58,7 @@
               </v-card-text>
 
               <v-card-actions>
-                
+
                 <v-btn text @click="closeEditPasswordDialog" class="btn-blue">Cancelar</v-btn>
                 <v-btn text @click="updatePassword" class="btn-blue">Confirmar</v-btn>
               </v-card-actions>
@@ -121,7 +75,7 @@
 
 <script>
 
-import usuariosService from "./servicios/usuariosService.js"; 
+import usuariosService from "./servicios/usuariosService.js";
 import { useGlobalStore } from "@/stores/global.js";
 
 export default {
@@ -138,7 +92,7 @@ export default {
         nombreArea: "",
         rolName: ""
       },
-      
+
       errorMessage: "",
       editPasswordDialog: false,
       currentPassword: "",
@@ -160,7 +114,7 @@ export default {
   methods: {
     async iniciarUsuario() {
       const userLogueado = this.globalStore.getLogueado;
-      
+
       if (userLogueado) {
         this.usuarioActual = {
           cuil: this.globalStore.getUsuarioCuil,
@@ -171,8 +125,8 @@ export default {
           rolId: this.globalStore.getRolId,
           rolName: this.globalStore.getRolName,
           esAdmin: this.globalStore.getRolId === 1,
-          
-          
+
+
         };
 
       }

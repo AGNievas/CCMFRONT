@@ -9,52 +9,14 @@
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <v-text-field
-            v-model="localUsuario.cuil"
-            label="CUIL"
-            required
-            :rules="[cuilRule]"
-            @input="formatAndCheckCuil"
-            variant="solo"
-            rounded
-            dense
-          />
-          <v-text-field
-            v-model="localUsuario.fullName"
-            label="Nombre Completo"
-            required
-            :rules="[fullNameRule]"
-            @input="checkFormValidity"
-            @keypress="soloLetras"
-            variant="solo"
-            rounded
-            dense
-          />
-          <v-select
-            v-model="localUsuario.rolId"
-            :items="roles"
-            item-title="name"
-            item-value="id"
-            label="Rol"
-            required
-            :rules="[rolRule]"
-            @change="checkFormValidity"
-            variant="solo"
-            rounded
-            dense
-          />
-          <v-select
-            v-model="localUsuario.areaId"
-            :items="areas"
-            item-title="nombre"
-            item-value="id"
-            label="Área"
-            required :rules="[areaRule]"
-            @change="checkFormValidity"
-            variant="solo"
-            rounded
-            dense
-          />
+          <v-text-field v-model="localUsuario.cuil" label="CUIL" required :rules="[cuilRule]"
+            @input="formatAndCheckCuil" variant="solo" rounded dense />
+          <v-text-field v-model="localUsuario.fullName" label="Nombre Completo" required :rules="[fullNameRule]"
+            @input="checkFormValidity" @keypress="soloLetras" variant="solo" rounded dense />
+          <v-select v-model="localUsuario.rolId" :items="roles" item-title="name" item-value="id" label="Rol" required
+            :rules="[rolRule]" @change="checkFormValidity" variant="solo" rounded dense />
+          <v-select v-model="localUsuario.areaId" :items="areas" item-title="nombre" item-value="id" label="Área"
+            required :rules="[areaRule]" @change="checkFormValidity" variant="solo" rounded dense />
         </v-form>
       </v-card-text>
 

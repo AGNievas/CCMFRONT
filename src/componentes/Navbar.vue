@@ -2,10 +2,11 @@
   <div>
     <v-app-bar :elevation="2" class="navbar">
       <template v-slot:prepend>
-        <v-app-bar-nav-icon v-if="this.globalStore.getLogueado" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon v-if="this.globalStore.getLogueado" variant="text"
+          @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
       <v-app-bar-title class="headline">
-      <RouterLink to="/home" class="drawer-item-title">Control y Carga de Medicamentos</RouterLink>
+        <RouterLink to="/home" class="drawer-item-title">Control y Carga de Medicamentos</RouterLink>
       </v-app-bar-title>
       <template v-slot:append>
         <RouterLink v-if="this.globalStore.getLogueado" :to="{ name: 'InformacionUsuario' }">
@@ -21,20 +22,22 @@
     <v-navigation-drawer v-if="this.globalStore.getLogueado" v-model="drawer"
       :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary class="drawer">
       <v-list>
-        <v-list-item v-if="puedeVerCargaMasiva" >
+        <v-list-item v-if="puedeVerCargaMasiva">
           <RouterLink to="/cargaDeMedicamentos" class="drawer-item-title">Carga de Medicamentos</RouterLink>
         </v-list-item>
         <v-list-item v-if="puedeVerListadoMedicamentos">
           <RouterLink to="/listadoDeMedicamentos" class="drawer-item-title">Listado de Medicamentos</RouterLink>
         </v-list-item>
-        <v-list-item >
+        <v-list-item>
           <RouterLink to="/consultaAltaPacientes" class="drawer-item-title">Consulta y Alta de Pacientes</RouterLink>
         </v-list-item>
         <v-list-item v-if="puedeVerListadoUsuarios">
           <RouterLink to="/listadoDeUsuarios" class="drawer-item-title">Listado de Usuarios</RouterLink>
         </v-list-item>
         <v-list-item v-if="puedeVerListadoOrdenesTransferencias">
-          <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado de Ordenes de Transferencias</RouterLink>
+          <RouterLink to="/listadoDeOrdenesTransferencias" class="drawer-item-title">Listado de Ordenes de
+            Transferencias
+          </RouterLink>
         </v-list-item>
 
         <v-list-item v-if="puedeVerReportes">
@@ -75,24 +78,24 @@ export default {
   computed: {
     ...mapStores(useGlobalStore),
 
-    puedeVerCargaMasiva(){
-      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin ) && this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    puedeVerCargaMasiva() {
+      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin) && this.globalStore.getAreaId == this.globalStore.getFarmaciaId
     },
-    puedeVerListadoMedicamentos(){
-      return this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
-    },
-
-    puedeVerListadoUsuarios(){
-      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin ) && this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    puedeVerListadoMedicamentos() {
+      return this.globalStore.getAreaId == this.globalStore.getFarmaciaId
     },
 
-    puedeVerListadoOrdenesTransferencias(){
-      return this.globalStore.getAreaId  == this.globalStore.getFarmaciaId
+    puedeVerListadoUsuarios() {
+      return (this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getRolId == this.globalStore.getRolAdmin) && this.globalStore.getAreaId == this.globalStore.getFarmaciaId
     },
-    puedeVerReportes(){
+
+    puedeVerListadoOrdenesTransferencias() {
+      return this.globalStore.getAreaId == this.globalStore.getFarmaciaId
+    },
+    puedeVerReportes() {
       return this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     },
-    puedeGenerarPedido(){
+    puedeGenerarPedido() {
       return this.globalStore.getAreaId != this.globalStore.getFarmaciaId || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     }
   },

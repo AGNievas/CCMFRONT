@@ -3,47 +3,21 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ isEditing ? 'Editar Item' : 'Agregar Item' }}</span>
-          <v-btn class="btn-icon" icon small @click="closeDialog">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>       
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
 
-          <v-text-field 
-            v-model="localTransferencia.sku" 
-            :items="medicamentosPorStockArea" 
-            item-title="sku" 
-            item-value="sku"
-            label="SKU" 
-            required
-            variant="solo"
-            rounded
-            dense
-          />
+          <v-text-field v-model="localTransferencia.sku" :items="medicamentosPorStockArea" item-title="sku"
+            item-value="sku" label="SKU" required variant="solo" rounded dense />
 
-          <v-select 
-            v-model="localTransferencia.descripcion" 
-            :items="medicamentosPorStockArea" 
-            item-title="descripcion"
-            item-value="descripcion" 
-            label="Descripcion" 
-            required
-            variant="solo"
-            rounded
-            dense
-          />
+          <v-select v-model="localTransferencia.descripcion" :items="medicamentosPorStockArea" item-title="descripcion"
+            item-value="descripcion" label="Descripcion" required variant="solo" rounded dense />
 
-          <v-text-field 
-            v-model="localTransferencia.cantidad"
-            label="Cantidad"
-            required
-            type="number"
-            :rules="[cantidadRule]"
-            variant="solo"
-            rounded
-            dense
-          />
+          <v-text-field v-model="localTransferencia.cantidad" label="Cantidad" required type="number"
+            :rules="[cantidadRule]" variant="solo" rounded dense />
 
         </v-form>
       </v-card-text>
@@ -68,8 +42,8 @@ export default {
   },
   data() {
     return {
-      AREA_FARMACIA:1,
-      STOCK_AREA_FARMACIA_DEPOSITO:1,
+      AREA_FARMACIA: 1,
+      STOCK_AREA_FARMACIA_DEPOSITO: 1,
       globalStore: useGlobalStore(),
       medicamentos: [],
       localVisible: this.modelValue,
@@ -78,8 +52,6 @@ export default {
   },
 
   async mounted() {
-
- 
     await this.loadMedicamentosByStockAreaId()
 
   },
@@ -87,15 +59,9 @@ export default {
   computed: {
 
     medicamentosPorStockArea() {
-    // Determina el array base dependiendo de la condición
-    const baseArray =  this.medicamentos.filter(medicamento => medicamento.StockArea?.id == !this.isHojaInternacion ? this.stockAreaId: this.STOCK_AREA_FARMACIA_DEPOSITO);
-
-    // Aplica el mapeo sobre el array base
-    return this.mapMedicamentos(baseArray);
-  },
-
-  
-
+      const baseArray = this.medicamentos.filter(medicamento => medicamento.StockArea?.id == !this.isHojaInternacion ? this.stockAreaId : this.STOCK_AREA_FARMACIA_DEPOSITO);
+      return this.mapMedicamentos(baseArray);
+    },
 
     isFormValid() {
       return (
@@ -115,15 +81,15 @@ export default {
       let stockArea = this.isHojaInternacion ? this.STOCK_AREA_FARMACIA_DEPOSITO : this.stockAreaId
       this.medicamentos = arrayMedicamentos.filter(med => med.StockArea.id == stockArea)
 
-      } ,
-    
+    },
+
 
     mapMedicamentos(array) {
-    return array.map(medicamento => ({
-      sku: String(medicamento.Medicamento.sku),
-      descripcion: String( medicamento.Medicamento.descripcion ),
-    }));
-  },
+      return array.map(medicamento => ({
+        sku: String(medicamento.Medicamento.sku),
+        descripcion: String(medicamento.Medicamento.descripcion),
+      }));
+    },
 
     saveChanges() {
       if (this.isFormValid) {

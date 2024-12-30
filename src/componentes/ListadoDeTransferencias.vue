@@ -5,14 +5,14 @@
     <v-btn v-if="!isViewMode" @click="$emit('add-item')" class="btn-blue" :disabled="disabled">Agregar Item</v-btn>
     <v-spacer></v-spacer>
   </v-card-title>
-  
+
 
   <Tabla :data="items" :headers="transferenciasHeaders" :isEditable="!isViewMode"
     @edit="(item) => $emit('edit-item', item)" @delete="(item) => $emit('delete-item', item.index)" />
-<v-card-actions v-if="isViewMode">
-  <v-btn  class="btn-blue" text @click="$emit('close')">Cerrar</v-btn>
-</v-card-actions>  
-  
+  <v-card-actions v-if="isViewMode">
+    <v-btn class="btn-blue" text @click="$emit('close')">Cerrar</v-btn>
+  </v-card-actions>
+
 
 
 </template>

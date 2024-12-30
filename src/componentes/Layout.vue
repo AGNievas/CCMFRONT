@@ -23,16 +23,18 @@ export default {
   async mounted() {
     this.isSessionActive = this.globalStore.getLogueado;
     this.loadAreasYUsuarios()
-   
+
   },
-   methods:{
-    async loadAreasYUsuarios(){
-      if(this.globalStore.getLogueado){ const areas = await areaService.getAllArea();
-      const stockAreas = await stockAreaService.getAllStockArea();
-      const usuarios = await usuariosService.getAllUsuarios();
-      const roles = await rolService.getAllRol()
-      this.globalStore.cargarAreasYUser(areas, usuarios,roles, stockAreas);}
-     
+  methods: {
+    async loadAreasYUsuarios() {
+      if (this.globalStore.getLogueado) {
+        const areas = await areaService.getAllArea();
+        const stockAreas = await stockAreaService.getAllStockArea();
+        const usuarios = await usuariosService.getAllUsuarios();
+        const roles = await rolService.getAllRol()
+        this.globalStore.cargarAreasYUser(areas, usuarios, roles, stockAreas);
+      }
+
     }
   }
 };

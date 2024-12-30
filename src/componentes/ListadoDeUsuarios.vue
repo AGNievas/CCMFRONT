@@ -1,31 +1,32 @@
 <template>
-    <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
-        <span class="headline">Listado de Usuarios</span>
-        <v-divider></v-divider>
-      </v-card-title>
-      <v-card-title class="d-flex align-center pe-2">
-        <v-text-field v-model="search" density="compact" label="Buscar" prepend-inner-icon="mdi-magnify" variant="solo"
-          hide-details single-line class="rounded-search-bar"></v-text-field>
-        <v-spacer></v-spacer>
-        <v-btn v-if="globalStore.getRolId == globalStore.getRolSuperAdmin" @click="openAddUserDialog" class="btn-blue">Agregar Usuario</v-btn>
-      </v-card-title>
+  <v-card class="custom-container">
+    <v-card-title class="d-flex align-center pe-2">
+      <span class="headline">Listado de Usuarios</span>
+      <v-divider></v-divider>
+    </v-card-title>
+    <v-card-title class="d-flex align-center pe-2">
+      <v-text-field v-model="search" density="compact" label="Buscar" prepend-inner-icon="mdi-magnify" variant="solo"
+        hide-details single-line class="rounded-search-bar"></v-text-field>
+      <v-spacer></v-spacer>
+      <v-btn v-if="globalStore.getRolId == globalStore.getRolSuperAdmin" @click="openAddUserDialog"
+        class="btn-blue">Agregar Usuario</v-btn>
+    </v-card-title>
 
 
-      <Tabla :data="usuariosFiltradosParaVista" :headers="usuariosHeaders" :isListadoUsuarios="true" :eliminable="true"
-        @edit="openEditDialog" @delete="confirmDelete" @restorePassword="confirmRestorePassword" />
-    </v-card>
+    <Tabla :data="usuariosFiltradosParaVista" :headers="usuariosHeaders" :isListadoUsuarios="true" :eliminable="true"
+      @edit="openEditDialog" @delete="confirmDelete" @restorePassword="confirmRestorePassword" />
+  </v-card>
 
-    <ConfirmDialog v-model="deleteDialog" :isDelete="true" title="Confirmar Eliminación"
-      text="¿Estás seguro de que deseas eliminar este usuario?" @confirm="deleteUsuario" />
+  <ConfirmDialog v-model="deleteDialog" :isDelete="true" title="Confirmar Eliminación"
+    text="¿Estás seguro de que deseas eliminar este usuario?" @confirm="deleteUsuario" />
 
-    <ConfirmDialog v-model="restoreDialog" title="Restaurar Contraseña"
-      text="¿Estás seguro de que deseas restaurar la contraseña de este usuario?" @confirm="restorePassword" />
+  <ConfirmDialog v-model="restoreDialog" title="Restaurar Contraseña"
+    text="¿Estás seguro de que deseas restaurar la contraseña de este usuario?" @confirm="restorePassword" />
 
-    <UsuarioDialog v-model="dialog" :is-editing="false" :usuario="newUsuario" @save="addUsuario" :roles="roles"
-      :areas="areas" />
-    <UsuarioDialog v-model="editDialog" :is-editing="true" :usuario="editUsuario" @update:usuario="editUsuario = $event"
-      @save="updateUsuario" :roles="roles" :areas="areas" />
+  <UsuarioDialog v-model="dialog" :is-editing="false" :usuario="newUsuario" @save="addUsuario" :roles="roles"
+    :areas="areas" />
+  <UsuarioDialog v-model="editDialog" :is-editing="true" :usuario="editUsuario" @update:usuario="editUsuario = $event"
+    @save="updateUsuario" :roles="roles" :areas="areas" />
 </template>
 
 <script>

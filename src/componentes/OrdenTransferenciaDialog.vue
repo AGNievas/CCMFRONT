@@ -4,9 +4,9 @@
       <v-card-title>
         <span class="headline">{{ isEditing ? 'Editar Orden de Transferencia' : 'Agregar Orden de Transferencia'
           }}</span>
-          <v-btn class="btn-icon" icon small @click="closeDialog">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text>
         <v-alert v-if="localErrorMessage" type="error" dismissible @input="localErrorMessage = ''">
@@ -14,42 +14,16 @@
         </v-alert>
 
         <v-form ref="form">
-          <v-select 
-            v-if="puedeSeleccionarStockArea" 
-            v-model="localOrdenTransferencia.stockAreaIdOrigen" 
-            :items="mapeoAreas"
-            item-title="nombre" 
-            item-value="id" 
-            :label="areaOrigenLabel" 
-            :disabled="!globalStore.getEsAdmin" 
-            required 
-            variant="solo"
-            rounded
-            dense
-          />
-            
-          <v-select 
-            v-if="!this.isEditing" 
-            v-model="localOrdenTransferencia.stockAreaIdDestino"
-            :items="mostrarAreasNombre" 
-            item-title="nombre" 
-            item-value="id" 
-            label="Área Destino" 
-            required 
-            variant="solo"
-            rounded
-            dense
-          />
+          <v-select v-if="puedeSeleccionarStockArea" v-model="localOrdenTransferencia.stockAreaIdOrigen"
+            :items="mapeoAreas" item-title="nombre" item-value="id" :label="areaOrigenLabel"
+            :disabled="!globalStore.getEsAdmin" required variant="solo" rounded dense />
 
-          <v-text-field 
-            v-model="localOrdenTransferencia.motivo" 
-            label="Motivo" 
-            required 
-            variant="solo"
-            rounded
-            dense
-          />
-          
+          <v-select v-if="!this.isEditing" v-model="localOrdenTransferencia.stockAreaIdDestino"
+            :items="mostrarAreasNombre" item-title="nombre" item-value="id" label="Área Destino" required variant="solo"
+            rounded dense />
+
+          <v-text-field v-model="localOrdenTransferencia.motivo" label="Motivo" required variant="solo" rounded dense />
+
           <ListadoDeTransferencias v-if="!this.isEditing" :items="localOrdenTransferencia.items"
             @add-item="openAddItemDialog" @edit-item="openEditItemDialog" @delete-item="deleteItem" @close="closeDialog"
             :disabled="deshabilitar" />
@@ -57,8 +31,7 @@
       </v-card-text>
 
       <TransferenciaDialog v-if="itemDialogVisible" v-model="itemDialogVisible" :isEditing="isEditingItem"
-        :item="selectedItem" :areaId="selectedArea" :stockAreaId="selectedStockArea"
-        @save="saveItem" />
+        :item="selectedItem" :areaId="selectedArea" :stockAreaId="selectedStockArea" @save="saveItem" />
 
       <v-card-actions>
         <v-btn class="btn-blue" text @click="saveChanges" :disabled="!isFormValid">Guardar</v-btn>
@@ -96,8 +69,8 @@ export default {
   data() {
 
     return {
-      STOCK_AREA_DEPOSITO_FARMACIA : 1,
-      AREA_FARMACIA : 1,
+      STOCK_AREA_DEPOSITO_FARMACIA: 1,
+      AREA_FARMACIA: 1,
       localVisible: this.modelValue,
       localOrdenTransferencia: {
         stockAreaIdOrigen: '',
@@ -123,7 +96,7 @@ export default {
   },
   computed: {
 
-    puedeSeleccionarStockArea(){
+    puedeSeleccionarStockArea() {
       return !this.isEditing && this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     },
 
@@ -134,7 +107,7 @@ export default {
       return this.puedeSeleccionarStockArea ? this.stockAreas.find(stockArea => stockArea.id == this.localOrdenTransferencia.stockAreaIdOrigen).Area.id : this.AREA_FARMACIA
     },
 
-     
+
     mostrarAreasNombre() {
 
       if (this.localOrdenTransferencia.stockAreaIdOrigen) {
@@ -149,32 +122,32 @@ export default {
 
     },
 
-    deshabilitar(){
+    deshabilitar() {
 
-return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
-},
+      return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
+    },
 
     mapeoAreas() {
-  return this.stockAreas
-    .filter(areas => {
-      
-      if (!this.puedeSeleccionarStockArea) {
-        return areas.id !== this.STOCK_AREA_DEPOSITO_FARMACIA &&
-               areas.Area.id !== this.AREA_FARMACIA;
-      }
-      return true; 
-    })
-    .map(areas => {
-      return {
-        id: areas.id,
-        nombre: areas.Area.nombre + " - " + areas.nombre,
-        Area: {
-          id: areas.Area.id,
-          nombre: areas.Area.nombre
-        }
-      };
-    });
-},
+      return this.stockAreas
+        .filter(areas => {
+
+          if (!this.puedeSeleccionarStockArea) {
+            return areas.id !== this.STOCK_AREA_DEPOSITO_FARMACIA &&
+              areas.Area.id !== this.AREA_FARMACIA;
+          }
+          return true;
+        })
+        .map(areas => {
+          return {
+            id: areas.id,
+            nombre: areas.Area.nombre + " - " + areas.nombre,
+            Area: {
+              id: areas.Area.id,
+              nombre: areas.Area.nombre
+            }
+          };
+        });
+    },
 
 
     areaOrigenLabel() {
@@ -182,7 +155,7 @@ return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRo
     },
     isFormValid() {
       if (!this.isEditing) {
-        const {  stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
+        const { stockAreaIdDestino, motivo, items } = this.localOrdenTransferencia;
         return this.selectedStockArea && stockAreaIdDestino && motivo && items ? items.length != 0 : false
       } else {
         const { motivo } = this.localOrdenTransferencia;
@@ -198,7 +171,7 @@ return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRo
   },
   methods: {
 
-   
+
 
     formatearFechaYHora(fecha) {
       return formatearFechaYHora(fecha)
@@ -216,7 +189,7 @@ return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRo
     saveChanges() {
 
       if (!this.isEditing) {
-        if(!this.puedeSeleccionarStockArea){
+        if (!this.puedeSeleccionarStockArea) {
           this.localOrdenTransferencia.stockAreaIdOrigen = this.STOCK_AREA_DEPOSITO_FARMACIA
         }
         this.localOrdenTransferencia.userId = this.globalStore.getUsuarioId,
@@ -225,7 +198,7 @@ return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRo
         this.localOrdenTransferencia.fechaTransferencia = this.formatearFechaYHora(new Date())
       }
 
-      this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia))); 
+      this.$emit('save', JSON.parse(JSON.stringify(this.localOrdenTransferencia)));
     },
     closeDialog() {
       this.localVisible = false;
@@ -278,4 +251,3 @@ return !this.localOrdenTransferencia.stockAreaIdOrigen && this.globalStore.getRo
   },
 };
 </script>
-

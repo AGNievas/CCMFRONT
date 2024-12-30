@@ -1,30 +1,19 @@
 <template>
   <v-card v-if="puedeVerOrdenPedido" class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
-          <span class="headline">Pedido de Medicamentos</span>
-          <v-divider></v-divider>
-      </v-card-title>
-      <ListadoDeTransferencias
-        :items="items"
-        :isViewMode="false"
-        @add-item="openDialog"
-        @edit-item="editItem"
-        @delete-item="deleteItem"
-      />
+    <v-card-title class="d-flex align-center pe-2">
+      <span class="headline">Pedido de Medicamentos</span>
+      <v-divider></v-divider>
+    </v-card-title>
+    <ListadoDeTransferencias :items="items" :isViewMode="false" @add-item="openDialog" @edit-item="editItem"
+      @delete-item="deleteItem" />
 
-      <v-card-actions>
-        <v-btn :disabled="items.length == 0" class="btn-blue" @click="generatePdf">Exportar PDF</v-btn>
-      </v-card-actions>
+    <v-card-actions>
+      <v-btn :disabled="items.length == 0" class="btn-blue" @click="generatePdf">Exportar PDF</v-btn>
+    </v-card-actions>
   </v-card>
 
-  <TransferenciaDialog
-    v-if="isDialogOpen"
-    v-model="isDialogOpen"
-    :isEditing="isEditing"
-    :medicamentosHoja="medicamentosPorArea"
-    :isHojaInternacion="true"
-    @save="saveItem"
-  />
+  <TransferenciaDialog v-if="isDialogOpen" v-model="isDialogOpen" :isEditing="isEditing"
+    :medicamentosHoja="medicamentosPorArea" :isHojaInternacion="true" @save="saveItem" />
 </template>
 
 <script>
@@ -35,186 +24,186 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { useGlobalStore } from '@/stores/global';
 export default {
-    components: {
-        ListadoDeTransferencias,
-        TransferenciaDialog,
+  components: {
+    ListadoDeTransferencias,
+    TransferenciaDialog,
+  },
+  data() {
+    return {
+      items: [],
+      isDialogOpen: false,
+      isEditing: false,
+      currentItem: null,
+      listadoMedicamentos: [],
+      globalStore: useGlobalStore()
+
+    };
+  },
+  computed: {
+    medicamentosPorArea() {
+      return this.listadoMedicamentos.filter(med => med.StockArea.areaId == this.globalStore.getAreaId)
     },
-    data() {
-        return {
-            items: [], // Lista local de ítems
-            isDialogOpen: false,
-            isEditing: false,
-            currentItem: null, // Ítem que se está editando
-            listadoMedicamentos: [],
-            globalStore: useGlobalStore()
 
-        };
-    },
-    computed: {
-        medicamentosPorArea() {
-            return this.listadoMedicamentos.filter(med => med.StockArea.areaId == this.globalStore.getAreaId)
-        },
-
-        puedeVerOrdenPedido() {
-            return this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getAreaId != this.globalStore.getFarmaciaId
-        }
-    },
-    mounted() {
-        this.loadMedicamentos()
-    },
-    methods: {
-
-        async loadMedicamentos() {
-            this.listadoMedicamentos = await itemService.getAllItem()
-            console.log(this.listadoMedicamentos, "LISTADO EN HOJA")
-        },
-
-        openDialog() {
-            this.isEditing = false;
-            this.currentItem = null;
-            this.isDialogOpen = true;
-        },
-        editItem(item) {
-            console.log(item, "ITEM AL ABRIR EDIT")
-            this.isEditing = true;
-            this.currentItem = { ...item };
-            this.isDialogOpen = true;
-        },
-        deleteItem(index) {
-            this.items.splice(index, 1);
-        },
-        saveItem(item) {
-            if (this.isEditing) {
-                const index = this.items.findIndex((i) => i.id == item.id);
-                if (index !== -1) {
-                    this.items[index] = item;
-                }
-            } else {
-                this.items.push(item);
-            }
-        },
-
-
-
-        async generatePdf() {
-  const doc = new jsPDF();
-
-
-  const pageHeight = doc.internal.pageSize.height;
-  const pageWidth = doc.internal.pageSize.width;
-
-  const headerHeight = pageHeight * 0.15; 
-  const footerHeight = pageHeight * 0.23; 
-
-  
-  const addHeader = (label) => {
-    doc.setFontSize(16);
-    doc.text('Hospital Penna', pageWidth / 2, 10, { align: 'center' });
-    doc.setFontSize(12);
-    const currentDate = new Date().toLocaleDateString('es-AR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-    const fullName = this.globalStore.getFullNameUsuario || 'Usuario Desconocido';
-    doc.text(`Usuario: ${fullName}`, 10, 20);
-    doc.text(`Fecha: ${currentDate}`, 10, 30);
-    doc.text(`Pedido de Medicamentos (${label})`, pageWidth / 2, headerHeight - 10, { align: 'center' });
-
-   
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    doc.line(10, headerHeight, pageWidth - 10, headerHeight);
-  };
-
-
-  const addFooter = () => {
-    const footerY = pageHeight - footerHeight;
-
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    doc.line(10, footerY, pageWidth - 10, footerY); 
-
-    doc.setFontSize(10);
-    doc.text(
-      'NOTA: El médico que autoriza este pedido se hace responsable por los medicamentos solicitados, y la persona que retira asume la responsabilidad del traslado hasta el área de destino.',
-      10,
-      footerY + 10,
-      { maxWidth: pageWidth - 20 }
-    );
-
-    doc.setFontSize(12);
-    doc.text('Autoriza:', 10, footerY + 30);
-    doc.text('Firma: __________________________', 10, footerY + 40);
-    doc.text('Aclaración: ______________________', 10, footerY + 50);
-    doc.text('Fecha: _________________', 10, footerY + 60);
-
-    const rightColumnX = pageWidth - 100;
-    doc.text('Retira:', rightColumnX, footerY + 30);
-    doc.text('Firma: __________________________', rightColumnX, footerY + 40);
-    doc.text('Aclaración: ______________________', rightColumnX, footerY + 50);
-    doc.text('Fecha: _________________', rightColumnX, footerY + 60);
-  };
-
-  // Cuerpo
-  const addBody = (label) => {
-    doc.autoTable({
-      startY: headerHeight,
-      margin: { top: headerHeight, bottom: footerHeight, left: 10, right: 10 }, 
-      head: [['SKU', 'Descripción', 'Cantidad']],
-      body: this.items.map((item) => [item.sku, item.descripcion, item.cantidad]),
-      tableWidth: pageWidth - 20,
-      styles: { fontSize: 10 },
-      bodyStyles: { valign: 'middle' },
-      pageBreak: 'auto', 
-      didDrawPage: () => {
-        addHeader(label); 
-        addFooter(); 
-      },
-    });
-  };
-
- 
-  addHeader('Original'); 
-  addFooter();
-  addBody('Original');
-
- 
-  doc.addPage();
-  addHeader('Duplicado'); 
-  addFooter(); 
-  addBody('Duplicado');
-
-
-  const pdfBlob = doc.output('blob');
-
-  if (window.showSaveFilePicker) {
-    try {
-      const fileHandle = await window.showSaveFilePicker({
-        suggestedName: 'Pedido_Medicamentos_Farmacia.pdf',
-        types: [
-          {
-            description: 'Archivos PDF',
-            accept: { 'application/pdf': ['.pdf'] },
-          },
-        ],
-      });
-      const writableStream = await fileHandle.createWritable();
-      await writableStream.write(pdfBlob);
-      await writableStream.close();
-    } catch (err) {
-      console.error('El usuario canceló la acción o ocurrió un error:', err);
+    puedeVerOrdenPedido() {
+      return this.globalStore.getRolId == this.globalStore.getRolSuperAdmin || this.globalStore.getAreaId != this.globalStore.getFarmaciaId
     }
-  } else {
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = 'Pedido_Medicamentos_Farmacia.pdf';
-    link.click();
-  }
-},
+  },
+  mounted() {
+    this.loadMedicamentos()
+  },
+  methods: {
 
+    async loadMedicamentos() {
+      this.listadoMedicamentos = await itemService.getAllItem()
 
     },
+
+    openDialog() {
+      this.isEditing = false;
+      this.currentItem = null;
+      this.isDialogOpen = true;
+    },
+    editItem(item) {
+
+      this.isEditing = true;
+      this.currentItem = { ...item };
+      this.isDialogOpen = true;
+    },
+    deleteItem(index) {
+      this.items.splice(index, 1);
+    },
+    saveItem(item) {
+      if (this.isEditing) {
+        const index = this.items.findIndex((i) => i.id == item.id);
+        if (index !== -1) {
+          this.items[index] = item;
+        }
+      } else {
+        this.items.push(item);
+      }
+    },
+
+
+
+    async generatePdf() {
+      const doc = new jsPDF();
+
+
+      const pageHeight = doc.internal.pageSize.height;
+      const pageWidth = doc.internal.pageSize.width;
+
+      const headerHeight = pageHeight * 0.15;
+      const footerHeight = pageHeight * 0.23;
+
+
+      const addHeader = (label) => {
+        doc.setFontSize(16);
+        doc.text('Hospital Penna', pageWidth / 2, 10, { align: 'center' });
+        doc.setFontSize(12);
+        const currentDate = new Date().toLocaleDateString('es-AR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        });
+        const fullName = this.globalStore.getFullNameUsuario || 'Usuario Desconocido';
+        doc.text(`Usuario: ${fullName}`, 10, 20);
+        doc.text(`Fecha: ${currentDate}`, 10, 30);
+        doc.text(`Pedido de Medicamentos (${label})`, pageWidth / 2, headerHeight - 10, { align: 'center' });
+
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.5);
+        doc.line(10, headerHeight, pageWidth - 10, headerHeight);
+      };
+
+
+      const addFooter = () => {
+        const footerY = pageHeight - footerHeight;
+
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.5);
+        doc.line(10, footerY, pageWidth - 10, footerY);
+
+        doc.setFontSize(10);
+        doc.text(
+          'NOTA: El médico que autoriza este pedido se hace responsable por los medicamentos solicitados, y la persona que retira asume la responsabilidad del traslado hasta el área de destino.',
+          10,
+          footerY + 10,
+          { maxWidth: pageWidth - 20 }
+        );
+
+        doc.setFontSize(12);
+        doc.text('Autoriza:', 10, footerY + 30);
+        doc.text('Firma: __________________________', 10, footerY + 40);
+        doc.text('Aclaración: ______________________', 10, footerY + 50);
+        doc.text('Fecha: _________________', 10, footerY + 60);
+
+        const rightColumnX = pageWidth - 100;
+        doc.text('Retira:', rightColumnX, footerY + 30);
+        doc.text('Firma: __________________________', rightColumnX, footerY + 40);
+        doc.text('Aclaración: ______________________', rightColumnX, footerY + 50);
+        doc.text('Fecha: _________________', rightColumnX, footerY + 60);
+      };
+
+
+      const addBody = (label) => {
+        doc.autoTable({
+          startY: headerHeight,
+          margin: { top: headerHeight, bottom: footerHeight, left: 10, right: 10 },
+          head: [['SKU', 'Descripción', 'Cantidad']],
+          body: this.items.map((item) => [item.sku, item.descripcion, item.cantidad]),
+          tableWidth: pageWidth - 20,
+          styles: { fontSize: 10 },
+          bodyStyles: { valign: 'middle' },
+          pageBreak: 'auto',
+          didDrawPage: () => {
+            addHeader(label);
+            addFooter();
+          },
+        });
+      };
+
+
+      addHeader('Original');
+      addFooter();
+      addBody('Original');
+
+
+      doc.addPage();
+      addHeader('Duplicado');
+      addFooter();
+      addBody('Duplicado');
+
+
+      const pdfBlob = doc.output('blob');
+
+      if (window.showSaveFilePicker) {
+        try {
+          const fileHandle = await window.showSaveFilePicker({
+            suggestedName: 'Pedido_Medicamentos_Farmacia.pdf',
+            types: [
+              {
+                description: 'Archivos PDF',
+                accept: { 'application/pdf': ['.pdf'] },
+              },
+            ],
+          });
+          const writableStream = await fileHandle.createWritable();
+          await writableStream.write(pdfBlob);
+          await writableStream.close();
+        } catch (err) {
+          console.error('El usuario canceló la acción o ocurrió un error:', err);
+        }
+      } else {
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'Pedido_Medicamentos_Farmacia.pdf';
+        link.click();
+      }
+    },
+
+
+  },
 };
 </script>

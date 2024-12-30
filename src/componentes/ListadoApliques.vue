@@ -6,27 +6,16 @@
         <v-btn class="btn-icon" icon small @click="closeDialog">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        
+
       </v-card-title>
 
-      <Tabla
-        :data="valoresTabla"
-        :headers="apliquesHeaders"
-        :isListadoApliques="true"
-        @edit="openEditarApliqueDialog"
-        @delete="confirmDeleteAplique"
-      />
+      <Tabla :data="valoresTabla" :headers="apliquesHeaders" :isListadoApliques="true" @edit="openEditarApliqueDialog"
+        @delete="confirmDeleteAplique" />
 
       <v-dialog persistent v-model="apliqueDialogVisible" max-width="500px">
-        <ApliqueDialog
-          v-model="apliqueDialogVisible"
-          :is-editing="isEditing"
-          :aplique="apliqueToEdit"
-          :paciente-id="paciente"
-          :areas="areas" :stockAreas="stockAreas"
-          :usuarios="usuarios"
-          :medicamentos="medicamentos" @save="saveAplique"
-        />
+        <ApliqueDialog v-model="apliqueDialogVisible" :is-editing="isEditing" :aplique="apliqueToEdit"
+          :paciente-id="paciente" :areas="areas" :stockAreas="stockAreas" :usuarios="usuarios"
+          :medicamentos="medicamentos" @save="saveAplique" />
       </v-dialog>
 
       <ConfirmDialog :isDelete="true" v-model="confirmDeleteDialog" title="Confirmar Eliminación"
@@ -146,34 +135,33 @@ export default {
 
     async loadApliques() {
       try {
-        console.log(this.apliques,"APLIQUES")
-        console.log(this.visita,"VIIISIIIIITAAAAA")
+
         const visitaId = this.visita.id
-        console.log(visitaId, "ID DE LA VISITA")
+
         this.apliques = await apliqueService.getApliquesByVisitaId(visitaId);
-        console.log(this.apliques,"APLIQUES")
+
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
     },
 
     openEditarApliqueDialog(aplique) {
-   this.isEditing = true;
-   const apliqueId = aplique.id;
-   const apliqueSinMap = this.apliques.find(apl => apl.id == apliqueId);
-   const formattedAplique = { ...apliqueSinMap };
-   
-   if (formattedAplique.fechaAplicacion) {
-      const fechaAplicacion = new Date(formattedAplique.fechaAplicacion);
-      formattedAplique.fechaAplicacion = fechaAplicacion.toISOString().split('.')[0];
-   }
+      this.isEditing = true;
+      const apliqueId = aplique.id;
+      const apliqueSinMap = this.apliques.find(apl => apl.id == apliqueId);
+      const formattedAplique = { ...apliqueSinMap };
 
-   this.apliqueToEdit = formattedAplique;
-   this.apliqueDialogVisible = true;
-},
+      if (formattedAplique.fechaAplicacion) {
+        const fechaAplicacion = new Date(formattedAplique.fechaAplicacion);
+        formattedAplique.fechaAplicacion = fechaAplicacion.toISOString().split('.')[0];
+      }
+
+      this.apliqueToEdit = formattedAplique;
+      this.apliqueDialogVisible = true;
+    },
     async saveAplique(nuevoAplique) {
       try {
-        
+
         const resultado = await saveApliqueHelper(this.isEditing, nuevoAplique);
         if (this.isEditing) {
           const index = this.apliques.findIndex(a => a.id === resultado.id);

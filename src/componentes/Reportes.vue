@@ -5,50 +5,25 @@
       <v-divider></v-divider>
     </v-card-title>
     <v-card-title class="d-flex align-center pe-2">
-      <v-text-field
-        v-model="startDate"
-        label="Fecha Desde"
-        type="date"
-        required
-        density="compact"
-        variant="solo"
-        hide-details
-        rounded
-      />
+      <v-text-field v-model="startDate" label="Fecha Desde" type="date" required density="compact" variant="solo"
+        hide-details rounded />
 
-      <v-text-field
-        v-model="endDate"
-        label="Fecha Hasta"
-        type="date"
-        required
-        density="compact"
-        variant="solo"
-        hide-details
-        rounded
-      />
+      <v-text-field v-model="endDate" label="Fecha Hasta" type="date" required density="compact" variant="solo"
+        hide-details rounded />
 
       <v-spacer></v-spacer>
       <v-btn class="btn-blue" text @click="searchApliques">Buscar</v-btn>
     </v-card-title>
-            
-    <Tabla
-      v-if="mostrarReporte"
-      :data="apliquesFiltrados"
-      :headers="apliqueHeaders"
-      :isReporte="true"
-    />
+
+    <Tabla v-if="mostrarReporte" :data="apliquesFiltrados" :headers="apliqueHeaders" :isReporte="true" />
 
     <v-card-actions>
       <v-btn v-show="mostrarReporte" class="btn-blue" text @click="descargar">Imprimir Reporte</v-btn>
     </v-card-actions>
   </v-card>
 
-  <ConfirmDialog
-    v-model="imprimeReporte"
-    title="Imprimir Reporte"
-    text="¿Desea descargar el archivo?"
-    @confirm="descargarArchivo"
-  />
+  <ConfirmDialog v-model="imprimeReporte" title="Imprimir Reporte" text="¿Desea descargar el archivo?"
+    @confirm="descargarArchivo" />
 
 </template>
 
@@ -57,7 +32,7 @@ import Tabla from './Tabla.vue';
 import ConfirmDialog from './ConfirmDialog.vue';
 import { useGlobalStore } from '@/stores/global';
 import apliqueService from './servicios/apliqueService';
-import { unparse } from 'papaparse'; 
+import { unparse } from 'papaparse';
 
 export default {
   components: {
@@ -90,18 +65,18 @@ export default {
   },
   computed: {
     apliquesFiltrados() {
-      return this.apliques.map((apl) => (console.log(apl),{
-            id: apl.id,
-            Area: apl.StockArea.Area.nombre,
-            Sub_Area: apl.StockArea.nombre,
-            DNI_Paciente: apl.Visita.Paciente.dni,
-            Nombre_Completo_Paciente: `${apl.Visita.Paciente.nombre} ${apl.Visita.Paciente.apellido}`,
-            Diagnostico: apl.Visita.diagnostico,
-            Descripcion_Medicamento: apl.Medicamento.descripcion,
-            Sku_Medicamento: apl.Medicamento.sku,
-            Fecha_Aplicacion: this.tiempoUniversalATiempoLocal(apl.fechaAplicacion),
-            Cantidad: apl.cantidad,
-            Medico_Autorizante: apl.User.fullName,
+      return this.apliques.map((apl) => ({
+        id: apl.id,
+        Area: apl.StockArea.Area.nombre,
+        Sub_Area: apl.StockArea.nombre,
+        DNI_Paciente: apl.Visita.Paciente.dni,
+        Nombre_Completo_Paciente: `${apl.Visita.Paciente.nombre} ${apl.Visita.Paciente.apellido}`,
+        Diagnostico: apl.Visita.diagnostico,
+        Descripcion_Medicamento: apl.Medicamento.descripcion,
+        Sku_Medicamento: apl.Medicamento.sku,
+        Fecha_Aplicacion: this.tiempoUniversalATiempoLocal(apl.fechaAplicacion),
+        Cantidad: apl.cantidad,
+        Medico_Autorizante: apl.User.fullName,
       }));
     },
   },
@@ -111,16 +86,16 @@ export default {
         if (!this.startDate || !this.endDate) {
           return alert('Por favor, seleccione ambas fechas para realizar la búsqueda.');
         }
-        this.apliques = await apliqueService.getApliquesByDateRange(this.startDate,this.endDate);
-        console.log(this.apliques, 'APLIQUES');
+        this.apliques = await apliqueService.getApliquesByDateRange(this.startDate, this.endDate);
+
       } catch (error) {
         console.error('Error al cargar apliques:', error);
       }
     },
 
     tiempoUniversalATiempoLocal(fecha) {
-      const fechaLocal =  new Date (fecha)
-      return fechaLocal.toLocaleString(); 
+      const fechaLocal = new Date(fecha)
+      return fechaLocal.toLocaleString();
     },
 
     searchApliques() {
@@ -134,14 +109,14 @@ export default {
 
     descargarArchivo() {
       try {
-        // Convertir `apliquesFiltrados` a CSV
+
         const csvData = unparse(this.apliquesFiltrados);
 
-        // Crear un Blob para descargar el archivo
+
         const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
 
-        // Crear un enlace para forzar la descarga
+
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', 'reporte_apliques.csv');

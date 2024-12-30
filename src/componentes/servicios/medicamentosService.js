@@ -1,12 +1,13 @@
 import axiosInstance from "@/axios.js";
 
-const URL = '/medicamento';
+const URL = "/medicamento";
 
 const medicamentosService = {
-
   async getAllMedicamento() {
     try {
-      const response = await axiosInstance.get(`${URL}/stock`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/stock`, {
+        withCredentials: true,
+      });
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -16,7 +17,9 @@ const medicamentosService = {
 
   async getMedicamentosByAreaId(id) {
     try {
-      const response = await axiosInstance.get(`${URL}/stock?areaId=${id}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/stock?areaId=${id}`, {
+        withCredentials: true,
+      });
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -26,7 +29,10 @@ const medicamentosService = {
 
   async getAllMedicamentoByStockAreaId(areaId, stockAreaId) {
     try {
-      const response = await axiosInstance.get(`${URL}/stock?areaId=${areaId}&stockAreaId=${stockAreaId}`, { withCredentials: true });
+      const response = await axiosInstance.get(
+        `${URL}/stock?areaId=${areaId}&stockAreaId=${stockAreaId}`,
+        { withCredentials: true }
+      );
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -36,7 +42,9 @@ const medicamentosService = {
 
   async getMedicamentoBySku(sku) {
     try {
-      const response = await axiosInstance.get(`${URL}/${sku}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/${sku}`, {
+        withCredentials: true,
+      });
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener medicamentos:", error);
@@ -46,7 +54,11 @@ const medicamentosService = {
 
   async createMedicamento(sku, descripcion, tipo_medicamento) {
     try {
-      const response = await axiosInstance.post(`${URL}`,{sku,descripcion, tipo_medicamento}, { withCredentials: true });
+      const response = await axiosInstance.post(
+        `${URL}`,
+        { sku, descripcion, tipo_medicamento },
+        { withCredentials: true }
+      );
       return response.data.return;
     } catch (error) {
       console.error("Error al crear medicamentos:", error);
@@ -56,7 +68,11 @@ const medicamentosService = {
 
   async cargaMasivaMedicamento(filePath) {
     try {
-      const response = await axiosInstance.post(`${URL}/carga-masiva`,{filePath}, { withCredentials: true });
+      const response = await axiosInstance.post(
+        `${URL}/carga-masiva`,
+        { filePath },
+        { withCredentials: true }
+      );
       return response.data;
     } catch (error) {
       console.error("Error en carga masiva:", error);
@@ -66,7 +82,11 @@ const medicamentosService = {
 
   async updateMedicamento(sku, descripcion, tipo_medicamento) {
     try {
-      const { data: medicamentoActualizado } = await axiosInstance.put(`${URL}/${sku}`, { descripcion, tipo_medicamento }, { withCredentials: true });
+      const { data: medicamentoActualizado } = await axiosInstance.put(
+        `${URL}/${sku}`,
+        { descripcion, tipo_medicamento },
+        { withCredentials: true }
+      );
       return medicamentoActualizado;
     } catch (error) {
       console.error("Error al actualizar el Medicamento:", error);
@@ -76,14 +96,16 @@ const medicamentosService = {
 
   async deleteMedicamento(sku) {
     try {
-
-      const { data: medicamentoEliminado } = await axiosInstance.delete(`${URL}/${sku}`, { withCredentials: true });
+      const { data: medicamentoEliminado } = await axiosInstance.delete(
+        `${URL}/${sku}`,
+        { withCredentials: true }
+      );
       return medicamentoEliminado;
     } catch (error) {
       console.error("Error al eliminar el Medicamento:", error);
       throw error;
     }
-  }
-}
+  },
+};
 
 export default medicamentosService;

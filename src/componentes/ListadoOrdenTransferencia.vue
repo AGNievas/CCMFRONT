@@ -1,53 +1,32 @@
 <template>
-    <v-card class="custom-container">
-      <v-card-title class="d-flex align-center pe-2">
-        <span class="headline">Listado de Ordenes de Transferencia</span>
-        <v-divider></v-divider>
-      </v-card-title>
-      <v-card-title class="d-flex align-center pe-2">
+  <v-card class="custom-container">
+    <v-card-title class="d-flex align-center pe-2">
+      <span class="headline">Listado de Ordenes de Transferencia</span>
+      <v-divider></v-divider>
+    </v-card-title>
+    <v-card-title class="d-flex align-center pe-2">
 
-        <v-spacer></v-spacer>
-        <v-btn @click="openAddOrdenTransferDialog" class="btn-blue">Agregar Orden Transferencia</v-btn>
-      </v-card-title>
+      <v-spacer></v-spacer>
+      <v-btn @click="openAddOrdenTransferDialog" class="btn-blue">Agregar Orden Transferencia</v-btn>
+    </v-card-title>
 
-    <Tabla
-      :data="valoresTabla"
-      :headers="ordenTransferenciaHeaders"
-      :isListadoOrdenTransferencia="true"
-      @edit="openEditDialog"
-      @delete="confirmDelete"
-      @ver-items="openItemsDialog"
-    />
+    <Tabla :data="valoresTabla" :headers="ordenTransferenciaHeaders" :isListadoOrdenTransferencia="true"
+      @edit="openEditDialog" @delete="confirmDelete" @ver-items="openItemsDialog" />
 
-    <OrdenTransferenciaDialog
-      v-model="dialog"
-      :is-editing="isEditing"
-      :user="globalStore.getUsuarioIdYNombre"
-      :ordenTransferencia="selectedOrdenTransferencia"
-      :stockAreas="stockAreas"
-      :errorMessage="errorMessage"
-      @save="saveTransferencia"
-    />
+    <OrdenTransferenciaDialog v-model="dialog" :is-editing="isEditing" :user="globalStore.getUsuarioIdYNombre"
+      :ordenTransferencia="selectedOrdenTransferencia" :stockAreas="stockAreas" :errorMessage="errorMessage"
+      @save="saveTransferencia" />
 
     <v-dialog persistent v-model="itemsDialogVisible" max-width="800px">
       <div class="v-card">
-          <ListadoDeTransferencias 
-            :isViewMode="true" 
-            :items="selectedItems"
-            :orderNumber="selectedOrderNumber"  
-          @close="itemsDialogVisible = false"
-          />
-      </div> 
+        <ListadoDeTransferencias :isViewMode="true" :items="selectedItems" :orderNumber="selectedOrderNumber"
+          @close="itemsDialogVisible = false" />
+      </div>
     </v-dialog>
 
-    <ConfirmDialog
-      v-model="deleteDialog"
-      :isDelete="true"
-      title="Confirmar Eliminación"
-      text="¿Estás seguro de que deseas eliminar esta transferencia?"
-      @confirm="deleteTransferencia"
-    />
-    </v-card>
+    <ConfirmDialog v-model="deleteDialog" :isDelete="true" title="Confirmar Eliminación"
+      text="¿Estás seguro de que deseas eliminar esta transferencia?" @confirm="deleteTransferencia" />
+  </v-card>
 </template>
 
 <script>
@@ -80,12 +59,12 @@ export default {
       deleteDialog: false,
       selectedOrdenTransferencia: {},
       globalStore: useGlobalStore(),
-      errorMessage:'',
+      errorMessage: '',
     };
   },
 
-  watch:{
-    
+  watch: {
+
     'globalStore.getStockAreas': {
       handler(newStockAreas) {
         if (newStockAreas.length) {
@@ -108,43 +87,44 @@ export default {
     },
 
     valoresTabla() {
-  if (!this.stockAreas || this.stockAreas.length == 0) {
-    return [];
-  }
-  return this.ordenesTransferencias.map(transferencia => {
-    const stockAreaOrigen = this.stockAreas.find(element => element.id == transferencia.stockAreaIdOrigen) || 'Área no encontrada';
-    const stockAreaDestino = this.stockAreas.find(element => element.id == transferencia.stockAreaIdDestino)|| 'Área no encontrada';
-    
-    return {
-      id: transferencia.id,
-      usuarioAutorizante: transferencia.User.fullName,
-      nombreAreaOrigen : stockAreaOrigen.Area.nombre,
-      nombreAreaDestino: stockAreaDestino.Area.nombre + ' - ' + stockAreaDestino.nombre,
-      fecha: this.formatearFecha(transferencia.fechaTransferencia),
-      motivo: transferencia.motivo
-    };
-  });
-}},
+      if (!this.stockAreas || this.stockAreas.length == 0) {
+        return [];
+      }
+      return this.ordenesTransferencias.map(transferencia => {
+        const stockAreaOrigen = this.stockAreas.find(element => element.id == transferencia.stockAreaIdOrigen) || 'Área no encontrada';
+        const stockAreaDestino = this.stockAreas.find(element => element.id == transferencia.stockAreaIdDestino) || 'Área no encontrada';
+
+        return {
+          id: transferencia.id,
+          usuarioAutorizante: transferencia.User.fullName,
+          nombreAreaOrigen: stockAreaOrigen.Area.nombre,
+          nombreAreaDestino: stockAreaDestino.Area.nombre + ' - ' + stockAreaDestino.nombre,
+          fecha: this.formatearFecha(transferencia.fechaTransferencia),
+          motivo: transferencia.motivo
+        };
+      });
+    }
+  },
   async mounted() {
-  
-  await this.loadStockAreas();
-  await this.loadOrdenesTransferencias(); 
- 
-},
- 
+
+    await this.loadStockAreas();
+    await this.loadOrdenesTransferencias();
+
+  },
+
   methods: {
 
-    formatearFecha(fecha){
+    formatearFecha(fecha) {
       return formatearFecha(fecha)
     },
     async loadOrdenesTransferencias() {
-  try {
-    const data = await ordenTransferenciaService.getAllOrdenTransferencia();
-    this.ordenesTransferencias = Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error("Error al cargar las órdenes de transferencia:", error);
-  }
-},
+      try {
+        const data = await ordenTransferenciaService.getAllOrdenTransferencia();
+        this.ordenesTransferencias = Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error("Error al cargar las órdenes de transferencia:", error);
+      }
+    },
     async loadStockAreas() {
       this.stockAreas = this.globalStore.getStockAreas;
     },
@@ -175,7 +155,7 @@ export default {
     },
     openEditDialog(orden) {
       const listaItems = this.selectedOrdenTransferencia.listaItems
-      this.selectedOrdenTransferencia = { ...orden,  listaItems};
+      this.selectedOrdenTransferencia = { ...orden, listaItems };
       this.isEditing = true;
       this.dialog = true;
     },
@@ -196,7 +176,7 @@ export default {
         await this.loadOrdenesTransferencias();
       } catch (error) {
         console.error('Error al guardar la transferencia:', error);
-        this.errorMessage = error|| 'Error al guardar la orden de transferencia';
+        this.errorMessage = error || 'Error al guardar la orden de transferencia';
       }
     },
     async deleteTransferencia() {

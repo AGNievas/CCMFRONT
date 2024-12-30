@@ -14,13 +14,11 @@
           hide-details></v-select>
         <v-spacer></v-spacer>
 
-        <v-btn v-if="puedeAgregarPaciente" @click="openAgregarDialog"
-          class="btn-blue">Agregar Paciente</v-btn>
+        <v-btn v-if="puedeAgregarPaciente" @click="openAgregarDialog" class="btn-blue">Agregar Paciente</v-btn>
       </v-card-title>
 
       <Tabla :data="pacientesFiltradosFormateados" :headers="pacientesHeaders" :isListadoPacientes="true"
-        :eliminable="true" @edit="openEditarDialog" @delete="confirmDelete" @ver-visitas="openListadoVisitas"
-        />
+        :eliminable="true" @edit="openEditarDialog" @delete="confirmDelete" @ver-visitas="openListadoVisitas" />
 
       <PacienteDialog ref="pacienteDialog" v-model="agregarDialog" :is-editing="false" @save="addPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
@@ -28,11 +26,12 @@
       <PacienteDialog v-model="editarDialog" :is-editing="true" :paciente="pacienteEdit" @save="editarPaciente"
         :error-mensaje="errorMensaje" @update:errorMensaje="errorMensaje = ''" />
 
-      <ListadoVisitas v-if="listadoVisitasVisible" v-model="listadoVisitasVisible" :paciente="selectedPaciente" :areas="globalStore.getAreas"
-          :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios" :medicamentos="medicamentos" />
-          
-          <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
-          text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deletePaciente" />
+      <ListadoVisitas v-if="listadoVisitasVisible" v-model="listadoVisitasVisible" :paciente="selectedPaciente"
+        :areas="globalStore.getAreas" :stockAreas="globalStore.getStockAreas" :usuarios="globalStore.getUsuarios"
+        :medicamentos="medicamentos" />
+
+      <ConfirmDialog :isDelete="true" v-model="deleteDialog" title="Confirmar Eliminación"
+        text="¿Estás seguro de que deseas eliminar este aplique?" @confirm="deletePaciente" />
 
     </v-card>
   </div>
@@ -60,18 +59,18 @@ export default {
     return {
 
       pacientesHeaders:
-       [
+        [
 
-        { text: 'DNI', value: 'dni' },
-        { text: 'Nombre', value: 'nombre' },
-        { text: 'Apellido', value: 'apellido' },
-        { text: 'Genero', value: 'genero' },
-        { text: 'Edad', value: 'edad' },
-        { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
-        { text: '', value: '', sortable: false }
+          { text: 'DNI', value: 'dni' },
+          { text: 'Nombre', value: 'nombre' },
+          { text: 'Apellido', value: 'apellido' },
+          { text: 'Genero', value: 'genero' },
+          { text: 'Edad', value: 'edad' },
+          { text: 'Fecha Nacimiento', value: 'fechaNacimiento' },
+          { text: '', value: '', sortable: false }
 
-      ],
-    
+        ],
+
       searchDni: '',
       searchGenero: 'Todos',
       generos: ['Todos', 'Masculino', 'Femenino', 'No binario'],
@@ -99,7 +98,7 @@ export default {
 
   },
   computed: {
-    puedeAgregarPaciente(){
+    puedeAgregarPaciente() {
       return (this.globalStore.getRolId != this.globalStore.getRolAdmin && this.globalStore.getAreaId != this.globalStore.getFarmaciaId) || this.globalStore.getRolId == this.globalStore.getRolSuperAdmin
     },
 
@@ -184,7 +183,7 @@ export default {
       this.loadPacientes();
     },
 
-     openListadoVisitas(paciente) {
+    openListadoVisitas(paciente) {
       if (paciente && Object.keys(paciente).length) {
         this.selectedPaciente = paciente;
         this.listadoVisitasVisible = true;
@@ -193,7 +192,7 @@ export default {
       }
     },
 
-     openAgregarDialog() {
+    openAgregarDialog() {
       this.$refs.pacienteDialog.resetPacienteLocal();
       this.pacienteEdit = {};
       this.errorMensaje = '';
@@ -205,17 +204,17 @@ export default {
       this.editarDialog = true;
     },
     confirmDelete(id) {
-      console.log(id,"id paciente")
+
       this.confirmDeleteId = id;
       this.deleteDialog = true;
     },
 
-    async deletePaciente(){
-      try{
-        console.log(this.confirmDeleteId,"en delete")
+    async deletePaciente() {
+      try {
+
         await pacienteService.deletePaciente(this.confirmDeleteId)
-        this.deleteDialog=false;
-      }catch(error){
+        this.deleteDialog = false;
+      } catch (error) {
         console.error('Error al eliminar aplique:', error);
       }
       this.loadPacientes();

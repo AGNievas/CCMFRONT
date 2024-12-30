@@ -34,19 +34,18 @@ const routes = [
     path: "/listadoDeMedicamentos",
     name: "ListadoDeMedicamentos",
     component: ListadoDeMedicamentos,
-    meta: { title: "Listado de Medicamentos",
-      areasPermitidas: ["Farmacia"],
-     },
+    meta: { title: "Listado de Medicamentos", areasPermitidas: ["Farmacia"] },
   },
 
   {
     path: "/cargaDeMedicamentos",
     name: "CargaDeMedicamentos",
     component: CargaDeMedicamentos,
-    meta: { title: "Importación Masiva",
+    meta: {
+      title: "Importación Masiva",
       rolesPermitidos: ["Super Admin", "Admin"],
       areasPermitidas: ["Farmacia"],
-     },
+    },
   },
 
   {
@@ -60,51 +59,44 @@ const routes = [
     path: "/consultaAltaPacientes",
     name: "ConsultaAltaPacientes",
     component: ConsultaAltaPacientes,
-    meta: { title: "Consultar Paciente",
-
-     },
+    meta: { title: "Consultar Paciente" },
   },
 
   {
     path: "/listadoDeUsuarios",
     name: "ListadoDeUsuarios",
     component: ListadoDeUsuarios,
-    meta: { title: "Listado de Usuarios",
-      rolesPermitidos:["Super Admin", "Admin"]
-     },
+    meta: {
+      title: "Listado de Usuarios",
+      rolesPermitidos: ["Super Admin", "Admin"],
+    },
   },
 
   {
     path: "/listadoDeOrdenesTransferencias",
     name: "ListadoDeOrdenesTransferencias",
     component: ListadoOrdenTransferencia,
-    meta: { title: "Listado de Ordenes de Transferencias",
-      areasPermitidas:["Farmacia"]
-     },
+    meta: {
+      title: "Listado de Ordenes de Transferencias",
+      areasPermitidas: ["Farmacia"],
+    },
   },
   {
     path: "/reportes",
     name: "Reportes",
     component: Reportes,
-    meta: { title: "Reportes de Apliques por fechas",
-      rolesPermitidos:["Super Admin"]
-     },
+    meta: {
+      title: "Reportes de Apliques por fechas",
+      rolesPermitidos: ["Super Admin"],
+    },
   },
-  
+
   {
     path: "/hojaInternacion",
     name: "HojaInternacion",
     component: HojaInternacion,
-    meta: { title: "Hoja de Internacion",
-     
-     },
+    meta: { title: "Hoja de Internacion" },
   },
-  // {
-  //   path: "/apliques/:pacienteId",
-  //   name: "ListadoDeApliques",
-  //   component: ListadoApliques,
-  //   props: true,
-  // },
 
   { path: "/:pathMatch(.)", redirect: "/login" },
 ];
@@ -115,23 +107,22 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const globalStore= useGlobalStore()
+  const globalStore = useGlobalStore();
 
   document.title = to.meta.title || "CCM - Control y Consumo de Medicamentos";
 
-  if(!to.meta.rolesPermitidos && !to.meta.areasPermitidas){
+  if (!to.meta.rolesPermitidos && !to.meta.areasPermitidas) {
     return next();
-   }
+  }
 
-   const userRol = globalStore.getRolName;
-   const userArea = globalStore.getAreaNombre;
-  
+  const userRol = globalStore.getRolName;
+  const userArea = globalStore.getAreaNombre;
 
-   if(to.meta.rolesPermitidos && !to.meta.rolesPermitidos.includes(userRol)){
+  if (to.meta.rolesPermitidos && !to.meta.rolesPermitidos.includes(userRol)) {
     console.warn("Acceso denegado: rol no permitido para esta ruta");
     return next("/home");
-   }
-   if (to.meta.areasPermitidas && !to.meta.areasPermitidas.includes(userArea)) {
+  }
+  if (to.meta.areasPermitidas && !to.meta.areasPermitidas.includes(userArea)) {
     console.warn("Acceso denegado: área no permitida para esta ruta");
     return next("/home");
   }

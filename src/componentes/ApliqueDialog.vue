@@ -9,93 +9,28 @@
 
     <v-card-text>
 
-      <v-select
-        v-if="!isEditing"
-        v-model="areaId"
-        :items="areas"
-        item-title="nombre"
-        item-value="id"
-        label="Área"
-        :disabled="!puedeSeleccionarArea"
-        :readonly="!puedeSeleccionarArea"
-        required
-        variant="solo"
-        rounded
-        dense
-      ></v-select>
+      <v-select v-if="!isEditing" v-model="areaId" :items="areas" item-title="nombre" item-value="id" label="Área"
+        :disabled="!puedeSeleccionarArea" :readonly="!puedeSeleccionarArea" required variant="solo" rounded
+        dense></v-select>
 
-      <v-select
-        v-if="!isEditing"
-        v-model="apliqueLocal.stockAreaId"
-        :items="stockAreasDeArea"
-        item-title="nombre"
-        item-value="id"
-        label="Sub Área de Stock"
-        required
-        variant="solo"
-        rounded
-        dense
-      ></v-select>
+      <v-select v-if="!isEditing" v-model="apliqueLocal.stockAreaId" :items="stockAreasDeArea" item-title="nombre"
+        item-value="id" label="Sub Área de Stock" required variant="solo" rounded dense></v-select>
 
-      <v-select
-        v-if="!isEditing"
-        v-model="apliqueLocal.sku"
-        :items="medicamentosPorStockArea"
-        item-title="sku"
-        item-value="sku"
-        label="SKU"
-        require
-        variant="solo"
-        rounded
-        dense
-      ></v-select>
+      <v-select v-if="!isEditing" v-model="apliqueLocal.sku" :items="medicamentosPorStockArea" item-title="sku"
+        item-value="sku" label="SKU" require variant="solo" rounded dense></v-select>
 
-      <v-select
-        v-if="!isEditing"
-        v-model="apliqueLocal.descripcion"
-        :items="medicamentosPorStockArea"
-        item-title="descripcion"
-        item-value="descripcion"
-        label="Medicamento"
-        required
-        variant="solo"
-        rounded
-        dense
-      ></v-select>
+      <v-select v-if="!isEditing" v-model="apliqueLocal.descripcion" :items="medicamentosPorStockArea"
+        item-title="descripcion" item-value="descripcion" label="Medicamento" required variant="solo" rounded
+        dense></v-select>
 
-      <v-text-field
-        v-if="!isEditing"
-        v-model="apliqueLocal.cantidad"
-        label="Cantidad"
-        type="number"
-        min="1"
-        required
-        variant="solo"
-        rounded
-        dense
-      ></v-text-field>
+      <v-text-field v-if="!isEditing" v-model="apliqueLocal.cantidad" label="Cantidad" type="number" min="1" required
+        variant="solo" rounded dense></v-text-field>
 
-      <v-select
-        v-model="apliqueLocal.User"
-        :items="usuariosPorArea"
-        item-title="fullName"
-        item-value="id"
-        label="Aplicante"
-        required
-        variant="solo"
-        rounded
-        dense
-      ></v-select>
+      <v-select v-model="apliqueLocal.User" :items="usuariosPorArea" item-title="fullName" item-value="id"
+        label="Aplicante" required variant="solo" rounded dense></v-select>
 
-      <v-text-field
-        v-model="apliqueLocal.fechaAplicacion"
-        label="Fecha y Hora de Aplicación"
-        type="datetime-local"
-        required
-        variant="solo"
-        rounded
-        dense
-      ></v-text-field>
+      <v-text-field v-model="apliqueLocal.fechaAplicacion" label="Fecha y Hora de Aplicación" type="datetime-local"
+        required variant="solo" rounded dense></v-text-field>
 
     </v-card-text>
     <v-card-actions>
@@ -114,7 +49,7 @@ export default {
       default: false,
     },
     visita: {
-      type : Object,
+      type: Object,
       required: true,
     },
     isEditing: Boolean,
@@ -141,7 +76,7 @@ export default {
         stockAreaId: '',
         fechaAplicacion: '',
         areaId: '',
-        visitaId:'',
+        visitaId: '',
         paciente: this.paciente,
       },
       globalStore: useGlobalStore(),
@@ -228,21 +163,21 @@ export default {
     },
 
     aplique: {
-   immediate: true,
-   handler(newAplique) {
-   console.log(newAplique)
-      if (this.isEditing && newAplique) {
-         this.apliqueLocal = { id: newAplique.id, ...newAplique };
+      immediate: true,
+      handler(newAplique) {
 
-         if (this.apliqueLocal.fechaAplicacion) {
+        if (this.isEditing && newAplique) {
+          this.apliqueLocal = { id: newAplique.id, ...newAplique };
+
+          if (this.apliqueLocal.fechaAplicacion) {
             const fechaAplicacion = new Date(this.apliqueLocal.fechaAplicacion);
             this.apliqueLocal.fechaAplicacion = fechaAplicacion.toISOString().split('.')[0];
-         }
-      } else {
-         this.resetApliqueLocal();
-      }
-   },
-},
+          }
+        } else {
+          this.resetApliqueLocal();
+        }
+      },
+    },
   },
   methods: {
 
@@ -255,17 +190,16 @@ export default {
       }
     },
     save() {
-      console.log(this.apliqueLocal,"aplique locaaaaal")
-      console.log(this.visita,"VISITA")
-      if(this.isEditing){
+
+      if (this.isEditing) {
         this.apliqueLocal.visitaId = this.apliqueLocal.Visita.id
-       
-        
-      } else{
+
+
+      } else {
         this.apliqueLocal.visitaId = this.visita.id
       }
-      
-      console.log(this.apliqueLocal,"aplique locaaaaal")
+
+
       this.$emit('save', this.apliqueLocal);
       this.closeDialog();
     },

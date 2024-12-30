@@ -3,54 +3,25 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ dialogTitle }}</span>
-         <v-btn class="btn-icon" icon small @click="closeDialog">
-            <v-icon>mdi-close</v-icon>
+        <v-btn class="btn-icon" icon small @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
 
       <v-card-text>
         <v-form ref="form">
-          <v-text-field
-            v-model="localMedicamento.sku"
-            label="SKU"
-            :readonly="isEditing"
-            required
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-model="localMedicamento.sku" label="SKU" :readonly="isEditing" required variant="solo" rounded
+            dense></v-text-field>
 
-          <v-text-field
-            v-model="localMedicamento.descripcion"
-            label="Descripción"
-            required
-            :readonly="isEditing && area !== 0"
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-model="localMedicamento.descripcion" label="Descripción" required
+            :readonly="isEditing && area !== 0" variant="solo" rounded dense></v-text-field>
 
-          <v-text-field
-            v-model="localMedicamento.tipo_medicamento"
-            label="Tipo de Medicamento"
-            :readonly="isEditing && area !== 0"
-            required
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-model="localMedicamento.tipo_medicamento" label="Tipo de Medicamento"
+            :readonly="isEditing && area !== 0" required variant="solo" rounded dense></v-text-field>
 
-          <v-text-field
-            v-if="(isEditing && area !== 0 && stockArea !== 0) || !isEditing"
-            v-model.number="localMedicamento.stock"
-            label="Stock"
-            required
-            type="number"
-            min="0"
-            variant="solo"
-            rounded
-            dense
-          ></v-text-field>
+          <v-text-field v-if="(isEditing && area !== 0 && stockArea !== 0) || !isEditing"
+            v-model.number="localMedicamento.stock" label="Stock" required type="number" min="0" variant="solo" rounded
+            dense></v-text-field>
 
           <v-alert v-if="formError" type="error" dismissible>
             Todos los campos son obligatorios. Por favor, completa la información.
@@ -91,10 +62,10 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return this.isEditing ? "Editar Medicamento" : "Agregar Nuevo Medicamento" ;
+      return this.isEditing ? "Editar Medicamento" : "Agregar Nuevo Medicamento";
     },
     dialogButton() {
-      return this.isEditing ? "Actualizar" : "Agregar" ;
+      return this.isEditing ? "Actualizar" : "Agregar";
     },
   },
   methods: {
@@ -106,15 +77,15 @@ export default {
 
     confirmAction() {
       this.formError = false;
-      
-      if((this.isEditing && this.area != 0 && this.stockArea != 0 && !this.localMedicamento.stock) || (!this.isEditing && !this.localMedicamento.stock) ){
+
+      if ((this.isEditing && this.area != 0 && this.stockArea != 0 && !this.localMedicamento.stock) || (!this.isEditing && !this.localMedicamento.stock)) {
         this.formError = true;
         return;
       }
       if (
         !this.localMedicamento.sku ||
         !this.localMedicamento.descripcion ||
-        !this.localMedicamento.tipo_medicamento 
+        !this.localMedicamento.tipo_medicamento
       ) {
         this.formError = true;
         return;

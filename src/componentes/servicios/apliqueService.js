@@ -15,11 +15,10 @@ const apliqueService = {
 
   async getApliquesByVisitaId(visitaId) {
     try {
-      console.log(visitaId);
       const response = await axiosInstance.get(`${URL}/visita/${visitaId}`, {
         withCredentials: true,
       });
-      console.log(response);
+
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Aplique:", error);
@@ -57,15 +56,11 @@ const apliqueService = {
 
   async getApliquesByDateRange(startDate, endDate) {
     try {
-      const response = await axiosInstance.get(
-        `${URL}/reporte`,
-        {
-          params: { startDate, endDate },
-          withCredentials: true,
-        },
-        
-      );
-      console.log(response)
+      const response = await axiosInstance.get(`${URL}/reporte`, {
+        params: { startDate, endDate },
+        withCredentials: true,
+      });
+
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Apliques:", error);
@@ -73,16 +68,14 @@ const apliqueService = {
     }
   },
 
-  async createAplique( nuevoAplique, visitaId) {
+  async createAplique(nuevoAplique, visitaId) {
     try {
-      console.log("CREATE APLIQUE",  visitaId, nuevoAplique);
       const { sku, cantidad, User, stockAreaId, fechaAplicacion } =
         nuevoAplique;
 
       const response = await axiosInstance.post(
         `${URL}`,
         {
-          
           sku,
           cantidad,
           User,
@@ -100,14 +93,11 @@ const apliqueService = {
     }
   },
 
-  async updateAplique( aplique) {
+  async updateAplique(aplique) {
     try {
-      console.log( aplique, "UPDATE");
-
       const { visitaId, fechaAplicacion, id } = aplique;
       const userId = aplique.User;
 
-      console.log(userId, visitaId, fechaAplicacion, "AHORAAAAAA");
       const response = await axiosInstance.put(
         `${URL}/${id}`,
         {

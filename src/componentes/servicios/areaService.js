@@ -1,12 +1,13 @@
 import axiosInstance from "@/axios.js";
 
-const URL = '/area'; 
+const URL = "/area";
 
 const areaService = {
-
   async getAllArea() {
     try {
-      const response = await axiosInstance.get(`${URL}/`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/`, {
+        withCredentials: true,
+      });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener area:", error);
@@ -16,7 +17,9 @@ const areaService = {
 
   async getareaById(id) {
     try {
-      const response = await axiosInstance.get(`${URL}/id/${id}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/id/${id}`, {
+        withCredentials: true,
+      });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener area:", error);
@@ -26,7 +29,9 @@ const areaService = {
 
   async getareaByNombre(nombre) {
     try {
-      const response = await axiosInstance.get(`${URL}/nombre/${nombre}`, { withCredentials: true });
+      const response = await axiosInstance.get(`${URL}/nombre/${nombre}`, {
+        withCredentials: true,
+      });
       return response.data.return;
     } catch (error) {
       console.error("Error al obtener area:", error);
@@ -36,7 +41,11 @@ const areaService = {
 
   async createarea(nombre) {
     try {
-      const response = await axiosInstance.post(`${URL}`, { nombre }, { withCredentials: true });
+      const response = await axiosInstance.post(
+        `${URL}`,
+        { nombre },
+        { withCredentials: true }
+      );
       return response.data.return;
     } catch (error) {
       console.error("Error al crear area:", error);
@@ -46,13 +55,16 @@ const areaService = {
 
   async deletearea(id) {
     try {
-      const { data: areaEliminado } = await axiosInstance.delete(`${URL}/${id}`, { withCredentials: true });
+      const { data: areaEliminado } = await axiosInstance.delete(
+        `${URL}/${id}`,
+        { withCredentials: true }
+      );
       return areaEliminado;
     } catch (error) {
       console.error("Error al eliminar el area:", error);
       throw error;
     }
-  }
-}
+  },
+};
 
 export default areaService;

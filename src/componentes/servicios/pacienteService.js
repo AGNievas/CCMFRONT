@@ -3,7 +3,6 @@ import axiosInstance from "@/axios.js";
 const URL = "/paciente";
 
 const pacienteService = {
-
   async getAllPaciente() {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
@@ -16,8 +15,10 @@ const pacienteService = {
 
   async getAllPacienteByStockAreaId(id) {
     try {
-      const response = await axiosInstance.get(`${URL}/area/${id}`, { withCredentials: true });
-    return response.data.message;
+      const response = await axiosInstance.get(`${URL}/area/${id}`, {
+        withCredentials: true,
+      });
+      return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
       return [];
@@ -25,11 +26,11 @@ const pacienteService = {
   },
 
   async getPacienteById(paciente) {
-    const {id} = paciente
+    const { id } = paciente;
     try {
       const response = await axiosInstance.get(`${URL}/id/${id}`, {
         withCredentials: true,
-      });   
+      });
       return response.data.message;
     } catch (error) {
       console.error("Error al obtener Paciente:", error);
@@ -50,13 +51,13 @@ const pacienteService = {
   },
 
   async createPaciente(paciente) {
-    try {   
-      const { dni, nombre, apellido, fechaNacimiento, genero } = paciente;  
+    try {
+      const { dni, nombre, apellido, fechaNacimiento, genero } = paciente;
       const response = await axiosInstance.post(
         `${URL}`,
         { dni, nombre, apellido, fechaNacimiento, genero },
         { withCredentials: true }
-      );  
+      );
       return response.data;
     } catch (error) {
       console.error("Error al agregar paciente:", error);
@@ -66,7 +67,7 @@ const pacienteService = {
 
   async updatePaciente(paciente) {
     try {
-      const {id, dni, nombre, apellido, fechaNacimiento, genero} = paciente;
+      const { id, dni, nombre, apellido, fechaNacimiento, genero } = paciente;
       const { data: pacienteActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
         { id, dni, nombre, apellido, fechaNacimiento, genero },
@@ -81,7 +82,6 @@ const pacienteService = {
 
   async deletePaciente(id) {
     try {
-      console.log(id,"en servicio")
       const { data: pacienteEliminado } = await axiosInstance.delete(
         `${URL}/${id}`,
         { withCredentials: true }

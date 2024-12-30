@@ -84,14 +84,13 @@ const visitaService = {
 
   async delete(id) {
     try {
-     
       const { data: visitaEliminada } = await axiosInstance.delete(
         `${URL}/${id}`,
         { withCredentials: true }
       );
       return visitaEliminada;
     } catch (error) {
-      console.error("Error al eliminar el Aplique:", error);
+      console.error("Error al eliminar la Visita:", error);
       throw error;
     }
   },

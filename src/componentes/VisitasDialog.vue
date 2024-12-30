@@ -2,81 +2,30 @@
   <v-dialog v-model="dialogVisible" persistent max-width="600px">
     <v-card class="custom-container">
       <v-card-title class="d-flex align-center pe-2">
-        <span class="headline">{{ darAlta ? 'Ingrese Fecha de Alta' :isEditing ? 'Editar Visita' : 'Agregar Visita' }}</span>
+        <span class="headline">{{ darAlta ? 'Ingrese Fecha de Alta' : isEditing ? 'Editar Visita' : 'Agregar Visita'
+          }}</span>
         <v-btn class="btn-icon" icon small @click="closeDialog">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text>
-        <v-select
-          v-if="!darAlta"
-          v-model="visitaLocal.StockArea"
-          :items="stockAreasPorArea"
-          item-title="nombre"
-          item-value="id"
-          label="Sub Area"
-          required
-          variant="solo"
-          rounded
-          dense
-        />
+        <v-select v-if="!darAlta" v-model="visitaLocal.StockArea" :items="stockAreasPorArea" item-title="nombre"
+          item-value="id" label="Sub Area" required variant="solo" rounded dense />
 
-        <v-select
-          v-if="!darAlta"
-          v-model="visitaLocal.User"
-          :items="usuariosPorAreas"
-          item-title="fullName"
-          item-value="id"
-          label="Medico"
-          required
-          variant="solo"
-          rounded
-          dense
-        />
+        <v-select v-if="!darAlta" v-model="visitaLocal.User" :items="usuariosPorAreas" item-title="fullName"
+          item-value="id" label="Medico" required variant="solo" rounded dense />
 
-        <v-text-field
-          v-if="!darAlta"
-          v-model="visitaLocal.diagnostico"
-          label="Diagnostico Presunto"
-          type="text"
-          variant="solo"
-          rounded
-          dense
-        />
+        <v-text-field v-if="!darAlta" v-model="visitaLocal.diagnostico" label="Diagnostico Presunto" type="text"
+          variant="solo" rounded dense />
 
-        <v-text-field 
-          v-if="!darAlta"
-          v-model="visitaLocal.fechaIngreso"
-          label="Fecha de Ingreso"
-          type="datetime-local"
-          required
-          variant="solo"
-          rounded
-          dense
-        />
+        <v-text-field v-if="!darAlta" v-model="visitaLocal.fechaIngreso" label="Fecha de Ingreso" type="datetime-local"
+          required variant="solo" rounded dense />
 
-        <v-select
-          v-if="!darAlta"
-          v-model="visitaLocal.seInterno"
-          :items="opciones"
-          item-title="text"
-          item-value="valor"
-          label="¿Requiere Internación?"
-          outlined
-          variant="solo"
-          rounded
-          dense
-        />
+        <v-select v-if="!darAlta" v-model="visitaLocal.seInterno" :items="opciones" item-title="text" item-value="valor"
+          label="¿Requiere Internación?" outlined variant="solo" rounded dense />
 
-        <v-text-field
-          v-if="darAlta || isEditing"
-          v-model="visitaLocal.fechaAlta"
-          label="Fecha Alta"
-          type="datetime-local"
-          variant="solo"
-          rounded
-          dense
-        />
+        <v-text-field v-if="darAlta || isEditing" v-model="visitaLocal.fechaAlta" label="Fecha Alta"
+          type="datetime-local" variant="solo" rounded dense />
       </v-card-text>
       <v-card-actions>
         <v-btn class="btn-blue" text @click="save" :disabled="!isFormValid">Guardar</v-btn>
@@ -107,9 +56,9 @@ export default {
     },
   },
   data() {
-    return {   
+    return {
       dialogVisible: this.modelValue,
-      visitaLocal: this.isEditing || this.darAlta ? {...this.visita}:{
+      visitaLocal: this.isEditing || this.darAlta ? { ...this.visita } : {
         User: {
           id: '',
           fullName: '',
@@ -138,10 +87,10 @@ export default {
   computed: {
     stockAreasPorArea() {
       let areaId
-      if(this.isEditing){
-        areaId= this.visita.StockArea.Area.id
+      if (this.isEditing) {
+        areaId = this.visita.StockArea.Area.id
       } else {
-        areaId= this.globalStore.getAreaId
+        areaId = this.globalStore.getAreaId
       }
       return this.stockAreas.filter(stockArea => stockArea.Area.id == areaId)
     },
@@ -156,10 +105,10 @@ export default {
     },
     isFormValid() {
       return !this.darAlta ? (this.visitaLocal.StockArea &&
-                            this.visitaLocal.User &&
-                            this.visitaLocal.diagnostico &&
-                            this.visitaLocal.fechaIngreso &&
-                            this.visitaLocal.seInterno!=null) : this.visitaLocal.fechaAlta
+        this.visitaLocal.User &&
+        this.visitaLocal.diagnostico &&
+        this.visitaLocal.fechaIngreso &&
+        this.visitaLocal.seInterno != null) : this.visitaLocal.fechaAlta
     }
   },
   watch: {
@@ -172,18 +121,18 @@ export default {
     visita: {
       immediate: true,
       handler(newVisita) {
-        console.log(newVisita,"VISTA")
+
         if (this.isEditing && newVisita) {
           this.visitaLocal = { id: newVisita.id, ...newVisita };
-          // Convertir fechaIngreso al formato 'YYYY-MM-DD'
+
           if (this.visitaLocal.fechaIngreso) {
-  const fechaIngreso = new Date(this.visitaLocal.fechaIngreso);
-  this.visitaLocal.fechaIngreso = fechaIngreso.toISOString().split('.')[0];
-}
-if (this.visitaLocal.fechaAlta) {
-  const fechaAlta = new Date(this.visitaLocal.fechaAlta);
-  this.visitaLocal.fechaAlta = fechaAlta.toISOString().split('.')[0];
-}
+            const fechaIngreso = new Date(this.visitaLocal.fechaIngreso);
+            this.visitaLocal.fechaIngreso = fechaIngreso.toISOString().split('.')[0];
+          }
+          if (this.visitaLocal.fechaAlta) {
+            const fechaAlta = new Date(this.visitaLocal.fechaAlta);
+            this.visitaLocal.fechaAlta = fechaAlta.toISOString().split('.')[0];
+          }
         } else {
           this.resetVisitaLocal();
         }
@@ -191,13 +140,13 @@ if (this.visitaLocal.fechaAlta) {
     },
   },
   methods: {
-    save() { 
+    save() {
       this.visitaLocal.StockArea = this.stockAreas.filter(stockAreas => stockAreas.id == this.visitaLocal.StockArea)[0]
       this.visitaLocal.User = this.usuarios.filter(user => user.id == this.visitaLocal.User)[0]
-      if(!this.visitaLocal.StockArea && this.isEditing) {
-        this.visitaLocal.StockArea  = this.visita.StockArea
+      if (!this.visitaLocal.StockArea && this.isEditing) {
+        this.visitaLocal.StockArea = this.visita.StockArea
       }
-      if(!this.visitaLocal.User && this.isEditing){
+      if (!this.visitaLocal.User && this.isEditing) {
         this.visitaLocal.User = this.visita.User
       }
       this.$emit('save', this.visitaLocal);
@@ -205,7 +154,7 @@ if (this.visitaLocal.fechaAlta) {
     },
     closeDialog() {
       this.$emit('update:modelValue', false);
-      this.resetVisitaLocal(); 
+      this.resetVisitaLocal();
     },
     resetVisitaLocal() {
       this.visitaLocal = {

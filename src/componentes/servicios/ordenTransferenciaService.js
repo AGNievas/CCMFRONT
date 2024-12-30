@@ -7,7 +7,6 @@ const ordenTransferenciaService = {
     try {
       const response = await axiosInstance.get(URL, { withCredentials: true });
       return response.data.message;
-      
     } catch (error) {
       console.error("Error al obtener TransferenciaStock:", error);
       return [];
@@ -55,15 +54,29 @@ const ordenTransferenciaService = {
 
   async createOrdenTransferencia(ordenTransferencia, listaItems) {
     try {
-      const { stockAreaIdOrigen, stockAreaIdDestino, motivo, areaIdDestino, areaIdOrigen, userId } =
-        ordenTransferencia;
+      const {
+        stockAreaIdOrigen,
+        stockAreaIdDestino,
+        motivo,
+        areaIdDestino,
+        areaIdOrigen,
+        userId,
+      } = ordenTransferencia;
 
       const response = await axiosInstance.post(
         `${URL}`,
-        { stockAreaIdOrigen, stockAreaIdDestino, motivo,  areaIdDestino, areaIdOrigen, userId, listaItems },
+        {
+          stockAreaIdOrigen,
+          stockAreaIdDestino,
+          motivo,
+          areaIdDestino,
+          areaIdOrigen,
+          userId,
+          listaItems,
+        },
         { withCredentials: true }
       );
-     console.log(response)
+
       return response;
     } catch (error) {
       console.error("Al crear Orden de Transferencia:", error);
@@ -71,23 +84,20 @@ const ordenTransferenciaService = {
     }
   },
 
-  async updateOrdenTransferencia(
-   ordenTransferencia
-
-  ) {
-    const {id, motivo   } = ordenTransferencia
+  async updateOrdenTransferencia(ordenTransferencia) {
+    const { id, motivo } = ordenTransferencia;
     try {
       const { data: ordenTransferenciaActualizado } = await axiosInstance.put(
         `${URL}/${id}`,
         {
-           motivo,
+          motivo,
         },
         { withCredentials: true }
       );
 
       return ordenTransferenciaActualizado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar la orden de transferencia:", error);
       throw error;
     }
   },
@@ -100,7 +110,7 @@ const ordenTransferenciaService = {
       );
       return ordenTransferenciaEliminado;
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al eliminar orden de transferencia:", error);
       throw error;
     }
   },
